@@ -163,12 +163,6 @@ class AOC2022Day3(AOC2022):
     '''
     day = 3
 
-    def __init__(self):
-        '''
-        Initialize the data structure to hold the Rucksack objects
-        '''
-        super().__init__()
-
     def process_input(self):
         '''
         Load the rucksack contents
