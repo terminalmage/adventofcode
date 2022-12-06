@@ -20,10 +20,11 @@ class AOC2022Day1(AOC2022):
     '''
     day = 1
 
-    def process_input(self):
+    def __init__(self) -> None:
         '''
-        Calculate scores
+        Calculate calories
         '''
+        super().__init__()
         self.elf_calories = {}
         with self.input.open() as fh:
             elf_number = 1
@@ -47,6 +48,6 @@ class AOC2022Day1(AOC2022):
 if __name__ == '__main__':
     aoc = AOC2022Day1()
     answer1 = max(aoc.elf_calories.values())
-    print(f'Answer 1 (top calorie count):           {answer1}')
+    print(f'Answer 1 (top calorie count): {answer1}')
     answer2 = sum(sorted(aoc.elf_calories.values(), reverse=True)[:3])
     print(f'Answer 2 (sum of top 3 calorie counts): {answer2}')

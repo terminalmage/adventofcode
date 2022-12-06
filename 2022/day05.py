@@ -77,14 +77,15 @@ class Stack:
 
 class AOC2022Day5A(AOC2022):
     '''
-    Base class for Day 3 of Advent of Code 2022
+    Base class for Day 5 of Advent of Code 2022
     '''
     day = 5
 
-    def process_input(self) -> None:
+    def __init__(self) -> None:
         '''
         Load the initial stack state and process each move
         '''
+        super().__init__()
         self.stacks = []
         self.moves = []
 

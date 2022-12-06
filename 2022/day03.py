@@ -159,14 +159,15 @@ class Rucksack:
 
 class AOC2022Day3(AOC2022):
     '''
-    Base class for Day 3 of Advent of Code 2022
+    Day 3 of Advent of Code 2022
     '''
     day = 3
 
-    def process_input(self):
+    def __init__(self) -> None:
         '''
         Load the rucksack contents
         '''
+        super().__init__()
         self.rucksacks = []
         with self.input.open() as fh:
             for line in fh:
@@ -209,6 +210,6 @@ if __name__ == '__main__':
         sum(dup.priority for dup in rucksack.duplicates)
         for rucksack in aoc.rucksacks
     )
-    print(f'Answer 1 (sum of priority of duplicate items):   {answer1}')
+    print(f'Answer 1 (sum of priority of duplicate items): {answer1}')
     answer2 = sum(aoc.find_badge(group).priority for group in aoc.groups())
     print(f"Answer 2 (sum of priority of each group's badge: {answer2}")

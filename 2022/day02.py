@@ -115,7 +115,7 @@ class RockPaperScissors:
 
 class AOC2022Day2(AOC2022):
     '''
-    Base class for Day 2 of Advent of Code 2022
+    Day 2 of Advent of Code 2022
     '''
     day = 2
 
@@ -124,10 +124,11 @@ class AOC2022Day2A(AOC2022Day2):
     '''
     Day 2 of Advent of Code 2022 (first task)
     '''
-    def process_input(self):
+    def __init__(self):
         '''
         Calculate scores
         '''
+        super().__init__()
         self.games = []
         with self.input.open() as fh:
             for line in fh:
@@ -140,13 +141,11 @@ class AOC2022Day2B(AOC2022Day2):
     '''
     day = 2
 
-    def __init__(self):
-        super().__init__()
-
-    def process_input(self):
+    def __init__(self) -> None:
         '''
         Calculate scores
         '''
+        super().__init__()
         self.games = []
         with self.input.open() as fh:
             for line in fh:

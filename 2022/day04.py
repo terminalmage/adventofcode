@@ -17,10 +17,11 @@ class AOC2022Day4(AOC2022):
     '''
     day = 4
 
-    def process_input(self):
+    def __init__(self) -> None:
         '''
-        Load the rucksack contents
+        Load the cleaning assignment pairs into tuples of sets of ints
         '''
+        super().__init__()
         self.assignment_pairs = []
         with self.input.open() as fh:
             for line in fh:
