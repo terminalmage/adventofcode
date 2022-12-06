@@ -4,9 +4,9 @@ My scripts for [Advent of Code](https://adventofcode.com).
 
 These scripts are written in Python 3, and some of them use syntax introduced
 in Python 3.8 (the "[walrus operator](https://peps.python.org/pep-0572)") and
-3.10 [Structural Pattern Matching](https://peps.python.org/pep-0636). If you do
-not have Python 3.10 available and would like to run these scripts, you have a
-couple options:
+3.10 ([Structural Pattern Matching](https://peps.python.org/pep-0636)). If you
+do not have Python 3.10 available and would like to run these scripts, you have
+a couple options:
 
 1. Use the [official Docker images](https://hub.docker.com/_/python/) for
    Python. For example, from the root of this git repository, run the
