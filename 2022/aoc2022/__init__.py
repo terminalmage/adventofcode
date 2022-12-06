@@ -15,21 +15,7 @@ class AOC2022:
         '''
         Initialize the object
         '''
-        self.process_input()
-
-    @property
-    def input(self) -> Path:
-        '''
-        Return a pathlib.Path object for the input file corresponding to the script
-        being run
-        '''
-        return Path(__file__).parent.parent.joinpath(
+        self.input = Path(__file__).parent.parent.joinpath(
             'inputs',
             f'day{str(self.day).zfill(2)}.txt',
         )
-
-    def process_input(self):
-        '''
-        Process the input file
-        '''
-        raise NotImplementedError
