@@ -17,11 +17,11 @@ class AOC2022Day4(AOC2022):
     '''
     day = 4
 
-    def __init__(self) -> None:
+    def __init__(self, example: bool = False) -> None:
         '''
         Load the cleaning assignment pairs into tuples of sets of ints
         '''
-        super().__init__()
+        super().__init__(example=example)
         self.assignment_pairs = []
         with self.input.open() as fh:
             for line in fh:

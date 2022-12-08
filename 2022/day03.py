@@ -5,7 +5,7 @@ https://adventofcode.com/2022/day/3
 from __future__ import annotations
 import itertools
 import string
-from collections.abc import Generator, Iterator, Sequence
+from collections.abc import Iterator, Sequence
 
 # Local imports
 from aoc2022 import AOC2022
@@ -131,7 +131,7 @@ class Rucksack:
         )
 
     @property
-    def items(self) -> Generator[RucksackItem, None, None]:
+    def items(self) -> Iterator[RucksackItem]:
         '''
         Return a list of items that are in both compartments
         '''
@@ -141,7 +141,7 @@ class Rucksack:
             yield item
 
     @property
-    def duplicates(self) -> Generator[RucksackItem, None, None]:
+    def duplicates(self) -> Iterator[RucksackItem]:
         '''
         Return a list of items that are in both compartments
         '''
@@ -163,17 +163,17 @@ class AOC2022Day3(AOC2022):
     '''
     day = 3
 
-    def __init__(self) -> None:
+    def __init__(self, example: bool = False) -> None:
         '''
         Load the rucksack contents
         '''
-        super().__init__()
+        super().__init__(example=example)
         self.rucksacks = []
         with self.input.open() as fh:
             for line in fh:
                 self.rucksacks.append(Rucksack(line.rstrip('\n')))
 
-    def groups(self, size=3) -> Generator[list[Rucksack], int, None]:
+    def groups(self, size=3) -> Iterator[list[Rucksack]]:
         '''
         Subdivide the rucksacks into groups of rucksacks
         '''

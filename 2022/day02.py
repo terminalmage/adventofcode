@@ -124,11 +124,11 @@ class AOC2022Day2A(AOC2022Day2):
     '''
     Day 2 of Advent of Code 2022 (first task)
     '''
-    def __init__(self):
+    def __init__(self, example: bool = False) -> None:
         '''
         Calculate scores
         '''
-        super().__init__()
+        super().__init__(example=example)
         self.games = []
         with self.input.open() as fh:
             for line in fh:
@@ -139,13 +139,12 @@ class AOC2022Day2B(AOC2022Day2):
     '''
     Day 2 of Advent of Code 2022 (second task)
     '''
-    day = 2
 
-    def __init__(self) -> None:
+    def __init__(self, example: bool = False) -> None:
         '''
         Calculate scores
         '''
-        super().__init__()
+        super().__init__(example=example)
         self.games = []
         with self.input.open() as fh:
             for line in fh:

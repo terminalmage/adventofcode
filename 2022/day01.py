@@ -20,11 +20,11 @@ class AOC2022Day1(AOC2022):
     '''
     day = 1
 
-    def __init__(self) -> None:
+    def __init__(self, example: bool = False) -> None:
         '''
         Calculate calories
         '''
-        super().__init__()
+        super().__init__(example=example)
         self.elf_calories = {}
         with self.input.open() as fh:
             elf_number = 1

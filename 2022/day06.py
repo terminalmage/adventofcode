@@ -15,11 +15,11 @@ class AOC2022Day6(AOC2022):
     '''
     day = 6
 
-    def __init__(self) -> None:
+    def __init__(self, example: bool = False) -> None:
         '''
         Load the datastream
         '''
-        super().__init__()
+        super().__init__(example=example)
         self.datastream = self.input.read_text()
 
     def marker_index(self, length: int) -> int:

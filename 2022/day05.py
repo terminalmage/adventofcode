@@ -81,11 +81,11 @@ class AOC2022Day5A(AOC2022):
     '''
     day = 5
 
-    def __init__(self) -> None:
+    def __init__(self, example: bool = False) -> None:
         '''
         Load the initial stack state and process each move
         '''
-        super().__init__()
+        super().__init__(example=example)
         self.stacks = []
         self.moves = []
 
