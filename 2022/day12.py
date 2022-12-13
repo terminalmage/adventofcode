@@ -58,26 +58,6 @@ class AOC2022Day12(AOC2022):
         self.num_rows = len(self.nodes)
         self.num_cols = len(self.nodes[0])
 
-        '''
-        # For each grid position, figure out which other nodes are valid
-        # downward moves (i.e. <= 1 drop in elevation)
-        for coord, node in self.nodes.items():
-            row, col = coord
-            for neighbor_coord in (
-                (row + 1, col),
-                (row - 1, col),
-                (row, col + 1),
-                (row, col - 1),
-            ):
-                try:
-                    neighbor = self.nodes[neighbor_coord]
-                except KeyError:
-                    continue
-
-                if 1 >= node.elevation - neighbor.elevation >= 0:
-                    self.can_descend.add(neighbor)
-        '''
-
     def neighbors(self, row: int, col: int) -> Iterator[Coordinate]:
         '''
         Return all neighbors of the specified coordinate
