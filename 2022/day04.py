@@ -2,11 +2,6 @@
 '''
 https://adventofcode.com/2022/day/4
 '''
-from __future__ import annotations
-import itertools
-import string
-from collections.abc import Generator, Iterator, Sequence
-
 # Local imports
 from aoc2022 import AOC2022
 
@@ -27,13 +22,13 @@ class AOC2022Day4(AOC2022):
             for line in fh:
                 self.assignment_pairs.append(
                     tuple(
-                        [
+                        (
                             set(range(int(begin), int(end) + 1))
                             for begin, end in [
                                 section.split('-')
                                 for section in line.rstrip('\n').split(',')
                             ]
-                        ]
+                        )
                     )
                 )
 

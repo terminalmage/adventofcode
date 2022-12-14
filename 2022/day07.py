@@ -8,7 +8,6 @@ import os
 import re
 import sys
 from collections.abc import Iterator
-from dataclasses import dataclass
 
 # Local imports
 from aoc2022 import AOC2022
@@ -48,7 +47,6 @@ class PathBase:
         '''
         Don't allow attribute to be deleted
         '''
-        pass
 
     @property
     def path(self):
@@ -225,7 +223,7 @@ class AOC2022Day7(AOC2022):
         super().__init__(example=example)
         self.rootdir = Directory('/')
 
-        line_re = re.compile('^(\$|\d+|dir) (.+)')
+        line_re = re.compile(r'^(\$|\d+|dir) (.+)')
         ls = False
 
         cwd = self.rootdir
@@ -310,9 +308,9 @@ if __name__ == '__main__':
     aoc = AOC2022Day7()
     answer1 = 0
     for directory in aoc.dirs(recurse=True):
-        size = directory.size
-        if size <= 100_000:
-            answer1 += size
+        dir_size = directory.size
+        if dir_size <= 100_000:
+            answer1 += dir_size
     print(f'Answer 1 (cumulative size of dirs <= 100000 bytes): {answer1}')
 
     target_unused = 30_000_000

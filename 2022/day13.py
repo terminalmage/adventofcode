@@ -24,7 +24,7 @@ class Packet:
         '''
         Load the segments into the data structure
         '''
-        self.segments = [item for item in segments]
+        self.segments = list(segments)
 
     def __repr__(self) -> str:
         '''
@@ -153,6 +153,7 @@ class AOC2022Day13B(AOC2022Day13A):
     '''
     def run(self) -> int:
         '''
+        Compute the product of the indicies of the divider packets
         '''
         dividers = [Packet([2]), Packet([6])]
         self.packets.extend(dividers)

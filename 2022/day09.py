@@ -9,6 +9,10 @@ from aoc2022 import AOC2022
 
 
 class Knot:
+    '''
+    Stores information about current position and all the coordinates the knot
+    has visited
+    '''
     def __init__(self, start_col: int = 0, start_row: int = 0) -> None:
         '''
         Set the initial position of the knot
@@ -58,9 +62,9 @@ class Knot:
             abs_delta = abs(delta)
             if abs_delta <= 1:
                 return 0
-            else:
-                ret = abs_delta - 1
-                return ret if delta > 0 else -ret
+
+            ret = abs_delta - 1
+            return ret if delta > 0 else -ret
 
         if self.col == other.col:
             # Vertical move

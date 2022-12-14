@@ -2,9 +2,6 @@
 '''
 https://adventofcode.com/2022/day/6
 '''
-import re
-from dataclasses import dataclass
-
 # Local imports
 from aoc2022 import AOC2022
 

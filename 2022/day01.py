@@ -6,14 +6,6 @@ https://adventofcode.com/2022/day/1
 from aoc2022 import AOC2022
 
 
-WINS = {
-    'rock': 'paper',
-    'paper': 'scissors',
-    'scissors': 'rock',
-}
-LOSES = {val: key for key, val in WINS.items()}
-
-
 class AOC2022Day1(AOC2022):
     '''
     Day 1 of Advent of Code 2022

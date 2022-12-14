@@ -28,7 +28,7 @@ class AOC2022Day10(AOC2022):
         inst_re = re.compile(r'^(noop)|(addx) (-?\d+)$')
 
         with self.input.open() as fh:
-            for noop, addx, delta in (
+            for noop, _, delta in (
                 inst_re.match(line.rstrip('\n')).groups()
                 for line in fh
             ):
@@ -86,12 +86,12 @@ class AOC2022Day10(AOC2022):
         # Set the initial position of the register
         reg = 1
         # Render the result
-        for cycle in range(len(self.deltas)):
+        for cycle, delta in enumerate(self.deltas):
             col = cycle % width
             sys.stdout.write('#' if col in (reg - 1, reg, reg + 1) else '.')
             if col == eol:
                 sys.stdout.write('\n')
-            reg += self.deltas[cycle]
+            reg += delta
 
 
 if __name__ == '__main__':

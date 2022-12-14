@@ -1,0 +1,10 @@
+# vim: et ts=4 sts=4 sw=4
+[MASTER]
+
+disable=
+    invalid-name,
+    line-too-long,
+    too-few-public-methods,
+    too-many-arguments,
+    too-many-branches,
+    unspecified-encoding,

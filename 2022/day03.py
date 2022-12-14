@@ -11,14 +11,8 @@ from collections.abc import Iterator, Sequence
 from aoc2022 import AOC2022
 
 
-PRIORITY = {
-    key: val for key, val in
-    zip(string.ascii_lowercase, itertools.count(1))
-}
-PRIORITY.update({
-    key: val for key, val in
-    zip(string.ascii_uppercase, itertools.count(27))
-})
+PRIORITY = dict(zip(string.ascii_lowercase, itertools.count(1)))
+PRIORITY.update(zip(string.ascii_uppercase, itertools.count(27)))
 
 
 class RucksackItem:
@@ -198,7 +192,8 @@ class AOC2022Day3(AOC2022):
 
         if not itemset:
             raise ValueError('Group has no items in common')
-        elif len(itemset) > 1:
+
+        if len(itemset) > 1:
             raise ValueError('Group has more than one item in common')
 
         return RucksackItem(list(itemset)[0])

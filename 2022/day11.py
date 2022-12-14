@@ -5,8 +5,10 @@ https://adventofcode.com/2022/day/11
 from __future__ import annotations
 import functools
 import re
-import yaml
 from collections.abc import Callable, Iterator, Sequence
+
+# Third-party imports
+import yaml
 
 # Local imports
 from aoc2022 import AOC2022
@@ -31,6 +33,7 @@ class Barrel:
         '''
         self.__monkeys = {}
         self.calm = calm
+        self.cm = None
 
     def __iter__(self) -> Iterator[Monkey]:
         '''
@@ -122,28 +125,6 @@ class AOC2022Day11(AOC2022):
     '''
     day = 11
 
-    @staticmethod
-    def __operation(operator_def: str) -> Callable[[int], int]:
-        '''
-        Generate and return a callback for modifying the worry level of an item
-        '''
-        operator_map = {
-            '+': '__add__',
-            '*': '__mul__',
-        }
-
-
-        operator, modifier = re.match(
-            r'^new = old (\+|\*) (\d+|old)$',
-            operator_def,
-        ).groups()
-
-        def operation(old: int):
-            rvalue = old if modifier == 'old' else int(modifier)
-            return getattr(old, operator_map[operator])(rvalue)
-
-        return operation
-
     def load_monkeys(self) -> Iterator[Monkey]:
         '''
         Load the input and return a sequence of Monkey objects
@@ -173,7 +154,7 @@ class AOC2022Day11(AOC2022):
 
             # Parse operation
             oper, mod = operation_re.match(info['Operation']).groups()
-            operation = eval(f'lambda old: old {oper} {mod}')
+            operation = eval(f'lambda old: old {oper} {mod}')  # pylint: disable=eval-used
 
             # Parse test and success/fail conditions
             divisible_by = int(test_re.match(info['Test']).group(1))

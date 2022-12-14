@@ -5,6 +5,7 @@ https://adventofcode.com/2022/day/12
 from __future__ import annotations
 import collections
 import re
+from collections.abc import Iterator, Sequence
 
 # Local imports
 from aoc2022 import AOC2022
@@ -91,7 +92,7 @@ class AOC2022Day12(AOC2022):
         Use breadth-first search to find distance of shortest path
         '''
         if not starting_points:
-            raise ValueError(f'At least one start point is required')
+            raise ValueError('At least one start point is required')
 
         visited = set()
 
