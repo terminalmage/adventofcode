@@ -57,22 +57,9 @@ Consider your map; how many trees are visible from outside the grid?
 
 '''
 from __future__ import annotations
-import errno
-import os
-import re
-import sys
-from collections.abc import Iterator
-from dataclasses import dataclass
 
 # Local imports
 from aoc2022 import AOC2022
-
-
-class Tree:
-    '''
-    Representation of a single tree, linked to other tree instances
-    '''
-
 
 
 class AOC2022Day8(AOC2022):

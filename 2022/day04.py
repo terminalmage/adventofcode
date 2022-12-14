@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''
-https://adventofcode.com/2022/day/3
+https://adventofcode.com/2022/day/4
 
 --- Day 4: Camp Cleanup ---
 
@@ -83,11 +83,6 @@ So, in this example, the number of overlapping assignment pairs is 4.
 
 In how many assignment pairs do the ranges overlap?
 '''
-from __future__ import annotations
-import itertools
-import string
-from collections.abc import Generator, Iterator, Sequence
-
 # Local imports
 from aoc2022 import AOC2022
 
@@ -108,13 +103,13 @@ class AOC2022Day4(AOC2022):
             for line in fh:
                 self.assignment_pairs.append(
                     tuple(
-                        [
+                        (
                             set(range(int(begin), int(end) + 1))
                             for begin, end in [
                                 section.split('-')
                                 for section in line.rstrip('\n').split(',')
                             ]
-                        ]
+                        )
                     )
                 )
 

@@ -86,9 +86,8 @@ would get a total score of 12.
 Following the Elf's instructions for the second column, what would your total
 score be if everything goes exactly according to your strategy guide?
 '''
-
+# Local imports
 from aoc2022 import AOC2022
-
 
 WINS = {
     'rock': 'paper',
@@ -120,6 +119,8 @@ class RockPaperScissors:
     def __init__(self, choice1, choice2):
         self.choice1 = choice1
         self.choice2 = choice2
+        self.result = None
+        self.score = 0
 
     def __repr__(self):
         '''

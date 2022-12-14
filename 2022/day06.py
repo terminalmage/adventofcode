@@ -78,9 +78,6 @@ How many characters need to be processed before the first start-of-message
 marker is detected?
 
 '''
-import re
-from dataclasses import dataclass
-
 # Local imports
 from aoc2022 import AOC2022
 
