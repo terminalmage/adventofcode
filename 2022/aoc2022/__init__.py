@@ -15,7 +15,8 @@ class AOC2022:
         '''
         Initialize the object
         '''
-        prefix = 'example' if example else 'day'
+        self.example = example
+        prefix = 'example' if self.example else 'day'
         self.input = Path(__file__).parent.parent.joinpath(
             'inputs',
             f'{prefix}{str(self.day).zfill(2)}.txt',

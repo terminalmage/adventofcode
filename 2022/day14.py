@@ -169,5 +169,5 @@ class AOC2022Day14(AOC2022):
 
 if __name__ == '__main__':
     aoc = AOC2022Day14(example=False)
-    aoc.run(part=1)
-    aoc.run(part=2)
+    aoc.run(part=1, draw=False)
+    aoc.run(part=2, draw=False)
