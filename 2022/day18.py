@@ -1,0 +1,124 @@
+#!/usr/bin/env python
+'''
+https://adventofcode.com/2022/day/18
+'''
+import collections
+import functools
+from collections.abc import Iterator
+
+# Local imports
+from aoc2022 import AOC2022
+
+# Typing shortcuts
+Coordinate = tuple[int, int, int]
+
+
+class AOC2022Day18(AOC2022):
+    '''
+    Day 18 of Advent of Code 2022
+    '''
+    day = 18
+
+    def __init__(self, example: bool = False) -> None:
+        '''
+        Load the move list and translate it to coordinate deltas
+        '''
+        super().__init__(example=example)
+
+        with self.input.open() as fh:
+            self.droplet = frozenset(
+                tuple(int(item) for item in line.rstrip().split(','))
+                for line in fh
+            )
+
+        self.min_x = min(coord[0] for coord in self.droplet)
+        self.max_x = max(coord[0] for coord in self.droplet)
+        self.min_y = min(coord[1] for coord in self.droplet)
+        self.max_y = max(coord[1] for coord in self.droplet)
+        self.min_z = min(coord[2] for coord in self.droplet)
+        self.max_z = max(coord[2] for coord in self.droplet)
+
+    @staticmethod
+    def adjacent(coord: Coordinate) -> Iterator[Coordinate]:
+        '''
+        Return a sequence of the x, y, z coordinates that are adjacent to the
+        given coordinate
+        '''
+        yield (coord[0] - 1, coord[1], coord[2])
+        yield (coord[0] + 1, coord[1], coord[2])
+        yield (coord[0], coord[1] - 1, coord[2])
+        yield (coord[0], coord[1] + 1, coord[2])
+        yield (coord[0], coord[1], coord[2] - 1)
+        yield (coord[0], coord[1], coord[2] + 1)
+
+    @property
+    def surface(self) -> Iterator[Coordinate]:
+        '''
+        Generator function to return a sequence of x, y, z coordinates which
+        are 1 unit away in each of the 3 axes, and which are also not part of
+        the collection of coordinates that make up the lava droplet. These
+        coordinates collectively represent the outside surface of the droplet.
+        '''
+        for coord in self.droplet:
+            for adjacent in self.adjacent(coord):
+                if adjacent not in self.droplet:
+                    yield adjacent
+
+    @functools.lru_cache
+    def out_of_bounds(self, coord: Coordinate) -> bool:
+        '''
+        Returns True if the coordinate is outside the min/max value on any
+        of the 3 axes, otherwise False
+        '''
+        return not (
+            self.min_x <= coord[0] <= self.max_x
+            and self.min_y <= coord[1] <= self.max_y
+            and self.min_z <= coord[2] <= self.max_z
+        )
+
+    @functools.lru_cache
+    def is_edge(self, coord: Coordinate) -> bool:
+        '''
+        Return True if the coordinate is outside the droplet, otherwise False
+        '''
+        visited = {coord}
+        dq = collections.deque(visited)
+
+        # Perform a breadth-first search starting at the specified coordinate,
+        # only adding to the queue if the neighboring node is not one of the
+        # known coordinates that make up the droplet. Using this method, if we
+        # reach an out-of-bounds coordinate, we know that we started our search
+        # from the edge. The way we know this is that at least one of every
+        # edge coordinate's neighbors will be out-of-bounds. Conversely, a
+        # BFS started from a non-edge coordinate will never reach the edge, as
+        # the search queue will run out of coordinates.
+        while dq:
+            coord = dq.popleft()
+            for adjacent in self.adjacent(coord):
+                if adjacent not in visited:
+                    if self.out_of_bounds(adjacent):
+                        return True
+                    if adjacent not in self.droplet:
+                        visited.add(adjacent)
+                        dq.append(adjacent)
+
+        # Coordinate is not on the edge
+        return False
+
+    def part1(self) -> int:
+        '''
+        Calculate the surface area of all coordinates
+        '''
+        return sum(1 for coord in self.surface)
+
+    def part2(self) -> int:
+        '''
+        Calculate the surface area of external coordinates only
+        '''
+        return sum(1 for coord in self.surface if self.is_edge(coord))
+
+
+if __name__ == '__main__':
+    aoc = AOC2022Day18(example=False)
+    print(f'Answer 1: {aoc.part1()}')
+    print(f'Answer 2: {aoc.part2()}')
