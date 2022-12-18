@@ -195,9 +195,9 @@ class AOC2022Day17(AOC2022):
                 # rock_num the first time this combination was encountered.
                 # This difference will be the proposed cycle period. If the
                 # current rock_num and the total number of rocks both share the
-                # same remainder when divided by the proposed period, then know
-                # that we've detected a cycle.  A cycle which, importantly, we
-                # know ends with the very last rock. With this knowledge, we
+                # same remainder when divided by the proposed period, then we
+                # know that we've detected a cycle. A cycle which, importantly,
+                # we know ends with the very last rock. With this knowledge, we
                 # can compute the eventual height by adding a multiple of the
                 # amount of remaining cycle iterations and the amount the
                 # chamber's height increases each cycle.
