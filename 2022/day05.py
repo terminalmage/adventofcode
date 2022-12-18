@@ -77,7 +77,7 @@ class Stack:
 
 class AOC2022Day5A(AOC2022):
     '''
-    Base class for Day 5 of Advent of Code 2022
+    Day 5 of Advent of Code 2022 (first task)
     '''
     day = 5
 
@@ -144,6 +144,8 @@ class AOC2022Day5A(AOC2022):
 
 class AOC2022Day5B(AOC2022Day5A):
     '''
+    Day 5 of Advent of Code 2022 (second task)
+
     Alternate implementation that takes into account the different method of
     crate arrangement from part two
     '''

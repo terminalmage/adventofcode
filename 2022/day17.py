@@ -15,7 +15,7 @@ Rock = set[Coordinate]
 
 class AOC2022Day17(AOC2022):
     '''
-    Base class for Day 17 of Advent of Code 2022
+    Day 17 of Advent of Code 2022
     '''
     day = 17
     width = 7

@@ -16,7 +16,7 @@ Coordinate = tuple[int, int]
 
 class AOC2022Day12(AOC2022):
     '''
-    Base class for Day 12 of Advent of Code 2022
+    Day 12 of Advent of Code 2022
     '''
     day = 12
 

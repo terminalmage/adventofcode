@@ -211,7 +211,7 @@ class Directory(PathBase):
 
 class AOC2022Day7(AOC2022):
     '''
-    Base class for Day 7 of Advent of Code 2022
+    Day 7 of Advent of Code 2022
     '''
     day = 7
     disk_size = 70_000_000

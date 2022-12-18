@@ -85,7 +85,7 @@ class Knot:
 
 class AOC2022Day9(AOC2022):
     '''
-    Base class for Day 9 of Advent of Code 2022
+    Day 9 of Advent of Code 2022
     '''
     day = 9
 

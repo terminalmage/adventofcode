@@ -13,7 +13,7 @@ from aoc2022 import AOC2022
 
 class AOC2022Day10(AOC2022):
     '''
-    Base class for Day 10 of Advent of Code 2022
+    Day 10 of Advent of Code 2022
     '''
     day = 10
 

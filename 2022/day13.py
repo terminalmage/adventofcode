@@ -108,7 +108,7 @@ class Packet:
 
 class AOC2022Day13A(AOC2022):
     '''
-    Part 1 of Day 13
+    Day 13 of Advent of Code 2022 (first task)
     '''
     day = 13
 
@@ -149,7 +149,7 @@ class AOC2022Day13A(AOC2022):
 
 class AOC2022Day13B(AOC2022Day13A):
     '''
-    Part 2 of Day 13
+    Day 13 of Advent of Code 2022 (second task)
     '''
     def run(self) -> int:
         '''

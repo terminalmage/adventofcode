@@ -52,7 +52,7 @@ class Valve:
 
 class AOC2022Day16(AOC2022):
     '''
-    Base class for Day 16 of Advent of Code 2022
+    Day 16 of Advent of Code 2022
     '''
     day = 16
 
