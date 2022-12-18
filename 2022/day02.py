@@ -200,7 +200,7 @@ class RockPaperScissors:
 
 class AOC2022Day2(AOC2022):
     '''
-    Day 2 of Advent of Code 2022
+    Base class for Day 2 of Advent of Code 2022
     '''
     day = 2
 
