@@ -119,6 +119,10 @@ class AOC2022Day18(AOC2022):
 
 
 if __name__ == '__main__':
+    # Run against test data
+    aoc = AOC2022Day18(example=True)
+    aoc.validate(aoc.part1(), 64)
+    aoc.validate(aoc.part2(), 58)
+    # Run against actual data
     aoc = AOC2022Day18(example=False)
-    print(f'Answer 1: {aoc.part1()}')
-    print(f'Answer 2: {aoc.part2()}')
+    aoc.run()

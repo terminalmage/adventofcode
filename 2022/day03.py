@@ -198,13 +198,27 @@ class AOC2022Day3(AOC2022):
 
         return RucksackItem(list(itemset)[0])
 
+    def part1(self) -> int:
+        '''
+        Calculate the sum of the priority of duplicate items
+        '''
+        return sum(
+            sum(dup.priority for dup in rucksack.duplicates)
+            for rucksack in self.rucksacks
+        )
+
+    def part2(self) -> int:
+        '''
+        Calculate the sum of the priority of each group's badge
+        '''
+        return sum(self.find_badge(group).priority for group in self.groups())
+
 
 if __name__ == '__main__':
-    aoc = AOC2022Day3()
-    answer1 = sum(
-        sum(dup.priority for dup in rucksack.duplicates)
-        for rucksack in aoc.rucksacks
-    )
-    print(f'Answer 1 (sum of priority of duplicate items): {answer1}')
-    answer2 = sum(aoc.find_badge(group).priority for group in aoc.groups())
-    print(f"Answer 2 (sum of priority of each group's badge: {answer2}")
+    # Run against test data
+    aoc = AOC2022Day3(example=True)
+    aoc.validate(aoc.part1(), 157)
+    aoc.validate(aoc.part2(), 70)
+    # Run against actual data
+    aoc = AOC2022Day3(example=False)
+    aoc.run()

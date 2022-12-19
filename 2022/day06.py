@@ -35,8 +35,23 @@ class AOC2022Day6(AOC2022):
         '''
         return self.marker_index(length=marker_length) + marker_length
 
+    def part1(self) -> int:
+        '''
+        Calculate packet size
+        '''
+        return self.packet_size(marker_length=4)
+
+    def part2(self) -> int:
+        '''
+        Calculate the size of the data before the first start-of-message marker
+        '''
+        return self.packet_size(marker_length=14)
+
 
 if __name__ == '__main__':
-    aoc = AOC2022Day6()
-    print(f'Answer 1 (packet size): {aoc.packet_size(marker_length=4)}')
-    print(f'Answer 2 (size of data before message): {aoc.packet_size(marker_length=14)}')
+    aoc = AOC2022Day6(example=True)
+    aoc.validate(aoc.part1(), 7)
+    aoc.validate(aoc.part2(), 19)
+    # Run against actual data
+    aoc = AOC2022Day6(example=False)
+    aoc.run()

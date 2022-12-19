@@ -146,7 +146,7 @@ class AOC2022Day14(AOC2022):
             case _:
                 raise ValueError(f'Invalid part {part!r}')
 
-    def run(self, part: int, draw: bool = False) -> None:
+    def the_sand_must_flow(self, part: int, draw: bool = False) -> int:
         '''
         Count dropped sand grains until the end condition is reached
         '''
@@ -164,10 +164,25 @@ class AOC2022Day14(AOC2022):
             # Draw the cave one last time
             self.draw()
 
-        # Print the summary
-        print(f'Answer {part} (number of grains): {count}')
+        return count
+
+    def part1(self, draw: bool = False) -> int:
+        '''
+        Simulate dropping sand using the parameters from part 1
+        '''
+        return self.the_sand_must_flow(part=1, draw=draw)
+
+    def part2(self, draw: bool = False) -> int:
+        '''
+        Simulate dropping sand using the parameters from part 2
+        '''
+        return self.the_sand_must_flow(part=2, draw=draw)
 
 if __name__ == '__main__':
+    # Run against test data
+    aoc = AOC2022Day14(example=True)
+    aoc.validate(aoc.part1(), 24)
+    aoc.validate(aoc.part2(), 93)
+    # Run against actual data
     aoc = AOC2022Day14(example=False)
-    aoc.run(part=1, draw=False)
-    aoc.run(part=2, draw=False)
+    aoc.run()

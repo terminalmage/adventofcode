@@ -74,11 +74,12 @@ class AOC2022Day10(AOC2022):
 
         return total
 
-    def part2(self) -> None:
+    def part2(self) -> str:
         '''
         Render the CRT result using the register position to represent the
         center of the sprite
         '''
+        output = ''
         width = 40
         # Cols are zero-indexed, so the final col will be one less than the
         # width of the column
@@ -88,14 +89,32 @@ class AOC2022Day10(AOC2022):
         # Render the result
         for cycle, delta in enumerate(self.deltas):
             col = cycle % width
-            sys.stdout.write('#' if col in (reg - 1, reg, reg + 1) else '.')
+            output += '#' if col in (reg - 1, reg, reg + 1) else '.'
             if col == eol:
-                sys.stdout.write('\n')
+                output += '\n'
             reg += delta
+        return output
 
 
 if __name__ == '__main__':
-    aoc = AOC2022Day10()
-    print(f'Answer 1 (sum of signal strengths): {aoc.part1()}')
-    print('Answer 2:\n')
-    aoc.part2()
+    # Run against test data
+    aoc = AOC2022Day10(example=True)
+    aoc.validate(aoc.part1(), 13140)
+    aoc.validate(aoc.part2(), '''\
+##..##..##..##..##..##..##..##..##..##..
+###...###...###...###...###...###...###.
+####....####....####....####....####....
+#####.....#####.....#####.....#####.....
+######......######......######......####
+#######.......#######.......#######.....
+''')
+    # Run against actual data
+    #
+    # NOTE: The result for the 2nd part prints several lines to stdout, so it
+    # doesn't work with the .run() function from the parent class. Therefore,
+    # each part has to manually be run and the results printed to stdout.
+    aoc = AOC2022Day10(example=False)
+    print('Result for Day 10')
+    print('-----------------')
+    print(f'Answer 1: {aoc.part1()}')
+    print(f'Answer 2:\n{aoc.part2()}')

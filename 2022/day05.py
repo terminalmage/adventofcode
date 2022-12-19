@@ -75,7 +75,7 @@ class Stack:
         return len(self.items)
 
 
-class AOC2022Day5A(AOC2022):
+class AOC2022Day5(AOC2022):
     '''
     Day 5 of Advent of Code 2022 (first task)
     '''
@@ -89,6 +89,13 @@ class AOC2022Day5A(AOC2022):
         self.stacks = []
         self.moves = []
 
+    def reset_stacks(self):
+        '''
+        Load the stacks and move list
+        '''
+        self.stacks.clear()
+        self.moves.clear()
+
         # Read in the input
         with self.input.open() as fh:
             lines = fh.readlines()
@@ -97,7 +104,7 @@ class AOC2022Day5A(AOC2022):
         divider = lines.index('\n')
 
         # Create the stacks
-        for _ in lines[divider - 1].rstrip('\n').split():
+        for _ in lines[divider - 1].rstrip().split():
             self.stacks.append(Stack())
 
         # Populate the stacks
@@ -117,16 +124,6 @@ class AOC2022Day5A(AOC2022):
                 Move(*[int(item) for item in move.match(line).groups()])
             )
 
-    def apply_moves(self) -> None:
-        '''
-        Apply the moves from the loaded stack
-        '''
-        for move in self.moves:
-            items = self.stacks[move.old - 1].get(move.amount)
-            if move.amount == 1:
-                items = [items]
-            self.stacks[move.new - 1].put(*items)
-
     @property
     def tops(self) -> list[str]:
         '''
@@ -141,31 +138,40 @@ class AOC2022Day5A(AOC2022):
                 ret.append(' ')
         return ret
 
-
-class AOC2022Day5B(AOC2022Day5A):
-    '''
-    Day 5 of Advent of Code 2022 (second task)
-
-    Alternate implementation that takes into account the different method of
-    crate arrangement from part two
-    '''
-    def apply_moves(self) -> None:
+    def part1(self) -> str:
         '''
-        Apply the moves from the loaded stack
+        Apply the moves one crate at a time, returning the top of each stack
         '''
+        self.reset_stacks()
+
+        for move in self.moves:
+            items = self.stacks[move.old - 1].get(move.amount)
+            if move.amount == 1:
+                items = [items]
+            self.stacks[move.new - 1].put(*items)
+
+        return ''.join(self.tops)
+
+    def part2(self) -> str:
+        '''
+        The same as part 1, but move the crates in groups
+        '''
+        self.reset_stacks()
+
         for move in self.moves:
             items = self.stacks[move.old - 1].get(move.amount)
             if move.amount == 1:
                 items = [items]
             self.stacks[move.new - 1].put(*reversed(items))
 
+        return ''.join(self.tops)
+
 
 if __name__ == '__main__':
-    aoc1 = AOC2022Day5A()
-    aoc1.apply_moves()
-    answer1 = ''.join(aoc1.tops)
-    print(f'Answer 1 (top item from each stack): {answer1}')
-    aoc2 = AOC2022Day5B()
-    aoc2.apply_moves()
-    answer2 = ''.join(aoc2.tops)
-    print(f"Answer 2 (top item from each stack): {answer2}")
+    # Run against test data
+    aoc = AOC2022Day5(example=True)
+    aoc.validate(aoc.part1(), 'CMZ')
+    aoc.validate(aoc.part2(), 'MCD')
+    # Run against actual data
+    aoc = AOC2022Day5(example=False)
+    aoc.run()

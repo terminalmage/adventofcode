@@ -303,25 +303,40 @@ class AOC2022Day7(AOC2022):
         '''
         return self.rootdir.files(recurse=recurse)
 
+    def part1(self) -> int:
+        '''
+        Calculate the cumulative size of dirs <= 100000 bytes in size
+        '''
+        size = 0
+        for directory in aoc.dirs(recurse=True):
+            dir_size = directory.size
+            if dir_size <= 100_000:
+                size += dir_size
+
+        return size
+
+    def part2(self) -> int:
+        '''
+        Calculate the size of the smallest dir that can be removed to bring the
+        amount of unused space above the target
+        '''
+        target_unused = 30_000_000
+        unused = self.unused_size
+        excess_size = target_unused - unused
+        if excess_size <= 0:
+            raise RuntimeError(f'Unused space ({unused}) should be > {target_unused}')
+
+        return min(
+            size for size in (item.size for item in aoc.dirs(recurse=True))
+            if size >= excess_size
+        )
+
 
 if __name__ == '__main__':
-    aoc = AOC2022Day7()
-    answer1 = 0
-    for directory in aoc.dirs(recurse=True):
-        dir_size = directory.size
-        if dir_size <= 100_000:
-            answer1 += dir_size
-    print(f'Answer 1 (cumulative size of dirs <= 100000 bytes): {answer1}')
-
-    target_unused = 30_000_000
-    unused = aoc.unused_size
-    excess_size = target_unused - unused
-    if excess_size <= 0:
-        sys.stderr.write(f'Unused space ({unused}) should be > target_unused\n')
-        sys.exit(1)
-
-    answer2 = min(
-        size for size in (item.size for item in aoc.dirs(recurse=True))
-        if size >= excess_size
-    )
-    print(f'Answer 2 (size of smallest dir to remove): {answer2}')
+    # Run against test data
+    aoc = AOC2022Day7(example=True)
+    aoc.validate(aoc.part1(), 95437)
+    aoc.validate(aoc.part2(), 24933642)
+    # Run against actual data
+    aoc = AOC2022Day7(example=False)
+    aoc.run()

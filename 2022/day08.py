@@ -108,20 +108,34 @@ class AOC2022Day8(AOC2022):
 
         return north * south * east * west
 
+    def part1(self) -> int:
+        '''
+        Calculate the number of visible trees
+        '''
+        return sum(
+            1 for (col, row) in (
+                (x, y) for x in range(aoc.last_col + 1)
+                for y in range(aoc.last_row + 1)
+            )
+            if aoc.visible(col, row)
+        )
 
-if __name__ == '__main__':
-    aoc = AOC2022Day8()
-    answer1 = sum(
-        1 for (col, row) in (
-            (x, y) for x in range(aoc.last_col + 1)
+    def part2(self) -> int:
+        '''
+        Calculate the max Scenic Score™
+        '''
+        return max(
+            aoc.scenic_score(x, y)
+            for x in range(aoc.last_col + 1)
             for y in range(aoc.last_row + 1)
         )
-        if aoc.visible(col, row)
-    )
-    print(f'Answer 1 (number of visible trees): {answer1}')
-    answer2 = max(
-        aoc.scenic_score(x, y)
-        for x in range(aoc.last_col + 1)
-        for y in range(aoc.last_row + 1)
-    )
-    print(f'Answer 1 (max scenic score): {answer2}')
+
+
+if __name__ == '__main__':
+    # Run against test data
+    aoc = AOC2022Day8(example=True)
+    aoc.validate(aoc.part1(), 21)
+    aoc.validate(aoc.part2(), 8)
+    # Run against actual data
+    aoc = AOC2022Day8(example=False)
+    aoc.run()

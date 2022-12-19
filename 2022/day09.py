@@ -114,7 +114,7 @@ class AOC2022Day9(AOC2022):
 
                 self.moves.append((move, int(distance)))
 
-    def run(self, num_knots: int) -> int:
+    def apply_moves(self, num_knots: int) -> int:
         '''
         Run through the moves given the specified number of knots. Return the
         number of distinct coordinates that the tail visits.
@@ -132,8 +132,24 @@ class AOC2022Day9(AOC2022):
 
         return len(knots[-1].visited)
 
+    def part1(self) -> int:
+        '''
+        Run the simulation with 2 knots
+        '''
+        return self.apply_moves(num_knots=2)
+
+    def part2(self) -> int:
+        '''
+        Run the simulation with 10 knots
+        '''
+        return self.apply_moves(num_knots=10)
+
 
 if __name__ == '__main__':
-    aoc = AOC2022Day9()
-    print(f'Answer 1 (2 knots): {aoc.run(num_knots=2)}')
-    print(f'Answer 2 (10 knots): {aoc.run(num_knots=10)}')
+    # Run against test data
+    aoc = AOC2022Day9(example=True)
+    aoc.validate(aoc.part1(), 13)
+    aoc.validate(aoc.part2(), 1)
+    # Run against actual data
+    aoc = AOC2022Day9(example=False)
+    aoc.run()

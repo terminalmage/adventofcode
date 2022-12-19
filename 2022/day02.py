@@ -35,8 +35,6 @@ class RockPaperScissors:
     def __init__(self, choice1, choice2):
         self.choice1 = choice1
         self.choice2 = choice2
-        self.result = None
-        self.score = 0
 
     def __repr__(self):
         '''
@@ -67,6 +65,7 @@ class RockPaperScissors:
         else:
             self.result = 'loss'
             self.score = 0
+
         # Add in score for your choice (i.e. choice2)
         self.score += scores[self.choice2]
 
@@ -116,40 +115,33 @@ class RockPaperScissors:
 
 class AOC2022Day2(AOC2022):
     '''
-    Base class for Day 2 of Advent of Code 2022
+    Day 2 of Advent of Code 2022
     '''
     day = 2
 
+    def part1(self) -> int:
+        '''
+        Calculate the total score, assuming that the guide is describing which
+        choices should be made by both parties
+        '''
+        with self.input.open() as fh:
+            return sum(
+                game.score for game in (
+                    RockPaperScissors(*line.rstrip().split())
+                    for line in fh
+                )
+            )
 
-class AOC2022Day2A(AOC2022Day2):
-    '''
-    Day 2 of Advent of Code 2022 (first task)
-    '''
-    def __init__(self, example: bool = False) -> None:
+    def part2(self) -> int:
         '''
-        Calculate scores
+        Calculate the total score, assuming that the second column of each line
+        in the guide instructs you whether to win, lose, or draw
         '''
-        super().__init__(example=example)
-        self.games = []
+        total = 0
+
         with self.input.open() as fh:
             for line in fh:
-                self.games.append(RockPaperScissors(*line.rstrip('\n').split()))
-
-
-class AOC2022Day2B(AOC2022Day2):
-    '''
-    Day 2 of Advent of Code 2022 (second task)
-    '''
-
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Calculate scores
-        '''
-        super().__init__(example=example)
-        self.games = []
-        with self.input.open() as fh:
-            for line in fh:
-                choice1, result = line.rstrip('\n').split()
+                choice1, result = line.rstrip().split()
                 choice1 = normalize(choice1)
                 match result:
                     case 'X':
@@ -164,13 +156,16 @@ class AOC2022Day2B(AOC2022Day2):
                     case _:
                         raise ValueError(f'Invalid result: {result!r}')
 
-                self.games.append(RockPaperScissors(choice1, choice2))
+                total += RockPaperScissors(choice1, choice2).score
+
+        return total
 
 
 if __name__ == '__main__':
-    aoc1 = AOC2022Day2A()
-    answer1 = sum(game.score for game in aoc1.games)
-    print(f'Answer 1 (total score): {answer1}')
-    aoc2 = AOC2022Day2B()
-    answer2 = sum(game.score for game in aoc2.games)
-    print(f'Answer 2 (total score): {answer2}')
+    # Run against test data
+    aoc = AOC2022Day2(example=True)
+    aoc.validate(aoc.part1(), 15)
+    aoc.validate(aoc.part2(), 12)
+    # Run against actual data
+    aoc = AOC2022Day2(example=False)
+    aoc.run()

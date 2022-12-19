@@ -174,7 +174,7 @@ class AOC2022Day17(AOC2022):
         sys.stdout.write(f'+{"-" * self.width}+\n')
         sys.stdout.flush()
 
-    def run(self, num_rocks: int) -> int:
+    def cavetris(self, num_rocks: int) -> int:
         '''
         Calculate chamber height after a specific number of rocks are dropped
         '''
@@ -188,34 +188,36 @@ class AOC2022Day17(AOC2022):
             rock = rock_gen()
             while True:
                 jet_index, direction = next(self.jet_pattern)
-                # Perform cycle detection. For each rock, track the chamber's
-                # height for the current combination of rock_index and
-                # jet_index. When we encounter a combination we've seen before,
-                # calculate the difference between the current rock_num and the
-                # rock_num the first time this combination was encountered.
-                # This difference will be the proposed cycle period. If the
-                # current rock_num and the total number of rocks both share the
-                # same remainder when divided by the proposed period, then we
-                # know that we've detected a cycle. A cycle which, importantly,
-                # we know ends with the very last rock. With this knowledge, we
-                # can compute the eventual height by adding a multiple of the
-                # amount of remaining cycle iterations and the amount the
-                # chamber's height increases each cycle.
-                key = (rock_index, jet_index)
-                if key in tracked:
-                    prev_rock_num, elevation = tracked[key]
-                    period = rock_num - prev_rock_num
-                    if rock_num % period == num_rocks % period:
-                        print(
-                            f'Cycle of period {period} detected '
-                            f'(iterations {prev_rock_num} - {rock_num})'
-                        )
-                        cycle_height = self.top - elevation
-                        rocks_remaining = num_rocks - rock_num
-                        cycles_remaining = (rocks_remaining // period) + 1
-                        return elevation + (cycle_height * cycles_remaining)
-                else:
-                    tracked[key] = (rock_num, self.top)
+                if rock_num > 1000:
+                    # Perform cycle detection. For each rock, track the
+                    # chamber's height for the current combination of
+                    # rock_index and jet_index. When we encounter a combination
+                    # we've seen before, calculate the difference between the
+                    # current rock_num and the rock_num the first time this
+                    # combination was encountered. This difference will be the
+                    # proposed cycle period. If the current rock_num and the
+                    # total number of rocks both share the same remainder when
+                    # divided by the proposed period, then we know that we've
+                    # detected a cycle. A cycle which, importantly, we know
+                    # ends with the very last rock. With this knowledge, we can
+                    # compute the eventual height by adding a multiple of the
+                    # amount of remaining cycle iterations and the amount the
+                    # chamber's height increases each cycle.
+                    key = (rock_index, jet_index)
+                    if key in tracked:
+                        prev_rock_num, elevation = tracked[key]
+                        period = rock_num - prev_rock_num
+                        if rock_num % period == num_rocks % period:
+                            print(
+                                f'Cycle of period {period} detected '
+                                f'(iterations {prev_rock_num} - {rock_num})'
+                            )
+                            cycle_height = self.top - elevation
+                            rocks_remaining = num_rocks - rock_num
+                            cycles_remaining = (rocks_remaining // period) + 1
+                            return elevation + (cycle_height * cycles_remaining)
+                    else:
+                        tracked[key] = (rock_num, self.top)
 
                 # Blow the rock to the right or left
                 rock = getattr(self, f'move_{direction}')(rock)
@@ -240,16 +242,20 @@ class AOC2022Day17(AOC2022):
         '''
         Calculate height of rock tower after 2022 rocks have dropped
         '''
-        return self.run(2022)
+        return self.cavetris(2022)
 
     def part2(self) -> int:
         '''
         Calculate height of rock tower after one trillion rocks have dropped
         '''
-        return self.run(1_000_000_000_000)
+        return self.cavetris(1_000_000_000_000)
 
 
 if __name__ == '__main__':
+    # Run against test data
+    aoc = AOC2022Day17(example=True)
+    aoc.validate(aoc.part1(), 3068)
+    aoc.validate(aoc.part2(), 1_514_285_714_288)
+    # Run against actual data
     aoc = AOC2022Day17(example=False)
-    print(f'Answer 1: {aoc.part1()}')
-    print(f'Answer 2: {aoc.part2()}')
+    aoc.run()

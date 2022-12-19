@@ -113,12 +113,25 @@ class AOC2022Day12(AOC2022):
                     visited.add(neighbor_coord)
                     dq.append((neighbor_coord, distance + 1))
 
+    def part1(self) -> int:
+        '''
+        Calculate the fewest number of steps from start to end
+        '''
+        return self.bfs(aoc.start)
+
+    def part2(self) -> int:
+        '''
+        Calculate the fewest number of steps from any starting point of
+        elevation "a"
+        '''
+        return aoc.bfs(*aoc.matches('a'))
+
 
 if __name__ == '__main__':
-    aoc = AOC2022Day12()
-    print(f'Answer 1 (minimum number of steps from start): {aoc.bfs(aoc.start)}')
-    elev = 'a'
-    print(
-        f'Answer 2 (minimum number of steps from elevation {elev!r}): '
-        f'{aoc.bfs(*aoc.matches(elev))}'
-    )
+    # Run against test data
+    aoc = AOC2022Day12(example=True)
+    aoc.validate(aoc.part1(), 31)
+    aoc.validate(aoc.part2(), 29)
+    # Run against actual data
+    aoc = AOC2022Day12(example=False)
+    aoc.run()

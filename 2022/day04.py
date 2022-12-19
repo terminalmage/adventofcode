@@ -32,17 +32,31 @@ class AOC2022Day4(AOC2022):
                     )
                 )
 
+    def part1(self) -> int:
+        '''
+        Calculate the count of entirely overlapping assignment pairs
+        '''
+        return sum(
+            1 for pair in aoc.assignment_pairs
+            if pair[0].issuperset(pair[1])
+            or pair[1].issuperset(pair[0])
+        )
+
+    def part2(self) -> int:
+        '''
+        Calculate the count of pairs with overlapping sections
+        '''
+        return sum(
+            1 for pair in aoc.assignment_pairs
+            if pair[0].intersection(pair[1])
+        )
+
 
 if __name__ == '__main__':
-    aoc = AOC2022Day4()
-    answer1 = sum(
-        1 for pair in aoc.assignment_pairs
-        if pair[0].issuperset(pair[1])
-        or pair[1].issuperset(pair[0])
-    )
-    print(f'Answer 1 (count of entirely overlapping assignment pairs): {answer1}')
-    answer2 = sum(
-        1 for pair in aoc.assignment_pairs
-        if pair[0].intersection(pair[1])
-    )
-    print(f"Answer 2 (count of pairs with overlapping sections: {answer2}")
+    # Run against test data
+    aoc = AOC2022Day4(example=True)
+    aoc.validate(aoc.part1(), 2)
+    aoc.validate(aoc.part2(), 4)
+    # Run against actual data
+    aoc = AOC2022Day4(example=False)
+    aoc.run()

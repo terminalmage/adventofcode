@@ -170,7 +170,7 @@ class AOC2022Day11(AOC2022):
                 on_false=on_false,
             )
 
-    def run(
+    def commence_monkey_business(
         self,
         rounds: int,
         calm: bool = DEFAULT_CALM,
@@ -188,8 +188,26 @@ class AOC2022Day11(AOC2022):
             sorted((item.inspected for item in barrel), reverse=True)[:2]
         )
 
+    def part1(self) -> int:
+        '''
+        Calculate the level of Monkey Business™ after 20 rounds, with
+        worry-reduction logic enabled
+        '''
+        return self.commence_monkey_business(rounds=20)
+
+    def part2(self) -> int:
+        '''
+        Calculate the level of Monkey Business™ after 10000 rounds, with
+        worry-reduction logic disabled
+        '''
+        return self.commence_monkey_business(rounds=10000, calm=False)
+
 
 if __name__ == '__main__':
-    aoc = AOC2022Day11()
-    print(f'Answer 1 (20 rounds, calm): {aoc.run(rounds=20)}')
-    print(f'Answer 2 (10000 rounds, very not calm): {aoc.run(rounds=10000, calm=False)}')
+    # Run against test data
+    aoc = AOC2022Day11(example=True)
+    aoc.validate(aoc.part1(), 10605)
+    aoc.validate(aoc.part2(), 2713310158)
+    # Run against actual data
+    aoc = AOC2022Day11(example=False)
+    aoc.run()

@@ -36,10 +36,24 @@ class AOC2022Day1(AOC2022):
             # trigger, so we need to save the last elf's calories.
             self.elf_calories[elf_number] = calories
 
+    def part1(self) -> int:
+        '''
+        Calculate the top calorie count
+        '''
+        return max(aoc.elf_calories.values())
+
+    def part2(self) -> int:
+        '''
+        Calculate the sum of the top three calorie counts
+        '''
+        return sum(sorted(aoc.elf_calories.values(), reverse=True)[:3])
+
 
 if __name__ == '__main__':
-    aoc = AOC2022Day1()
-    answer1 = max(aoc.elf_calories.values())
-    print(f'Answer 1 (top calorie count): {answer1}')
-    answer2 = sum(sorted(aoc.elf_calories.values(), reverse=True)[:3])
-    print(f'Answer 2 (sum of top 3 calorie counts): {answer2}')
+    # Run against test data
+    aoc = AOC2022Day1(example=True)
+    aoc.validate(aoc.part1(), 24000)
+    aoc.validate(aoc.part2(), 45000)
+    # Run against actual data
+    aoc = AOC2022Day1(example=False)
+    aoc.run()

@@ -106,26 +106,18 @@ class Packet:
         return self.__cmp(self.segments, other.segments) in (GT, EQ)
 
 
-class AOC2022Day13A(AOC2022):
+class AOC2022Day13(AOC2022):
     '''
-    Day 13 of Advent of Code 2022 (first task)
+    Day 13 of Advent of Code 2022
     '''
     day = 13
 
     def __init__(self, example: bool = False) -> None:
         '''
-        Load the move list and translate it to coordinate deltas
+        Initialize the object
         '''
         super().__init__(example=example)
-
         self.packets = []
-
-        with self.input.open() as fh:
-            self.packets = [
-                Packet(*(segment for segment in json.loads(line)))
-                for line in fh
-                if line != '\n'
-            ]
 
     @property
     def pairs(self) -> Iterator[tuple[Packet]]:
@@ -138,23 +130,33 @@ class AOC2022Day13A(AOC2022):
                 break
             yield pair
 
-    def run(self) -> int:
+    def load_packets(self):
+        '''
+        Load the move list and translate it to coordinate deltas
+        '''
+        self.packets.clear()
+
+        with self.input.open() as fh:
+            self.packets.extend(
+                Packet(*(segment for segment in json.loads(line)))
+                for line in fh
+                if line != '\n'
+            )
+
+    def part1(self) -> int:
         '''
         Compute the sum of the indicies of packets that are in the right order.
         Note that for the purposes of this exercise, the indicies are not
         zero-based (i.e. 1 is the first index).
         '''
+        self.load_packets()
         return sum(index + 1 for index, pair in enumerate(self.pairs) if pair[0] < pair[1])
 
-
-class AOC2022Day13B(AOC2022Day13A):
-    '''
-    Day 13 of Advent of Code 2022 (second task)
-    '''
-    def run(self) -> int:
+    def part2(self) -> int:
         '''
         Compute the product of the indicies of the divider packets
         '''
+        self.load_packets()
         dividers = [Packet([2]), Packet([6])]
         self.packets.extend(dividers)
         self.packets.sort()
@@ -165,7 +167,10 @@ class AOC2022Day13B(AOC2022Day13A):
 
 
 if __name__ == '__main__':
-    aoc1 = AOC2022Day13A()
-    print(f'Answer 1 (sum of indicies of correctly-ordered packets): {aoc1.run()}')
-    aoc2 = AOC2022Day13B()
-    print(f'Answer 2 (product of indicies of divider packets): {aoc2.run()}')
+    # Run against test data
+    aoc = AOC2022Day13(example=True)
+    aoc.validate(aoc.part1(), 13)
+    aoc.validate(aoc.part2(), 140)
+    # Run against actual data
+    aoc = AOC2022Day13(example=False)
+    aoc.run()

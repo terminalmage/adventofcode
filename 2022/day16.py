@@ -204,8 +204,6 @@ class AOC2022Day16(AOC2022):
             # Return the max pressure for this subsegment to the caller
             return path_segments[segment]
 
-        #import pprint
-        #pprint.pprint(path_segments)
         # Now get the rest of the paths
         _visit_remaining_path_segments(frozenset(set(self.stops) - {self.start}))
 
@@ -225,8 +223,11 @@ class AOC2022Day16(AOC2022):
         return max_pressure
 
 
-
 if __name__ == '__main__':
+    # Run against test data
+    aoc = AOC2022Day16(example=True)
+    aoc.validate(aoc.part1(), 1651)
+    aoc.validate(aoc.part2(), 1707)
+    # Run against actual data
     aoc = AOC2022Day16(example=False)
-    print(f'Answer 1: {aoc.part1()}')
-    print(f'Answer 2: {aoc.part2()}')
+    aoc.run()
