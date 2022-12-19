@@ -16,11 +16,11 @@ outside the grid when looking directly along a row or column.
 The Elves have already launched a quadcopter to generate a map with the height
 of each tree (your puzzle input). For example:
 
-30373
-25512
-65332
-33549
-35390
+    30373
+    25512
+    65332
+    33549
+    35390
 
 Each tree is represented as a single digit whose value is its height, where 0
 is the shortest and 9 is the tallest.
@@ -162,20 +162,34 @@ class AOC2022Day8(AOC2022):
 
         return north * south * east * west
 
+    def part1(self) -> int:
+        '''
+        Calculate the number of visible trees
+        '''
+        return sum(
+            1 for (col, row) in (
+                (x, y) for x in range(aoc.last_col + 1)
+                for y in range(aoc.last_row + 1)
+            )
+            if aoc.visible(col, row)
+        )
 
-if __name__ == '__main__':
-    aoc = AOC2022Day8()
-    answer1 = sum(
-        1 for (col, row) in (
-            (x, y) for x in range(aoc.last_col + 1)
+    def part2(self) -> int:
+        '''
+        Calculate the max Scenic Score™
+        '''
+        return max(
+            aoc.scenic_score(x, y)
+            for x in range(aoc.last_col + 1)
             for y in range(aoc.last_row + 1)
         )
-        if aoc.visible(col, row)
-    )
-    print(f'Answer 1 (number of visible trees): {answer1}')
-    answer2 = max(
-        aoc.scenic_score(x, y)
-        for x in range(aoc.last_col + 1)
-        for y in range(aoc.last_row + 1)
-    )
-    print(f'Answer 1 (max scenic score): {answer2}')
+
+
+if __name__ == '__main__':
+    # Run against test data
+    aoc = AOC2022Day8(example=True)
+    aoc.validate(aoc.part1(), 21)
+    aoc.validate(aoc.part2(), 8)
+    # Run against actual data
+    aoc = AOC2022Day8(example=False)
+    aoc.run()
