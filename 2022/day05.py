@@ -21,8 +21,8 @@ class Move:
 
 class Stack:
     '''
-    Implementation of a LIFO queue that is also iterable (i.e. contents can be
-    inspected without being pulled off using .get()
+    Implementation of a LIFO queue that is also iterable, i.e. contents can be
+    inspected without being pulled off using .get().
 
     This is not a true queue implementation because all gets and puts are
     non-blocking, and there is no limit on queue size.

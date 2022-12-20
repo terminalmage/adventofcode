@@ -18,6 +18,7 @@ ROCK = f'{RED}#{ENDC}'
 SAND = f'{YELLOW}o{ENDC}'
 AIR = '.'
 
+
 class AOC2022Day14(AOC2022):
     '''
     Day 14 of Advent of Code 2022

@@ -9,9 +9,6 @@ from collections.abc import Iterator
 # Local imports
 from aoc2022 import AOC2022
 
-# Typing shortcuts
-Coordinate = tuple[int, int, int]
-
 
 class Blueprint:
     '''
