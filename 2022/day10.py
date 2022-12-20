@@ -4,7 +4,6 @@ https://adventofcode.com/2022/day/10
 '''
 import itertools
 import re
-import sys
 from collections.abc import Iterator
 
 # Local imports

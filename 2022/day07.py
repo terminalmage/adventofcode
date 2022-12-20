@@ -6,7 +6,6 @@ from __future__ import annotations
 import errno
 import os
 import re
-import sys
 from collections.abc import Iterator
 
 # Local imports
