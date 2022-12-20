@@ -139,6 +139,7 @@ class RockPaperScissors:
             'paper': 2,
             'scissors': 3,
         }
+        # pylint: disable=attribute-defined-outside-init
         # Determine result
         if self.choice2 == self.choice1:
             self.result = 'draw'
@@ -149,6 +150,7 @@ class RockPaperScissors:
         else:
             self.result = 'loss'
             self.score = 0
+        # pylint: enable=attribute-defined-outside-init
 
         # Add in score for your choice (i.e. choice2)
         self.score += scores[self.choice2]

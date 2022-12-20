@@ -383,7 +383,6 @@ your CRT?
 '''
 import itertools
 import re
-import sys
 from collections.abc import Iterator
 
 # Local imports
