@@ -35,7 +35,7 @@ the first such four-character marker.
 
 For example, suppose you receive the following datastream buffer:
 
-    mjqjpqmgbljsphdztnvjfqwrcgsmlb
+mjqjpqmgbljsphdztnvjfqwrcgsmlb
 
 After the first three characters (mjq) have been received, there haven't been
 enough characters received yet to find the marker. The first time a marker
@@ -49,10 +49,10 @@ start-of-packet marker is complete after 7 characters have been processed.
 
 Here are a few more examples:
 
-    bvwbjplbgvbhsrlpgdmjqwftvncz: first marker after character 5
-    nppdvjthqldpwncqszvftbrmjlhg: first marker after character 6
-    nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg: first marker after character 10
-    zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw: first marker after character 11
+bvwbjplbgvbhsrlpgdmjqwftvncz: first marker after character 5
+nppdvjthqldpwncqszvftbrmjlhg: first marker after character 6
+nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg: first marker after character 10
+zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw: first marker after character 11
 
 How many characters need to be processed before the first start-of-packet
 marker is detected?
@@ -68,11 +68,11 @@ consists of 14 distinct characters rather than 4.
 Here are the first positions of start-of-message markers for all of the above
 examples:
 
-    mjqjpqmgbljsphdztnvjfqwrcgsmlb: first marker after character 19
-    bvwbjplbgvbhsrlpgdmjqwftvncz: first marker after character 23
-    nppdvjthqldpwncqszvftbrmjlhg: first marker after character 23
-    nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg: first marker after character 29
-    zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw: first marker after character 26
+mjqjpqmgbljsphdztnvjfqwrcgsmlb: first marker after character 19
+bvwbjplbgvbhsrlpgdmjqwftvncz: first marker after character 23
+nppdvjthqldpwncqszvftbrmjlhg: first marker after character 23
+nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg: first marker after character 29
+zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw: first marker after character 26
 
 How many characters need to be processed before the first start-of-message
 marker is detected?

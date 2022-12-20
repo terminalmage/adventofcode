@@ -28,19 +28,19 @@ and five sides exposed, a total surface area of 10 sides.
 
 Here's a larger example:
 
-    2,2,2
-    1,2,2
-    3,2,2
-    2,1,2
-    2,3,2
-    2,2,1
-    2,2,3
-    2,2,4
-    2,2,6
-    1,2,5
-    3,2,5
-    2,1,5
-    2,3,5
+2,2,2
+1,2,2
+3,2,2
+2,1,2
+2,3,2
+2,2,1
+2,2,3
+2,2,4
+2,2,6
+1,2,5
+3,2,5
+2,1,5
+2,3,5
 
 In the above example, after counting up all the sides that aren't connected to
 another cube, the total surface area is 64.

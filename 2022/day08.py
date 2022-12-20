@@ -16,11 +16,11 @@ outside the grid when looking directly along a row or column.
 The Elves have already launched a quadcopter to generate a map with the height
 of each tree (your puzzle input). For example:
 
-    30373
-    25512
-    65332
-    33549
-    35390
+30373
+25512
+65332
+33549
+35390
 
 Each tree is represented as a single digit whose value is its height, where 0
 is the shortest and 9 is the tallest.

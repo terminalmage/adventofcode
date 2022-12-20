@@ -26,12 +26,12 @@ second compartment.
 For example, suppose you have the following list of contents from six
 rucksacks:
 
-    vJrwpWtwJgWrhcsFMMfFFhFp
-    jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-    PmmdzqPrVvPwwTWBwg
-    wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-    ttgJtRGJQctTZtZT
-    CrZsJsPPZsGzwwsLwLmpwMDw
+vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw
 
 - The first rucksack contains the items vJrwpWtwJgWrhcsFMMfFFhFp, which means
   its first compartment contains the items vJrwpWtwJgWr, while the second
@@ -89,15 +89,15 @@ Every set of three lines in your list corresponds to a single group, but each
 group can have a different badge item type. So, in the above example, the first
 group's rucksacks are the first three lines:
 
-    vJrwpWtwJgWrhcsFMMfFFhFp
-    jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-    PmmdzqPrVvPwwTWBwg
+vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
 
 And the second group's rucksacks are the next three lines:
 
-    wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-    ttgJtRGJQctTZtZT
-    CrZsJsPPZsGzwwsLwLmpwMDw
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw
 
 In the first group, the only item type that appears in all three rucksacks is
 lowercase r; this must be their badges. In the second group, their badge item

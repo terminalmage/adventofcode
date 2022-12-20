@@ -16,23 +16,23 @@ might be crushed!
 The five types of rocks have the following peculiar shapes, where # is rock and
 . is empty space:
 
-    ####
+####
 
-    .#.
-    ###
-    .#.
+.#.
+###
+.#.
 
-    ..#
-    ..#
-    ###
+..#
+..#
+###
 
-    #
-    #
-    #
-    #
+#
+#
+#
+#
 
-    ##
-    ##
+##
+##
 
 The rocks fall in the order shown above: first the - shape, then the + shape,
 and so on. Once the end of the list is reached, the same order repeats: the -
@@ -44,7 +44,7 @@ gas will have on the rocks as they fall (your puzzle input).
 
 For example, suppose this was the jet pattern in your cave:
 
-    >>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>
+>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>
 
 In jet patterns, < means a push to the left, while > means a push to the right.
 The pattern above means that the jets will push a falling rock right, then

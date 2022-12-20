@@ -37,9 +37,9 @@ guide.
 
 For example, suppose you were given the following strategy guide:
 
-    A Y
-    B X
-    C Z
+A Y
+B X
+C Z
 
 This strategy guide predicts and recommends the following:
 

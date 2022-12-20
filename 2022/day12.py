@@ -29,21 +29,21 @@ square.)
 
 For example:
 
-    Sabqponm
-    abcryxxl
-    accszExk
-    acctuvwj
-    abdefghi
+Sabqponm
+abcryxxl
+accszExk
+acctuvwj
+abdefghi
 
 Here, you start in the top-left corner; your goal is near the middle. You could
 start by moving down or right, but eventually you'll need to head toward the
 "e" at the bottom. From there, you can spiral around to the goal:
 
-    v..v<<<<
-    >v.vv<<^
-    .>vv>E^^
-    ..v>>>^^
-    ..>>>>>^
+v..v<<<<
+>v.vv<<^
+.>vv>E^^
+..v>>>^^
+..>>>>>^
 
 In the above diagram, the symbols indicate whether the path exits each square
 moving up (^), down (v), left (<), or right (>). The location that should get
@@ -67,21 +67,21 @@ find the shortest path from any square at elevation a to the square marked E.
 
 Again consider the example from above:
 
-    Sabqponm
-    abcryxxl
-    accszExk
-    acctuvwj
-    abdefghi
+Sabqponm
+abcryxxl
+accszExk
+acctuvwj
+abdefghi
 
 Now, there are six choices for starting position (five marked a, plus the
 square marked S that counts as being at elevation a). If you start at the
 bottom-left square, you can reach the goal most quickly:
 
-    ...v<<<<
-    ...vv<<^
-    ...v>E^^
-    .>v>>>^^
-    >^>>>>>^
+...v<<<<
+...vv<<^
+...v>E^^
+.>v>>>^^
+>^>>>>>^
 
 This path reaches the goal in only 29 steps, the fewest possible.
 
