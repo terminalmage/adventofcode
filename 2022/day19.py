@@ -268,12 +268,6 @@ class AOC2022Day19(AOC2022):
     '''
     day = 19
 
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Load the move list and translate it to coordinate deltas
-        '''
-        super().__init__(example=example)
-
     def load_blueprints(self) -> list[Blueprint]:
         '''
         Return a list of Blueprint objects as loaded from the input file
