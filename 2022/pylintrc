@@ -9,5 +9,7 @@ disable=
     too-many-branches,
     too-many-instance-attributes,
     too-many-locals,
+    too-many-nested-blocks,
     too-many-return-statements,
+    unnecessary-lambda-assignment,
     unspecified-encoding,
