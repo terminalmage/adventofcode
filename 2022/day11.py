@@ -7,9 +7,6 @@ import functools
 import re
 from collections.abc import Callable, Iterator, Sequence
 
-# Third-party imports
-import yaml
-
 # Local imports
 from aoc2022 import AOC2022
 
@@ -129,45 +126,25 @@ class AOC2022Day11(AOC2022):
         '''
         Load the input and return a sequence of Monkey objects
         '''
-        # Input is almost in yaml format, to "fix" it just realign the
-        # If true/false lines using re.sub()
-        data = yaml.safe_load(
-            re.sub(
-                r'^ +If (true|false):',
-                r'  If \1:',
-                self.input.read_text(),
-                flags=re.MULTILINE,
-            )
-        )
-
-        operation_re = re.compile(r'^new = old (\+|\*) (\d+|old)$')
-        test_re = re.compile(r'^divisible by (\d+)$')
-        throw_re = re.compile(r'^throw to monkey (\d+)$')
-
-        for key, info in data.items():
-            num = int(key.replace('Monkey ', ''))
-            # Parse starting items
-            items = [
-                int(item.strip())
-                for item in str(info['Starting items']).split(',')
-            ]
-
-            # Parse operation
-            oper, mod = operation_re.match(info['Operation']).groups()
-            operation = eval(f'lambda old: old {oper} {mod}')  # pylint: disable=eval-used
-
-            # Parse test and success/fail conditions
-            divisible_by = int(test_re.match(info['Test']).group(1))
-            on_true = int(throw_re.match(info['If true']).group(1))
-            on_false = int(throw_re.match(info['If false']).group(1))
-
+        for (
+            num, starting_items, oper, mod, divisible_by, on_true, on_false
+        ) in re.findall(
+            r'Monkey (\d+):\n'
+            r'\s*Starting items: ([0-9, ]+)\n'
+            r'\s*Operation: new = old (\+|\*) (\d+|old)\n'
+            r'\s*Test: divisible by (\d+)\n'
+            r'\s*If true: throw to monkey (\d+)\n'
+            r'\s*If false: throw to monkey (\d+)\n',
+            self.input.read_text(),
+            flags=re.MULTILINE,
+        ):
             yield Monkey(
-                num=num,
-                items=items,
-                operation=operation,
-                divisible_by=divisible_by,
-                on_true=on_true,
-                on_false=on_false,
+                num=int(num),
+                items=[int(item.strip()) for item in starting_items.split(',')],
+                operation=eval(f'lambda old: old {oper} {mod}', {}, {}),  # pylint: disable=eval-used
+                divisible_by=int(divisible_by),
+                on_true=int(on_true),
+                on_false=int(on_false),
             )
 
     def commence_monkey_business(
