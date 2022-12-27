@@ -59,10 +59,10 @@ Consider your map; how many trees are visible from outside the grid?
 from __future__ import annotations
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 
-class AOC2022Day8(AOC2022):
+class AOC2022Day8(AOC):
     '''
     Day 8 of Advent of Code 2022
     '''

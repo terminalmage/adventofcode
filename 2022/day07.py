@@ -155,7 +155,7 @@ import re
 from collections.abc import Iterator
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 
 class PathBase:
@@ -354,7 +354,7 @@ class Directory(PathBase):
                         yield fileobj
 
 
-class AOC2022Day7(AOC2022):
+class AOC2022Day7(AOC):
     '''
     Day 7 of Advent of Code 2022
     '''

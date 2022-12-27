@@ -89,10 +89,10 @@ Find the top three Elves carrying the most Calories. How many Calories are
 those Elves carrying in total?
 '''
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 
-class AOC2022Day1(AOC2022):
+class AOC2022Day1(AOC):
     '''
     Day 1 of Advent of Code 2022
     '''

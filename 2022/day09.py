@@ -276,7 +276,7 @@ the tail of the rope visit at least once?
 from __future__ import annotations
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 
 class Knot:
@@ -354,7 +354,7 @@ class Knot:
                 -1 if row_delta < 0 else 1,
             )
 
-class AOC2022Day9(AOC2022):
+class AOC2022Day9(AOC):
     '''
     Day 9 of Advent of Code 2022
     '''

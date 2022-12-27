@@ -87,7 +87,7 @@ Following the Elf's instructions for the second column, what would your total
 score be if everything goes exactly according to your strategy guide?
 '''
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 WINS = {
     'rock': 'paper',
@@ -199,7 +199,7 @@ class RockPaperScissors:
             self.__calculate_score()
 
 
-class AOC2022Day2(AOC2022):
+class AOC2022Day2(AOC):
     '''
     Day 2 of Advent of Code 2022
     '''

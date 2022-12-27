@@ -84,10 +84,10 @@ So, in this example, the number of overlapping assignment pairs is 4.
 In how many assignment pairs do the ranges overlap?
 '''
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 
-class AOC2022Day4(AOC2022):
+class AOC2022Day4(AOC):
     '''
     Day 4 of Advent of Code 2022
     '''
