@@ -45,4 +45,5 @@ class AOC2022:
         print(header)
         print('-' * len(header))
         print(f'Answer 1: {self.part1()}')
-        print(f'Answer 2: {self.part2()}')
+        if hasattr(self, 'part2'):
+            print(f'Answer 2: {self.part2()}')
