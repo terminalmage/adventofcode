@@ -8,7 +8,7 @@ import re
 from dataclasses import dataclass
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 # Typing shortcuts
 Coordinate = tuple[int, int]
@@ -26,7 +26,7 @@ class Bounds:
     max: int
 
 
-class AOC2022Day22(AOC2022):
+class AOC2022Day22(AOC):
     '''
     Day 22 of Advent of Code 2022
     '''

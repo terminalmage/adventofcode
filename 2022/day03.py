@@ -8,7 +8,7 @@ import string
 from collections.abc import Iterator, Sequence
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 
 PRIORITY = dict(zip(string.ascii_lowercase, itertools.count(1)))
@@ -151,7 +151,7 @@ class Rucksack:
         )
 
 
-class AOC2022Day3(AOC2022):
+class AOC2022Day3(AOC):
     '''
     Day 3 of Advent of Code 2022
     '''

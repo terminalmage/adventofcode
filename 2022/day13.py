@@ -9,7 +9,7 @@ import json
 from collections.abc import Iterator, Sequence
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 LT = -1
 EQ = 0
@@ -106,7 +106,7 @@ class Packet:
         return self.__cmp(self.segments, other.segments) in (GT, EQ)
 
 
-class AOC2022Day13(AOC2022):
+class AOC2022Day13(AOC):
     '''
     Day 13 of Advent of Code 2022
     '''

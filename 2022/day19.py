@@ -7,7 +7,7 @@ import re
 from collections.abc import Iterator
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 
 class Blueprint:
@@ -262,7 +262,7 @@ class Blueprint:
         return self.max_geodes
 
 
-class AOC2022Day19(AOC2022):
+class AOC2022Day19(AOC):
     '''
     Day 19 of Advent of Code 2022
     '''

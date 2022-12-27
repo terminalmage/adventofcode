@@ -6,7 +6,7 @@ import collections
 from typing import TextIO
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 DEFAULT_KEY = 1
 
@@ -62,7 +62,7 @@ class Cipher:
                 self.data.appendleft(item)
 
 
-class AOC2022Day20(AOC2022):
+class AOC2022Day20(AOC):
     '''
     Day 20 of Advent of Code 2022
     '''

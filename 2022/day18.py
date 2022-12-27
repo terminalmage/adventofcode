@@ -7,13 +7,13 @@ import functools
 from collections.abc import Iterator
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 # Typing shortcuts
 Coordinate = tuple[int, int, int]
 
 
-class AOC2022Day18(AOC2022):
+class AOC2022Day18(AOC):
     '''
     Day 18 of Advent of Code 2022
     '''

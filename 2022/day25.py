@@ -7,7 +7,7 @@ import functools
 import re
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 
 class SNAFU:
@@ -103,7 +103,7 @@ class SNAFU:
         return self
 
 
-class AOC2022Day25(AOC2022):
+class AOC2022Day25(AOC):
     '''
     Day 25 of Advent of Code 2022
     '''

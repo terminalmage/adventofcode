@@ -6,13 +6,13 @@ import re
 import sys
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 # Typing shortcuts
 Expression = tuple[str, str, str]
 
 
-class AOC2022Day21(AOC2022):
+class AOC2022Day21(AOC):
     '''
     Day 21 of Advent of Code 2022
     '''

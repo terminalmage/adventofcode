@@ -10,7 +10,7 @@ import re
 from collections.abc import Sequence
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 TIME_LIMIT = 30
 
@@ -50,7 +50,7 @@ class Valve:
                 )
 
 
-class AOC2022Day16(AOC2022):
+class AOC2022Day16(AOC):
     '''
     Day 16 of Advent of Code 2022
     '''

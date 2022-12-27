@@ -8,13 +8,13 @@ import re
 from collections.abc import Iterator, Sequence
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 # Typing shortcuts
 Coordinate = tuple[int, int]
 
 
-class AOC2022Day12(AOC2022):
+class AOC2022Day12(AOC):
     '''
     Day 12 of Advent of Code 2022
     '''

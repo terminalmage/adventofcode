@@ -3,10 +3,10 @@
 https://adventofcode.com/2022/day/1
 '''
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 
-class AOC2022Day1(AOC2022):
+class AOC2022Day1(AOC):
     '''
     Day 1 of Advent of Code 2022
     '''

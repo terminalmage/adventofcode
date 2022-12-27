@@ -8,7 +8,7 @@ import re
 from collections.abc import Callable, Iterator, Sequence
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 DEFAULT_CALM = True
 
@@ -116,7 +116,7 @@ class Monkey:
         return f'Monkey(num={self.num!r}, operation={self.operation!r}, divisible_by={self.divisible_by!r}, on_true={self.on_true!r}, on_false={self.on_false!r})'
 
 
-class AOC2022Day11(AOC2022):
+class AOC2022Day11(AOC):
     '''
     Day 11 of Advent of Code 2022
     '''

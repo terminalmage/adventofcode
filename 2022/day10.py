@@ -7,10 +7,10 @@ import re
 from collections.abc import Iterator
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 
-class AOC2022Day10(AOC2022):
+class AOC2022Day10(AOC):
     '''
     Day 10 of Advent of Code 2022
     '''

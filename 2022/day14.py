@@ -7,7 +7,7 @@ import sys
 import time
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 # Color constants
 RED = '\033[38;5;1m'
@@ -19,7 +19,7 @@ SAND = f'{YELLOW}o{ENDC}'
 AIR = '.'
 
 
-class AOC2022Day14(AOC2022):
+class AOC2022Day14(AOC):
     '''
     Day 14 of Advent of Code 2022
     '''

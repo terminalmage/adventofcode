@@ -6,7 +6,7 @@ import collections
 import functools
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 # Right, down, wait, left, up
 UP = (0, -1)
@@ -20,7 +20,7 @@ MOVES = (UP, DOWN, LEFT, RIGHT, STAY_PUT)
 Coordinate = tuple[int, int]
 
 
-class AOC2022Day24(AOC2022):
+class AOC2022Day24(AOC):
     '''
     Day 24 of Advent of Code 2022
     '''

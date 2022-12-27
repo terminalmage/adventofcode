@@ -9,7 +9,7 @@ import re
 from collections.abc import Iterator
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 # Typing shortcuts
 Coordinate = tuple[int, int]
@@ -190,7 +190,7 @@ class Sensor:
                         yield coord
 
 
-class AOC2022Day15(AOC2022):
+class AOC2022Day15(AOC):
     '''
     Day 15 of Advent of Code 2022
     '''

@@ -6,7 +6,7 @@ import re
 from dataclasses import dataclass
 
 # Local imports
-from aoc2022 import AOC2022
+from aoc import AOC
 
 
 @dataclass
@@ -75,7 +75,7 @@ class Stack:
         return len(self.items)
 
 
-class AOC2022Day5(AOC2022):
+class AOC2022Day5(AOC):
     '''
     Day 5 of Advent of Code 2022 (first task)
     '''
