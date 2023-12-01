@@ -24,6 +24,19 @@ class AOC:
             f'{prefix}{str(self.day).zfill(2)}.txt',
         )
 
+    def get_input(self, part: int) -> Path:
+        '''
+        Disambiguation function that accounts for cases where the example data
+        for part two is different from part one
+        '''
+        if not self.example:
+            return self.input
+
+        return Path(__file__).parent.joinpath(
+            'inputs',
+            f'example{str(self.day).zfill(2)}part{part}.txt',
+        )
+
     @staticmethod
     def validate(lvalue: Any, rvalue: Any) -> None:
         '''
