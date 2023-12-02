@@ -2,6 +2,7 @@
 [MASTER]
 
 disable=
+    inconsistent-return-statements,
     invalid-name,
     line-too-long,
     too-few-public-methods,
