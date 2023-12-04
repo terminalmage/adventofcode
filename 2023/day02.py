@@ -2,7 +2,7 @@
 '''
 https://adventofcode.com/2023/day/2
 '''
-import functools
+import math
 
 # Local imports
 from aoc import AOC
@@ -76,12 +76,9 @@ class Game:
         '''
         Calculate the power of the game
         '''
-        return functools.reduce(
-            lambda x, y: x * y,
-            (
-                max(getattr(handful, color) for handful in self.handfuls)
-                for color in self.handfuls[0].colors
-            )
+        return math.prod(
+            max(getattr(handful, color) for handful in self.handfuls)
+            for color in self.handfuls[0].colors
         )
 
 
