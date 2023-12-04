@@ -36,16 +36,14 @@ class ScratchCard:
             f'picks={tuple(sorted(self.picks))})'
         )
 
-    @property
-    @functools.lru_cache
+    @functools.cached_property
     def matches(self) -> frozenset[int]:
         '''
         Returns the set of winning picks
         '''
         return self.winners & self.picks
 
-    @property
-    @functools.lru_cache
+    @functools.cached_property
     def score(self) -> int:
         '''
         Returns the score of the game
