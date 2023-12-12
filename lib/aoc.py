@@ -2,6 +2,8 @@
 Base class for Advent of Code submissions
 '''
 import sys
+import time
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -50,6 +52,19 @@ class AOC:
             )
             sys.exit(1)
 
+    @staticmethod
+    def timed_exec(
+        label: str,
+        func: Callable[[], Any],
+    ) -> None:
+        '''
+        Time the function
+        '''
+        start = time.time()
+        ret = func()
+        total = time.time() - start
+        print(f'{label}: {ret} ({total} seconds)')  # pylint: disable=no-member
+
     def run(self):
         '''
         Run both parts and print the results
@@ -57,6 +72,6 @@ class AOC:
         header = f'Result for Day {self.day}'
         print(header)
         print('-' * len(header))
-        print(f'Answer 1: {self.part1()}')  # pylint: disable=no-member
-        if hasattr(self, 'part2'):
-            print(f'Answer 2: {self.part2()}')
+        for part in (1, 2):
+            if hasattr(self, f'part{part}'):
+                self.timed_exec(f'Answer {part}', getattr(self, f'part{part}'))
