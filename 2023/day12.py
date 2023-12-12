@@ -8,7 +8,7 @@ import functools
 from aoc import AOC
 
 
-@functools.lru_cache
+@functools.cache
 def possible_arrangements(
     substr: str,
     groups: tuple[int],
