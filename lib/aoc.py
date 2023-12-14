@@ -7,6 +7,49 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+class Grid:
+    '''
+    Handle initializing a grid as a 2-dimensional array
+    '''
+    def __init__(self, path: Path) -> None:
+        '''
+        Load the filehandle
+        '''
+        self.data = []
+        with path.open() as fh:
+            for line in fh:
+                self.data.append([])
+                self.data[-1].extend(line.rstrip())
+
+    def __getitem__(self, index: int) -> list[str]:
+        '''
+        Allow object to be indexed like a list
+        '''
+        return self.data[index]
+
+    @property
+    def rows(self) -> int:
+        '''
+        Return the number of rows in the grid
+        '''
+        return len(self.data)
+
+    @property
+    def cols(self) -> int:
+        '''
+        Return the number of columns in the grid
+        '''
+        return len(self.data[0])
+
+    def print(self) -> None:
+        '''
+        Print the grid to stdout
+        '''
+        for row in self.data:
+            sys.stdout.write(f'{"".join(row)}\n')
+        sys.stdout.write('\n')
+        sys.stdout.flush()
+
 
 class AOC:
     '''
