@@ -48,12 +48,12 @@ class Race:
 
         Using our variable names, this would be:
 
-            w = (-(-t) +/- sqrt(t² - 4ad)) / 2a
+            w = (-(-t) +/- sqrt(t² - 4 * 1 * d)) / (2 * 1)
 
         There are a couple of simplifications we can make. First, since w² has
-        no multiplier, a equals 1 and cancels out. Secondly, since t is
-        negative, making it negative cancels out. Thus, our equation can be
-        simplified further as:
+        no multiplier, a equals 1. We can cancel it out because multplying and
+        dividing by 1 is a no-op. Secondly, since t is negative, making it
+        negative cancels out. Thus, our equation can be simplified further as:
 
             w = (t +/- sqrt(t² - 4d)) / 2
         '''
