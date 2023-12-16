@@ -3,7 +3,7 @@ Base class for Advent of Code submissions
 '''
 import sys
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Generator
 from pathlib import Path
 from typing import Any
 
@@ -49,6 +49,13 @@ class Grid:
             sys.stdout.write(f'{"".join(row)}\n')
         sys.stdout.write('\n')
         sys.stdout.flush()
+
+    def column_iter(self) -> Generator[str, None, None]:
+        '''
+        Generator which yields the contents of the grid one column at a time
+        '''
+        for column in range(self.cols):
+            yield ''.join(self.data[row][column] for row in range(self.rows))
 
 
 class AOC:
