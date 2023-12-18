@@ -1,25 +1,56 @@
 '''
 Base class for Advent of Code submissions
 '''
+import collections
 import sys
 import time
 from collections.abc import Callable, Generator
 from pathlib import Path
 from typing import Any
 
+
+# NOTE: These coordinate deltas are (row, col) instead of (col, row), designed
+# for interacting with AoC inputs read in line-by-line.
+directions = collections.namedtuple(
+    'Directions',
+    ('NORTH', 'SOUTH', 'WEST', 'EAST')
+)(
+    (-1, 0), (1, 0), (0, -1), (0, 1)
+)
+# This namedtuple is a mirror of above, with the tuple indexes being the
+# opposite direction of their counterparts.
+opposite_directions = collections.namedtuple(
+    'Directions',
+    ('SOUTH', 'NORTH', 'EAST', 'WEST')
+)(
+    (1, 0), (-1, 0), (0, 1), (0, -1)
+)
+
+
 class Grid:
     '''
-    Handle initializing a grid as a 2-dimensional array
+    Manage a grid as a list of list of strings. Can be indexed like a 2D array.
+
+    Optonally, a callback can be passed when initializing. This callback will
+    be run on each column of each line. This can be used to, for example, turn
+    each column into an int. For example:
+
+        grid = Grid(path, lambda col: int(col))
     '''
-    def __init__(self, path: Path) -> None:
+    def __init__(
+        self,
+        path: Path,
+        row_cb: Callable[[str], Any] = lambda col: col,
+    ) -> None:
         '''
         Load the filehandle
         '''
         self.data = []
         with path.open() as fh:
-            for line in fh:
-                self.data.append([])
-                self.data[-1].extend(line.rstrip())
+            self.data = [
+                [row_cb(col) for col in line.rstrip()]
+                for line in fh
+            ]
 
     def __getitem__(self, index: int) -> list[str]:
         '''
@@ -46,7 +77,7 @@ class Grid:
         Print the grid to stdout
         '''
         for row in self.data:
-            sys.stdout.write(f'{"".join(row)}\n')
+            sys.stdout.write(f'{"".join(str(x) for x in row)}\n')
         sys.stdout.write('\n')
         sys.stdout.flush()
 
@@ -54,8 +85,11 @@ class Grid:
         '''
         Generator which yields the contents of the grid one column at a time
         '''
-        for column in range(self.cols):
-            yield ''.join(self.data[row][column] for row in range(self.rows))
+        for col in range(self.cols):
+            yield ''.join(
+                str(self.data[row][col])
+                for row in range(self.rows)
+            )
 
 
 class AOC:
