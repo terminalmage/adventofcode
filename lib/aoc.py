@@ -43,7 +43,7 @@ class Grid:
         row_cb: Callable[[str], Any] = lambda col: col,
     ) -> None:
         '''
-        Load the filehandle
+        Load the file from the Path object
         '''
         self.data = []
         with path.open() as fh:
