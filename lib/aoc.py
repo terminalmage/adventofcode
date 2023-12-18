@@ -47,7 +47,7 @@ class CoordinateMixin:
         return sum(
             self.distance(bounds[n], bounds[n + 1])
             for n in range(len(bounds) - 1)
-        )
+        ) + self.distance(bounds[-1], bounds[0])
 
     @staticmethod
     def shoelace(bounds: list[Coordinate]) -> int:
