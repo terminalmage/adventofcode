@@ -16,8 +16,8 @@ class AOC2023Day18(AOC):
     '''
     day = 18
 
-    @staticmethod
     def solve(
+        self,
         bounds: list[Coordinate],
         perimeter: int,
     ) -> int:
@@ -30,20 +30,7 @@ class AOC2023Day18(AOC):
         the volume of each perimiter coordinate lies within the area that we
         will be calculating, and the other half lies outside.
 
-        For the area, use the shoelace formula.
-
-        This formula requires a sequence of x/y coordinates tracing the
-        perimeter in counter-clockwise order. Our dataset happens to be in
-        clockwise order, but we're also working with the y axis inverted, so
-        clockwise order works here.
-
-        The area A would be calculated as follows:
-
-            2A = Σ|row(x)*col(x+1) - row(x+1)*col(x)|
-
-        or:
-
-            A = 1/2 * Σ|row(x)*col(x+1) - row(x+1)*col(x)|
+        For the area, use the shoelace formula helper from the parent class.
 
         The extra space we need to add for the perimeter is equal to:
 
@@ -53,12 +40,7 @@ class AOC2023Day18(AOC):
 
             area + (perimeter / 2) + 1
         '''
-        return abs(
-            sum(
-                (bounds[n][0] * bounds[n + 1][1]) - (bounds[n + 1][0] * bounds[n][1])
-                for n in range(len(bounds) - 1)
-            ) // 2
-        ) + (perimeter // 2) + 1
+        return self.shoelace(bounds) + (perimeter // 2) + 1
 
     def part1(self) -> int:
         '''

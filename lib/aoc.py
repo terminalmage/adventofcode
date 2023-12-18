@@ -8,6 +8,8 @@ from collections.abc import Callable, Generator
 from pathlib import Path
 from typing import Any
 
+# Typing shortcuts
+Coordinate = tuple[int, int]
 
 # NOTE: These coordinate deltas are (row, col) instead of (col, row), designed
 # for interacting with AoC inputs read in line-by-line.
@@ -135,6 +137,27 @@ class AOC:
                 f'Validation failed! Expected {rvalue}, got {lvalue}\n'
             )
             sys.exit(1)
+
+    @staticmethod
+    def shoelace(bounds: list[Coordinate]) -> int:
+        '''
+        NOTE: bounds must be a list of coordinates in either clockwise or
+        counter-clockwise order.
+
+        The area A would be calculated as follows:
+
+            2A = Σ|row(x)*col(x+1) - row(x+1)*col(x)|
+
+        or:
+
+            A = 1/2 * Σ|row(x)*col(x+1) - row(x+1)*col(x)|
+        '''
+        return abs(
+            sum(
+                (bounds[n][0] * bounds[n + 1][1]) - (bounds[n + 1][0] * bounds[n][1])
+                for n in range(len(bounds) - 1)
+            ) // 2
+        )
 
     @staticmethod
     def timed_exec(
