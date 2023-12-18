@@ -3,7 +3,6 @@
 https://adventofcode.com/2023/day/17
 '''
 import heapq
-from pathlib import Path
 
 # Local imports
 from aoc import AOC, Grid, directions, opposite_directions
@@ -22,7 +21,7 @@ class AOC2023Day17(AOC):
         super().__init__(example=example)
         self.crucible = Grid(
             self.input,
-            lambda col: int(col),
+            lambda col: int(col),  # pylint: disable=unnecessary-lambda
         )
 
     def solve(
