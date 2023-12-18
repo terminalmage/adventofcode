@@ -2,25 +2,22 @@
 '''
 https://adventofcode.com/2023/day/18
 '''
-
 # Local imports
-from aoc import AOC, directions
+from aoc import (
+    AOC,
+    CoordinateMixin,
+    Coordinate,
+    directions,
+)
 
-# Typing shortcuts
-Coordinate = tuple[int, int]
 
-
-class AOC2023Day18(AOC):
+class AOC2023Day18(AOC, CoordinateMixin):
     '''
     Day 18 of Advent of Code 2023
     '''
     day = 18
 
-    def solve(
-        self,
-        bounds: list[Coordinate],
-        perimeter: int,
-    ) -> int:
+    def solve(self, bounds: list[Coordinate]) -> int:
         '''
         Since the excavator only moves in 2 dimensions, we can simply calculate
         the area inside the bounds, and then add 0.5 cubic meter for each point
@@ -40,7 +37,7 @@ class AOC2023Day18(AOC):
 
             area + (perimeter / 2) + 1
         '''
-        return self.shoelace(bounds) + (perimeter // 2) + 1
+        return self.shoelace(bounds) + (self.perimeter(bounds) // 2) + 1
 
     def part1(self) -> int:
         '''
@@ -53,7 +50,6 @@ class AOC2023Day18(AOC):
             'R': directions.EAST,
         }
 
-        perimeter = 0
         row = col = 0
         bounds = [(row, col)]
 
@@ -61,14 +57,13 @@ class AOC2023Day18(AOC):
             for line in fh:
                 direction, distance = line.split(None, 2)[:2]
                 distance = int(distance)
-                perimeter += distance
                 row, col = (
                     item + distance * delta
                     for item, delta in zip((row, col), deltas[direction])
                 )
                 bounds.append((row, col))
 
-        return self.solve(bounds, perimeter)
+        return self.solve(bounds)
 
     def part2(self) -> int:
         '''
@@ -81,7 +76,6 @@ class AOC2023Day18(AOC):
             '3': directions.NORTH,
         }
 
-        perimeter = 0
         row = col = 0
         bounds = [(row, col)]
 
@@ -90,14 +84,13 @@ class AOC2023Day18(AOC):
                 color_hex = line.split()[-1][2:8]
                 distance = int(color_hex[:5], 16)
                 direction = color_hex[-1]
-                perimeter += distance
                 row, col = (
                     item + distance * delta
                     for item, delta in zip((row, col), deltas[direction])
                 )
                 bounds.append((row, col))
 
-        return self.solve(bounds, perimeter)
+        return self.solve(bounds)
 
 
 if __name__ == '__main__':

@@ -28,6 +28,48 @@ opposite_directions = collections.namedtuple(
     (1, 0), (-1, 0), (0, 1), (0, -1)
 )
 
+class CoordinateMixin:
+    '''
+    Functions to do calculations on coordinates
+    '''
+    @staticmethod
+    def distance(p1: Coordinate, p2: Coordinate) -> int:
+        '''
+        Calculate the number of steps between two coordinates
+        '''
+        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
+
+    def perimeter(self, bounds: list[Coordinate]) -> int:
+        '''
+        Calculate the lenth of the perimeter of a polygon, given a list of
+        coordinates in either clockwise or counter-clockwise order.
+        '''
+        return sum(
+            self.distance(bounds[n], bounds[n + 1])
+            for n in range(len(bounds) - 1)
+        )
+
+    @staticmethod
+    def shoelace(bounds: list[Coordinate]) -> int:
+        '''
+        NOTE: bounds must be a list of coordinates in either clockwise or
+        counter-clockwise order.
+
+        The area A would be calculated as follows:
+
+            2A = Σ|row(x)*col(x+1) - row(x+1)*col(x)|
+
+        or:
+
+            A = 1/2 * Σ|row(x)*col(x+1) - row(x+1)*col(x)|
+        '''
+        return abs(
+            sum(
+                (bounds[n][0] * bounds[n + 1][1]) - (bounds[n + 1][0] * bounds[n][1])
+                for n in range(len(bounds) - 1)
+            ) // 2
+        )
+
 
 class Grid:
     '''
@@ -137,27 +179,6 @@ class AOC:
                 f'Validation failed! Expected {rvalue}, got {lvalue}\n'
             )
             sys.exit(1)
-
-    @staticmethod
-    def shoelace(bounds: list[Coordinate]) -> int:
-        '''
-        NOTE: bounds must be a list of coordinates in either clockwise or
-        counter-clockwise order.
-
-        The area A would be calculated as follows:
-
-            2A = Σ|row(x)*col(x+1) - row(x+1)*col(x)|
-
-        or:
-
-            A = 1/2 * Σ|row(x)*col(x+1) - row(x+1)*col(x)|
-        '''
-        return abs(
-            sum(
-                (bounds[n][0] * bounds[n + 1][1]) - (bounds[n + 1][0] * bounds[n][1])
-                for n in range(len(bounds) - 1)
-            ) // 2
-        )
 
     @staticmethod
     def timed_exec(
