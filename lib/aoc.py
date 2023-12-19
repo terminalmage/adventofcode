@@ -50,7 +50,7 @@ class CoordinateMixin:
         ) + self.distance(bounds[-1], bounds[0])
 
     @staticmethod
-    def shoelace(bounds: list[Coordinate]) -> int:
+    def shoelace(bounds: list[Coordinate]) -> float:
         '''
         NOTE: bounds must be a list of coordinates in either clockwise or
         counter-clockwise order.
@@ -62,12 +62,18 @@ class CoordinateMixin:
         or:
 
             A = 1/2 * Σ|row(x)*col(x+1) - row(x+1)*col(x)|
+
+        This sum includes the final vertex being compared to the first one.
+        To accomplish this in a pretty generator expression, this function
+        instead starts by comparing list index -1 with 0, and finishes
+        comparing the 2nd-to-last index with the first one. By doing so, it
+        manages to compare all vertexes.
         '''
         return abs(
             sum(
-                (bounds[n][0] * bounds[n + 1][1]) - (bounds[n + 1][0] * bounds[n][1])
-                for n in range(len(bounds) - 1)
-            ) // 2
+                (bounds[n][0] * bounds[n - 1][1]) - (bounds[n - 1][0] * bounds[n][1])
+                for n in range(len(bounds))
+            ) / 2
         )
 
 
@@ -203,3 +209,8 @@ class AOC:
         for part in (1, 2):
             if hasattr(self, f'part{part}'):
                 self.timed_exec(f'Answer {part}', getattr(self, f'part{part}'))
+            if hasattr(self, f'part{part}_alt'):
+                self.timed_exec(
+                    f'Answer {part} (alternate solution)',
+                    getattr(self, f'part{part}_alt'),
+                )
