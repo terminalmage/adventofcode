@@ -19,25 +19,53 @@ class AOC2023Day18(AOC, CoordinateMixin):
 
     def solve(self, bounds: list[Coordinate]) -> int:
         '''
-        Since the excavator only moves in 2 dimensions, we can simply calculate
-        the area inside the bounds, and then add 0.5 cubic meter for each point
-        that forms the perimeter. This extra space is required because in this
-        scenario the excavator digs out 1 cubic meter chunks, and imagining
-        each coordinate as being in the center of the excavated area, half of
-        the volume of each perimiter coordinate lies within the area that we
-        will be calculating, and the other half lies outside.
+        Since the excavator only moves in 2 dimensions, we can disregard the
+        3rd dimension and work in two dimensions. The puzzle solution is
+        equivalent to the number of 1 cubic meter blocks that were excavated.
+        If we imagine the excavator as drawing an irregular polygon, what is
+        being requested here is the line traced by the excavator (i.e. the
+        perimeter of the blocks that were excavated) plus the blocks inside of
+        that line.
 
-        For the area, use the shoelace formula helper from the parent class.
+        Fortunately, both of these items are components of Pick's Theorem:
 
-        The extra space we need to add for the perimeter is equal to:
+            https://en.wikipedia.org/wiki/Pick%27s_theorem
 
-            (perimeter / 2) + 1
+        Here is the formula:
 
-        Thus, the total volume is equal to:
+            A = i + b/2 - 1
 
-            area + (perimeter / 2) + 1
+        The solution to this puzzle is therefore equal to i + b.
+
+        A is the area, i is the number of integer coordinate points internal to
+        the polygon, and b is the perimeter of the polygon.
+
+        The only parameter we have access to at the start is b, which can be
+        calculated by summing the lengths between each coordinate. So we need
+        to calculate i. Solving for i, we can re-arrange the formula as
+        follows:
+
+            A = i + b/2 - 1
+            i + b/2 - 1 = A     # Flip formula to put i on left
+            i - 1 = A - b/2     # Move b/2 to right via subtraction
+            i = A - b/2 + 1     # Move -1 to right via addition
+
+        So, to calculate i, we need the area A, which we don't yet have.
+        Fortunately, we can get the area by other means, using the Shoelace
+        Formula:
+
+            https://en.wikipedia.org/wiki/Shoelace_formula
+
+        Once we have the area, we have everything we need to calculate i, and
+        we can add this to our perimeter (b) to get the answer.
         '''
-        return self.shoelace(bounds) + (self.perimeter(bounds) // 2) + 1
+        # These helper functions come from the CoordinateMixin
+        A = self.shoelace(bounds)
+        b = self.perimeter(bounds)
+        i = A - (b / 2) + 1
+        # Because of the way the puzzle is worded, we know that the answer will
+        # be a whole number, so convert to an int before returning.
+        return int(i + b)
 
     def part1(self) -> int:
         '''
