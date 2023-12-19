@@ -7,7 +7,7 @@ import re
 from collections.abc import Generator
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, CoordinateMixin
 
 OPPOSITE = {
     'N': 'S',
@@ -249,7 +249,7 @@ class PipeSegment:
         return f'PipeSegment(coord={self.coord}, shape={self.shape!r})'
 
 
-class AOC2023Day10(AOC):
+class AOC2023Day10(AOC, CoordinateMixin):
     '''
     Day 10 of Advent of Code 2023
     '''
@@ -272,6 +272,21 @@ class AOC2023Day10(AOC):
         '''
         pipe_map = PipeMap(self.get_input(part=2).read_text())
         return len(list(pipe_map.inside_loop))
+
+    def part2_alt(self) -> int:
+        '''
+        Return the number of tiles that are within the loop
+
+        This is an alternate solution using Pick's Theorem and the Shoelace
+        Formula. For a more detailed explanation of this, see the docstring for
+        the "solve" method in 2023 Day 18.
+        '''
+        pipe_map = PipeMap(self.get_input(part=2).read_text())
+        bounds = [p.coord.as_tuple for p in pipe_map.loop_segments]
+        A = self.shoelace(bounds)
+        b = self.perimeter(bounds)
+        i = A - (b / 2) + 1
+        return int(i)
 
 
 if __name__ == '__main__':
