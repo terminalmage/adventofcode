@@ -101,35 +101,38 @@ class Grid:
                 [row_cb(col) for col in line.rstrip()]
                 for line in fh
             ]
+        self.rows = len(self.data)
+        self.cols = len(self.data[0])
+        self.max_row = self.rows - 1
+        self.max_col = self.cols - 1
 
-    def __getitem__(self, index: int) -> list[str]:
+    def __getitem__(self, index: int | Coordinate) -> list[Any]:
         '''
-        Allow object to be indexed like a list
-        '''
-        return self.data[index]
+        If index is an integer, return that index's row.
 
-    @property
-    def rows(self) -> int:
+        If index is a Coordinate, return the single item at that row/column
+        coordinate's location.
         '''
-        Return the number of rows in the grid
-        '''
-        return len(self.data)
+        try:
+            row, col = index
+            return self.data[row][col]
+        except (TypeError, ValueError):
+            return self.data[index]
 
-    @property
-    def cols(self) -> int:
+    def neighbors(
+        self,
+        coord: Coordinate,
+    ) -> Generator[tuple[Coordinate, Any], None, None]:
         '''
-        Return the number of columns in the grid
+        Generator which yields a tuple of each neigbboring coordinate and the
+        value stored at that coordinate.
         '''
-        return len(self.data[0])
-
-    def print(self) -> None:
-        '''
-        Print the grid to stdout
-        '''
-        for row in self.data:
-            sys.stdout.write(f'{"".join(str(x) for x in row)}\n')
-        sys.stdout.write('\n')
-        sys.stdout.flush()
+        in_grid = lambda r, c: 0 <= r <= self.max_row and 0 <= c<= self.max_col
+        row, col = coord
+        for (row_delta, col_delta) in directions:
+            new_row, new_col = row + row_delta, col + col_delta
+            if in_grid(new_row, new_col):
+                yield (new_row, new_col), self.data[new_row][new_col]
 
     def column_iter(self) -> Generator[str, None, None]:
         '''
@@ -140,6 +143,52 @@ class Grid:
                 str(self.data[row][col])
                 for row in range(self.rows)
             )
+
+    def find(self, value: Any) -> Coordinate | None:
+        '''
+        Return the first row/column pair that matches the specified value, or
+        None if there is no match.
+        '''
+        for row_index, row in enumerate(self.data):
+            for col_index in range(self.cols):
+                if row[col_index] == value:
+                    return row_index, col_index
+
+    def print(self) -> None:
+        '''
+        Print the grid to stdout
+        '''
+        for row in self.data:
+            sys.stdout.write(f'{"".join(str(x) for x in row)}\n')
+        sys.stdout.write('\n')
+        sys.stdout.flush()
+
+
+class InfiniteGrid(Grid):
+    '''
+    A modified Grid class which acts like a normal Grid in every way but in
+    indexing and neighbor detection. For these, it is assumed that the grid
+    content repeats infinitely in every direction.
+    '''
+    def __getitem__(self, index: Coordinate) -> Any:
+        '''
+        Return the single item at that row/column coordinate's location.
+        '''
+        row, col = index
+        return self.data[row % self.rows][col % self.cols]
+
+    def neighbors(
+        self,
+        coord: Coordinate,
+    ) -> Generator[tuple[Coordinate, Any], None, None]:
+        '''
+        Generator which yields a tuple of each neigbboring coordinate and the
+        value stored at that coordinate.
+        '''
+        row, col = coord
+        for (row_delta, col_delta) in directions:
+            new_row, new_col = row + row_delta, col + col_delta
+            yield (new_row, new_col), self[(new_row, new_col)]
 
 
 class AOC:
