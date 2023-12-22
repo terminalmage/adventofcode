@@ -3,7 +3,6 @@
 https://adventofcode.com/2023/day/21
 '''
 import collections
-import math
 
 # Local imports
 from aoc import AOC, Coordinate, Grid, InfiniteGrid
@@ -80,27 +79,79 @@ class AOC2023Day21(AOC):
         garden = InfiniteGrid(self.input)
         start = garden.find('S')
 
-        # Perform quadratic interpolation. First, get number of plots reachable
-        # with 65 + (height/width * x) for 0 <= x <= 2.
-        u1, u2, u3 = (
-            self.bfs(garden, start, 65 + garden.rows * x)
+        # Because the pattern has clear edges and a direct route to the edge,
+        # we know that the number of reachable plots will grow quadratically
+        # every grid-width columns, starting at the edge of the initial grid.
+        # For a quadratic sequence in the format an² + bn + c, the variable c
+        # would represent the number of plots reachable in the number of steps
+        # needed to reach the edge (proof for this can be found below), while
+        # the growth factor per grid (n) would be represented by an² + bn.
+        #
+        # The values for a and b can be calculated using quadratic
+        # interpolation, given the first 3 numbers in the quadratic sequence.
+        # To calculate the first three numbers, we can simply re-run our BFS
+        # algorithm on our InfiniteGrid to get the number of plots for 0, 1 and
+        # 2 full grid-width from the edge. We will refer to these three numbers
+        # as u₀, u₁, u₂, stored here as variables u0, u1, and u2 because
+        # subscripts are not valid characters in Python variable names. :)
+        edge = garden.max_col - start[1]
+        u0, u1, u2 = (
+            self.bfs(garden, start, edge + (garden.cols * x))
             for x in range(3)
         )
 
-        # Get differential between first two numbers
-        diff1 = u2 - u1
-        # Get 2nd level differential (diff between 3 and 2, minus first diff)
-        diff2 = u3 - u2 - diff1
+        # Derive a, b, and c for the quadratic f(n) = an² + bn + c
+        #
+        # First, derive c. We can do this by substituting 0 for n, the rvalue
+        # of which should be equal to u₀. This results in the following:
+        #
+        # (a * 0²) + (b * 0) + c = u₀
+        #
+        # On the left side, both of the first two parentheticals zero out,
+        # leaving c as being equal to u₀. As mentioned earlier, this is simply
+        # the number of reachable plots available within the number of steps
+        # between the starting point and the edge of the grid (at which point
+        # growth will increase quadratically).
+        c = u0
 
-        # 2a = diff2
-        a = diff2 // 2
-        # 3a + b = diff1
-        b = diff1 - (3 * a)
-        # a + b + c = u1
-        c = u1 - a - b
-        # Number of grids we need to travel
-        n = math.ceil(steps / garden.rows)
+        # Next, derive b. Evaluate f(n) for n=1, the rvalue of which should be
+        # equal to u₁. In place of c, substitute our derived value u₀. The
+        # result is shown below:
+        #
+        # (a * 1²) + (b * 1) + u₀ = u₁
+        # a + b = u₁ - u₀
+        # b = u₁ - u₀ - a
+        #
+        # We can't calculate b yet, but we can use the formula we just derived
+        # for b to derive a. Evaluate f(n) for n=2 (again substituting our
+        # derived value for c), the result of which should be equal to u₂:
+        #
+        # (a * 2²) + (b * 2) + u₀ = u₂
+        # 4a + 2b = u₂ - u₀
+        #
+        # Substituting our derived value for b (i.e. u₁ - u₀ - a), we get:
+        #
+        # 4a + (2 * (u₁ - u₀ - a)) = u₂ - u₀
+        # 4a + 2u₁ - 2u₀ - 2a = u₂ - u₀
+        # 2a + 2u₁ - 2u₀ = u₂ - u₀
+        # 2a = u₂ - u₀ - 2u₁ + 2u₀
+        # 2a = u₂ - 2u₁ + u₀
+        # a = (u₂ - 2u₁ + u₀) / 2
+        a = (u2 - (2 * u1) + u0) // 2
 
+        # With a calculated value for a, we can plug that in to our formula we
+        # made to derive b above:
+        b = u1 - u0 - a
+
+        # Number of grid widths we need to travel after reaching the edge
+        # (note: this is also an integer, given that the edge is 65 columns
+        # away and the total step count - 65 is an equal multiple of the grid
+        # height/width).
+        n = (steps - edge) // garden.cols
+
+        # With all the values now known, calculate the number number of
+        # reachable plots after traversing n grid widths past the edge of the
+        # initial grid.
         return (a * n**2) + (b * n) + c
 
 
