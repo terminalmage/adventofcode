@@ -10,6 +10,7 @@ from typing import Any
 
 # Typing shortcuts
 Coordinate = tuple[int, int]
+Coordinate3D = tuple[int, int, int]
 
 # NOTE: These coordinate deltas are (row, col) instead of (col, row), designed
 # for interacting with AoC inputs read in line-by-line.
