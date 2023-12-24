@@ -3,21 +3,16 @@
 https://adventofcode.com/2023/day/18
 '''
 # Local imports
-from aoc import (
-    AOC,
-    CoordinateMixin,
-    Coordinate,
-    directions,
-)
+from aoc import AOC, XYMixin, XY, directions
 
 
-class AOC2023Day18(AOC, CoordinateMixin):
+class AOC2023Day18(AOC, XYMixin):
     '''
     Day 18 of Advent of Code 2023
     '''
     day = 18
 
-    def solve(self, bounds: list[Coordinate]) -> int:
+    def solve(self, bounds: list[XY]) -> int:
         '''
         Since the excavator only moves in 2 dimensions, we can disregard the
         3rd dimension and work in two dimensions. The puzzle solution is
@@ -59,7 +54,7 @@ class AOC2023Day18(AOC, CoordinateMixin):
         Once we have the area, we have everything we need to calculate i, and
         we can add this to our perimeter (b) to get the answer.
         '''
-        # These helper functions come from the CoordinateMixin
+        # These helper functions come from the XYMixin
         A = self.shoelace(bounds)
         b = self.perimeter(bounds)
         i = A - (b / 2) + 1

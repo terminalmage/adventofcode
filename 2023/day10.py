@@ -5,53 +5,50 @@ https://adventofcode.com/2023/day/10
 import math
 import re
 from collections.abc import Generator
+from dataclasses import dataclass
+from typing import Self
 
 # Local imports
-from aoc import AOC, CoordinateMixin
+from aoc import AOC, XY, XYMixin, directions, opposite_directions
 
 OPPOSITE = {
-    'N': 'S',
-    'S': 'N',
-    'E': 'W',
-    'W': 'E',
+    directions._fields[n][0]: opposite_directions._fields[n][0]
+    for n in range(len(directions))
 }
 
 SHAPES = frozenset('|-LJ7F')
 
 
-class Coordinate:
+@dataclass
+class PipeCoord:
     '''
     Represents a coordinate and its neighbors
     '''
-    def __init__(self, value: tuple[int]) -> None:
-        '''
-        Initialize the object
-        '''
-        self.value = value
+    value: XY
 
-    def __getitem__(self, name: str) -> 'Coordinate':
+    def __getitem__(self, name: str) -> Self:
         '''
         Handle directional movement
         '''
         match name:
             case 'N':
-                delta = (-1, 0)
+                delta = directions.NORTH
             case 'S':
-                delta = (1, 0)
-            case 'E':
-                delta = (0, 1)
+                delta = directions.SOUTH
             case 'W':
-                delta = (0, -1)
+                delta = directions.WEST
+            case 'E':
+                delta = directions.EAST
             case _:
                 raise ValueError(f'Invalid direction {name!r}')
 
-        return Coordinate(tuple(a + b for a, b in zip(self.value, delta)))
+        return PipeCoord(tuple(a + b for a, b in zip(self.value, delta)))
 
-    def __eq__(self, other: 'Coordinate') -> bool:
+    def __eq__(self, other: Self) -> bool:
         '''
         Define == operator
         '''
-        if not isinstance(other, Coordinate):
+        if not isinstance(other, PipeCoord):
             return False
         return self.value == other.value
 
@@ -59,7 +56,7 @@ class Coordinate:
         '''
         Define repr() output for object
         '''
-        return f'Coordinate({self.value})'
+        return f'PipeCoord({self.value})'
 
     @property
     def as_tuple(self) -> tuple[int]:
@@ -88,7 +85,7 @@ class PipeMap:
         for row_num, row in enumerate(lines):
             for col_num, shape in enumerate(row):
                 if shape in SHAPES or shape == 'S':
-                    coord = Coordinate((row_num, col_num))
+                    coord = PipeCoord((row_num, col_num))
                     self.segments[coord.as_tuple] = PipeSegment(
                         coord=coord,
                         shape=shape,
@@ -101,7 +98,7 @@ class PipeMap:
             raise ValueError('No start point detected in pipe map')
 
         # Discover exits for start pipe
-        for direction in ('N', 'S', 'E', 'W'):
+        for direction in OPPOSITE:
             try:
                 neighbor = self.segments[self.start.coord[direction].as_tuple]
             except KeyError:
@@ -207,7 +204,7 @@ class PipeSegment:
     '''
     def __init__(
         self,
-        coord: Coordinate,
+        coord: PipeCoord,
         shape: str,
         parent: PipeMap,
     ) -> None:
@@ -249,7 +246,7 @@ class PipeSegment:
         return f'PipeSegment(coord={self.coord}, shape={self.shape!r})'
 
 
-class AOC2023Day10(AOC, CoordinateMixin):
+class AOC2023Day10(AOC, XYMixin):
     '''
     Day 10 of Advent of Code 2023
     '''
