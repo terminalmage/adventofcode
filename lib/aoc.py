@@ -46,6 +46,14 @@ class Coordinate:
         '''
         return self.x, self.y
 
+    @property
+    def neighbors(self) -> Generator[Self, None, None]:
+        '''
+        Return the neighboring Coordinates
+        '''
+        for direction in directions:
+            yield Coordinate(self.x + direction[0], self.y + direction[1])
+
 
 @dataclass(frozen=True)
 class Coordinate3D:
