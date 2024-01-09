@@ -33,11 +33,11 @@ class Tile(Coordinate):
                 yield Tile(x, y)
 
 
-class AOC2016Day12(AOC):
+class AOC2016Day13(AOC):
     '''
-    Day 12 of Advent of Code 2016
+    Day 13 of Advent of Code 2016
     '''
-    day: int = 12
+    day: int = 13
 
     def bfs(
         self,
@@ -104,8 +104,8 @@ class AOC2016Day12(AOC):
 
 if __name__ == '__main__':
     # Run against test data
-    aoc = AOC2016Day12(example=True)
+    aoc = AOC2016Day13(example=True)
     aoc.validate(aoc.part1(), 11)
     # Run against actual data
-    aoc = AOC2016Day12(example=False)
+    aoc = AOC2016Day13(example=False)
     aoc.run()
