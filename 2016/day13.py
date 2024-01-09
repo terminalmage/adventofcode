@@ -52,8 +52,8 @@ class AOC2016Day12(AOC):
             raise ValueError('A destination or max_steps must be provided')
 
         # Type hints
-        Steps: int
-        Key: tuple[Steps, Tile]
+        Steps = int
+        Key = tuple[Steps, Tile]
         steps: Steps
         tile: Tile
 

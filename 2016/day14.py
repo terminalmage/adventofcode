@@ -2,12 +2,10 @@
 '''
 https://adventofcode.com/2016/day/14
 '''
-import collections
 import functools
 import hashlib
 import itertools
 import re
-from collections.abc import Generator
 
 # Local imports
 from aoc import AOC

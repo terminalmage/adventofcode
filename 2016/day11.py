@@ -82,7 +82,7 @@ class AOC2016Day11(AOC):
         '''
         Return True if floor is empty, otherwise False
         '''
-        return not len(floor)
+        return not floor
 
     @staticmethod
     def valid(*floors: Floor) -> bool:
