@@ -442,15 +442,15 @@ class AOC:
     Base class for Advent of Code submissions
     '''
     # Must be overridden in a subclass
-    day = 0
+    day: int = 0
 
     def __init__(self, example: bool = False) -> None:
         '''
         Create Path object for the input file
         '''
-        self.example = example
-        prefix = 'example' if self.example else 'day'
-        self.input = Path(__file__).parent.joinpath(
+        self.example: bool = example
+        prefix: str = 'example' if self.example else 'day'
+        self.input: Path = Path(__file__).parent.joinpath(
             'inputs',
             f'{prefix}{str(self.day).zfill(2)}.txt',
         )
@@ -489,16 +489,16 @@ class AOC:
         '''
         Time the function
         '''
-        start = time.time()
-        ret = func()
-        total = time.time() - start
+        start: float = time.time()
+        ret: Callable = func()
+        total: float = time.time() - start
         print(f'{label}: {ret} ({total} seconds)')  # pylint: disable=no-member
 
     def run(self):
         '''
         Run both parts and print the results
         '''
-        header = f'Result for Day {self.day}'
+        header: str = f'Result for Day {self.day}'
         print(header)
         print('-' * len(header))
         for part in (1, 2):
