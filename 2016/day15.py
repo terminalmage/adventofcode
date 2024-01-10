@@ -20,7 +20,7 @@ class AOC2016Day15(AOC):
 
     def __init__(self, example: bool = False) -> None:
         '''
-        Load the puzzle data and calculate remainders
+        Load the puzzle data
         '''
         super().__init__(example=example)
 
