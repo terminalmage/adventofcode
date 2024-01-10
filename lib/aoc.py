@@ -321,20 +321,32 @@ class Grid:
 
         grid = Grid(path, lambda col: int(col))
     '''
+    directions: collections.namedtuple = directions
+    opposite_directions: collections.namedtuple = opposite_directions
+
     def __init__(
         self,
-        path: Path,
+        data: Path | str,
         row_cb: Callable[[str], Any] = lambda col: col,
     ) -> None:
         '''
         Load the file from the Path object
         '''
         self.data = []
-        with path.open() as fh:
+        try:
+            fh = data.open()
+        except AttributeError:
+            # Assume string input
+            self.data = [
+                [row_cb(col) for col in line.rstrip()]
+                for line in data.splitlines()
+            ]
+        else:
             self.data = [
                 [row_cb(col) for col in line.rstrip()]
                 for line in fh
             ]
+            fh.close()
         self.rows = len(self.data)
         self.cols = len(self.data[0])
         self.max_row = self.rows - 1
@@ -361,9 +373,9 @@ class Grid:
         Generator which yields a tuple of each neigbboring coordinate and the
         value stored at that coordinate.
         '''
-        in_grid = lambda r, c: 0 <= r <= self.max_row and 0 <= c<= self.max_col
+        in_grid = lambda r, c: 0 <= r <= self.max_row and 0 <= c <= self.max_col
         row, col = coord
-        for (row_delta, col_delta) in directions:
+        for (row_delta, col_delta) in self.directions:
             new_row, new_col = row + row_delta, col + col_delta
             if in_grid(new_row, new_col):
                 yield (new_row, new_col), self.data[new_row][new_col]
@@ -420,7 +432,7 @@ class InfiniteGrid(Grid):
         value stored at that coordinate.
         '''
         row, col = coord
-        for (row_delta, col_delta) in directions:
+        for (row_delta, col_delta) in self.directions:
             new_row, new_col = row + row_delta, col + col_delta
             yield (new_row, new_col), self[(new_row, new_col)]
 
