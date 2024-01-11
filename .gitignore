@@ -2,7 +2,10 @@
 */inputs/day??.txt
 
 # vim swap files
+.*.swo
 .*.swp
+.swo
+.swp
 
 # Python cache
 __pycache__/
