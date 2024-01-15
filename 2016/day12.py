@@ -54,8 +54,10 @@ class Computer:
 
     def optimize(self, program: Program) -> Program:  # pylint: disable=too-many-statements
         '''
-        Detect loops and optimize them. For example, consider the following
-        sequence of instructions:
+        Detect loops and optimize them
+
+        MULTIPLICATION
+        --------------
 
             cpy b c
             inc a
@@ -71,30 +73,88 @@ class Computer:
         register b, load it into register c, and increment register a until
         register c is zero.
 
-        After optimizing double loops, look for and optimize single loops. They
-        will look like the following:
+        DIVISION (WITH REMAINDER)
+        -------------------------
+
+            cpy 2 c
+            jnz b 2
+            jnz 1 6
+            dec b
+            dec c
+            jnz c -4
+            inc a
+            jnz 1 -7
+
+        The first instruction in this loop sets c to 2. The next skips the
+        third instruction, unless b == 0. The third instruction is therefore
+        only reached when b == 0, at which point an unconditional jump is
+        executed to exit the loop (i.e. jump one instruction past the end of
+        it). The 4th and 5th instructions, decrement registers b and c. If
+        register c is nonzero, the sixth instruction jumps back up to the zero
+        check for b (instruction 2), otherwise flow proceeds to the seventh
+        instruction, which increments register a. After register a is
+        incremented, the loop repeats, with an unconditional jump back to the
+        top.
+
+        The result is the following:
+
+            - For every 2 times b is decremented, a is incremented.
+              - This is equivalent to a floor division of register b by 2,
+                adding the result to register a.
+              - The value assigned to register c is the divisor; setting it to
+                3 would increment a once every 3 times b is decremented (i.e.
+                divison by 3).
+            - Once b reaches 0, the loop is exited.
+              - If b is even, it reaches zero at the end of the inner loop.
+                Register c will be reset to 2, but the "jnz b 2" will then exit
+                the loop.
+              - If b is odd, it reaches zero mid-loop, and register c will
+                contain a value of 1
+            - Once the loop is complete, register c contains the divisor minus
+              the remainder of the division. For example, if dividing by 2 like
+              in our example, an even number would leave 2 in register c, while
+              an odd number would leave 1 in register c. If dividing by 3, when
+              the remainder is 1, register c would contain a value of 2.
+
+        ADDITION
+        --------
 
             dec d
             inc c
             jnz d -2
 
         This will have the result of increasing the value of register c by the
-        value of register d, and zeroing out register d.
+        value of register d, and zeroing out register d. Note that this kind of
+        loop could also be used to subtract, by using a "dec" instead of an
+        "inc" here for register c.
+
+        SUBTRACTION
+        -----------
+
+            jnz c 2
+            jnz 1 4
+            dec b
+            dec c
+            jnz 1 -4
+
+        Subtraction can can also be done via its own type of loop. This loop
+        will reduce the value in register b by the value in register c, zeroing
+        out register c in the process. Once register c reaches zero, the second
+        instruction will finally be executed, jumping outside of the loop.
         '''
-        # Make shallow copy of program since we will be modifying its
-        # instructions in place.
+        # Make shallow copy of program since we will be modifying instructions
         program: Program = copy.copy(program)
 
-        double_loop: re.Pattern = re.compile(r'^jnz ([bcd]) -5$')
-        single_loop: re.Pattern = re.compile(r'^jnz ([bcd]) -2$')
+        add: re.Pattern = re.compile(r'^jnz ([abcd]) -2$')
+        multiply: re.Pattern = re.compile(r'^jnz ([abcd]) -5$')
 
         index: int
         instruction: Instruction
 
-        # Detect and optimize double loops
+        # Detect multiplication loops
         for index, instruction in enumerate(program):
             try:
-                outer_reg: str = double_loop.match(instruction).group(1)
+                outer_reg: str = multiply.match(instruction).group(1)
             except AttributeError:
                 # Regex did not match
                 continue
@@ -132,22 +192,78 @@ class Computer:
             if action not in ('inc', 'dec'):
                 continue
             # We've now confirmed the structure of the inner and outer loops
-            # and can construct our optimized command. We will place it at
-            # index - 5 and then overwrite the other commands from the loop
-            # with "jnz 0 0" which will A) be no-ops and B) preserve the total
-            # number of commands (in case the logic and register positions
-            # dictate that the loop should be jumped around using a jnz).
+            # and can construct our optimized command.
             program[index - 5] = (
                 f'mul {inner_reg} {outer_reg} {action} {mod_reg} '
                 f'clear {temp_reg}{outer_reg}'
             )
+            # Preserve the total number of commands by putting no-op jumps
+            # in the other command slots
             for i in range(index - 4, index + 1):
                 program[i] = 'jnz 0 0'
 
-        # Detect and optimize single loops
+        # Detect division loops
+        for index, instruction in enumerate(program):
+            if instruction == 'jnz 1 -7':
+                # Detect the divisor and the remainder register from the top of
+                # the loop
+                divisor: int
+                remainder: str
+                try:
+                    divisor, remainder = re.match(
+                        r'^cpy (\d+) ([abcd])$',
+                        program[index - 7],
+                    ).groups()
+                except AttributeError:
+                    # This is not a match for the divison loop
+                    continue
+                # Detect the dividend register
+                try:
+                    dividend: str = re.match(
+                        r'^jnz ([abcd]) 2$',
+                        program[index - 6],
+                    ).group(1)
+                except AttributeError:
+                    # This is not a match for the divison loop
+                    continue
+                # Make sure the next instruction is our jump out of the loop
+                if program[index - 5] != 'jnz 1 6':
+                    continue
+                # The next two registers should decrement our dividend and
+                # remainder registers. The order is not important.
+                if sorted(program[index - 4:index - 2]) != sorted(
+                    f'dec {reg}' for reg in (dividend, remainder)
+                ):
+                    continue
+                # Find our quotient register
+                try:
+                    quotient: str = re.match(
+                        r'^inc ([abcd])$',
+                        program[index - 1],
+                    ).group(1)
+                except AttributeError:
+                    # This is not a match for the divison loop
+                    continue
+
+                # We've now confirmed the structure of the inner and outer
+                # loops and can construct our optimized command.
+                program[index - 7] = (
+                    f'div {dividend} {divisor} inc {quotient} '
+                    f'rem {remainder} clear {dividend}'
+                )
+                # Preserve the total number of commands by putting no-op jumps
+                # in the other command slots
+                for i in range(index - 6, index + 1):
+                    program[i] = 'jnz 0 0'
+
+        # Detect addditon/subtraction loops. NOTE: This must be done after
+        # multiplication, since a multiplication loop contains an addition loop
+        # within it. Optimizing the inner addition loop before multiplication
+        # loop detection has been performed will break the program. Yes, I did
+        # find out about this the hard way.
         for index, instruction in enumerate(program):
             try:
-                temp_reg: str = single_loop.match(instruction).group(1)
+                temp_reg: str = add.match(instruction).group(1)
             except AttributeError:
                 # Regex did not match
                 continue
@@ -165,14 +281,69 @@ class Computer:
                 action, mod_reg = prev[0].split()
             except ValueError:
                 continue
-            if action not in ('inc', 'dec'):
-                continue
+            # Use no sign for addition and a minus sign for subtraction
+            # (subtraction is the same as adding a negative number)
+            sign: str
+            match action:
+                case 'inc':
+                    sign = ''
+                case 'dec':
+                    sign = '-'
+                case _:
+                    continue
             # We've now confirmed that this matches the characteristics of a
             # single loop. Like we did for double-loops, modify the program and
             # inject an optimized command.
-            program[index - 2] = f'trans {temp_reg} {action} {mod_reg}'
+            program[index - 2] = f'add {temp_reg} {sign}{mod_reg}'
+            # Preserve the total number of commands by putting no-op jumps in
+            # the other command slots
             for i in range(index - 1, index + 1):
                 program[i] = 'jnz 0 0'
+
+        # Detect subtraction loops
+        for index, instruction in enumerate(program):
+            if instruction == 'jnz 1 -4':
+                try:
+                    rvalue: str = re.match(
+                        r'jnz ([abcd]) 2',
+                        program[index - 4],
+                    ).group(1)
+                except AttributeError:
+                    # This is not a match for the subtraction loop
+                    continue
+                # Next, look for the jump out of the loop
+                if program[index - 3] != 'jnz 1 4':
+                    continue
+                # The next two instructions will decrement two registers, the
+                # one we already identified as the rvalue, and the one that
+                # will be the lvalue.
+                decs: list[Instruction] = program[index - 2:index]
+                try:
+                    # Remove the register we identified as the rvalue. This
+                    # will leave a list of length 1, from which we can deduce
+                    # the lvalue.
+                    decs.remove(f'dec {rvalue}')
+                except ValueError:
+                    continue
+                try:
+                    lvalue: str = re.match(
+                        r'dec ([abcd])',
+                        decs[0],
+                    ).group(1)
+                except AttributeError:
+                    # This is not a match for the subtraction loop
+                    continue
+                # Make sure the two registers aren't the same
+                if lvalue == rvalue:
+                    continue
+                # We've now confirmed that this matches the structure of a
+                # subtraction loop. We can now modify the program and inject an
+                # optimized command.
+                program[index - 4] = f'sub {lvalue} {rvalue}'
+                # Preserve the total number of commands by putting no-op jumps
+                # in the other command slots
+                for i in range(index - 3, index + 1):
+                    program[i] = 'jnz 0 0'
 
         return program
 
@@ -212,9 +383,8 @@ class Computer:
                 if register_value:
                     return index + self.resolve(value)
 
-            # The following two commands are not part of the instruction set,
-            # but are rather added by the loop optimization logic.
-
+            # The following commands are not part of the instruction set, but
+            # are rather added by the loop optimization logic.
             case ['mul', reg1, reg2, action, mod_reg, 'clear', clear]:
                 # Multiply the two specified registers
                 product: int = self.resolve(reg1) * self.resolve(reg2)
@@ -227,14 +397,38 @@ class Computer:
                 for clear_reg in clear:
                     setattr(self, clear_reg, 0)
 
-            case ['trans', reg1, action, reg2]:
-                # Transfer the value from reg1 into reg2, clearing reg1
-                value: int = self.resolve(reg1)
-                if action == 'dec':
-                    value *= -1
-                setattr(self, reg2, getattr(self, reg2) + value)
+            case [
+                'div', dividend, divisor, 'inc', mod_reg,
+                'rem', rem_reg, 'clear', clear
+            ]:
+                divisor: int = self.resolve(divisor)
+                result: int
+                remainder: int
+                result, remainder = divmod(self.resolve(dividend), divisor)
+                # Add the result to the register we are modifying
+                setattr(self, mod_reg, getattr(self, mod_reg) + result)
+                # The "remainder" register will have divisor - remainder in it
+                # at the end of the division operation.
+                setattr(self, rem_reg, divisor - remainder)
+                clear_reg: str
+                for clear_reg in clear:
+                    setattr(self, clear_reg, 0)
+
+            case ['add', reg1, reg2]:
+                # Add the value from reg1 into reg2, clearing reg1
+                setattr(self, reg2, getattr(self, reg2) + self.resolve(reg1))
                 # Clear reg1
                 setattr(self, reg1, 0)
+
+            case ['sub', lvalue, rvalue]:
+                # Subtract the rvalue from the lvalue, clearing the rvalue
+                # register.
+                setattr(
+                    self, lvalue,
+                    self.resolve(lvalue) - self.resolve(rvalue)
+                )
+                # Clear rvalue
+                setattr(self, rvalue, 0)
 
             case _:
                 raise ValueError(f'Invalid command: {instruction!r}')
