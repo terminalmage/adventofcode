@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Self
 
-# Typing shortcuts
+# Type hints
 XY = tuple[float, float]
 XYZ = tuple[float, float, float]
 
@@ -28,6 +28,13 @@ opposite_directions = collections.namedtuple(
     ('SOUTH', 'NORTH', 'EAST', 'WEST')
 )(
     (1, 0), (-1, 0), (0, 1), (0, -1)
+)
+
+ordinal_directions = collections.namedtuple(
+    'OrdinalDirections',
+    ('NORTH_EAST', 'SOUTH_EAST', 'SOUTH_WEST', 'NORTH_WEST'),
+)(
+    (-1, 1), (1, 1), (1, -1), (-1, -1)
 )
 
 
@@ -262,6 +269,26 @@ class LineSegment3D:
         return self & other
 
 
+class TupleMixin:
+    '''
+    Adds functions to do things to tuples. Because I don't like writing a bunch
+    of map statements.
+    '''
+    @staticmethod
+    def tuple_add(t1: tuple[int, ...], t2: tuple[int, ...]) -> tuple[int, ...]:
+        '''
+        Add each element of both tuples, returning a new tuple
+        '''
+        return tuple(map(lambda a, b: a + b, t1, t2))
+
+    @staticmethod
+    def tuple_multiply_all(data: tuple[int, ...], factor: int) -> tuple[int, ...]:
+        '''
+        Multiply all items in the tuple by the given factor
+        '''
+        return tuple(map(lambda i: i * factor, data))
+
+
 class XYMixin:
     '''
     Functions to do calculations on XY coordinates
@@ -269,7 +296,8 @@ class XYMixin:
     @staticmethod
     def distance(p1: XY, p2: XY) -> int:
         '''
-        Calculate the number of steps between two coordinates
+        Calculate the number of steps between two coordinates (i.e. the
+        Manhattan Distance)
         '''
         return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
 
