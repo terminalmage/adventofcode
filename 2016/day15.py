@@ -9,7 +9,7 @@ import re
 from aoc import AOC
 
 # Typing shortcuts
-Numbers = tuple[int]
+Numbers = tuple[int, ...]
 
 
 class AOC2016Day15(AOC):
@@ -67,7 +67,7 @@ class AOC2016Day15(AOC):
 
         So, for the following three congruences, in the format x ≡ a(mod m):
 
-            x ≡ 3(mod 5)    i.e. a₁(mod m1)
+            x ≡ 3(mod 5)    i.e. a₁(mod m₁)
             x ≡ 1(mod 7)    i.e. a₂(mod m₂)
             x ≡ 6(mod 8)    i.e. a₃(mod m₃)
 
@@ -198,7 +198,7 @@ class AOC2016Day15(AOC):
         )
 
         # Calculate the product of the modulos (i.e. m₁m₂...mₙ)
-        prod = math.prod(modulos)
+        prod: int = math.prod(modulos)
 
         # Calculate Mₙ for each disc (i.e. modulo product divided by the modulo)
         multipliers: Numbers = tuple(prod // m for m in modulos)
