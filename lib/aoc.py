@@ -521,7 +521,7 @@ class AOC:
         if not self.example:
             return self.input
 
-        return Path(__file__).parent.joinpath(
+        return Path(__file__).parent.parent.joinpath(
             'inputs',
             str(self.year),
             f'example{str(self.day).zfill(2)}part1.txt',
@@ -536,7 +536,7 @@ class AOC:
         if not self.example:
             return self.input
 
-        return Path(__file__).parent.joinpath(
+        return Path(__file__).parent.parent.joinpath(
             'inputs',
             str(self.year),
             f'example{str(self.day).zfill(2)}part2.txt',
