@@ -4,7 +4,7 @@ Base class for Advent of Code submissions
 import collections
 import sys
 import time
-from collections.abc import Callable, Generator
+from collections.abc import Callable, Generator, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Self
@@ -354,7 +354,7 @@ class Grid:
 
     def __init__(
         self,
-        data: Path | str,
+        data: Path | str | Sequence[str],
         row_cb: Callable[[str], Any] = lambda col: col,
     ) -> None:
         '''
@@ -364,10 +364,15 @@ class Grid:
         try:
             fh = data.open()
         except AttributeError:
-            # Assume string input
+            if isinstance(data, str):
+                # If input was a string, split it into a list of strings.
+                # Otherwise, we will assume that data is an iterable sequence
+                # of strings.
+                data = data.splitlines()
+
             self.data = [
                 [row_cb(col) for col in line.rstrip()]
-                for line in data.splitlines()
+                for line in data
             ]
         else:
             self.data = [
