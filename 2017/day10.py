@@ -11,7 +11,90 @@ from collections.abc import Sequence, Generator
 # Local imports
 from aoc import AOC
 
+ROUNDS: int = 64
+SUFFIX: tuple[int, ...] = (17, 31, 73, 47, 23)
+LOOP_SIZE: int = 256
+
+# Type hints
 ByteStream = Sequence[str | int]
+
+
+def sparse_hash(
+    data: ByteStream,
+    rounds: int = ROUNDS,
+    suffix: tuple[int, ...] = SUFFIX,
+    loop_size: int = LOOP_SIZE,
+) -> list[int]:
+    '''
+    Calculate the space
+    '''
+    def asciify(stream: ByteStream) -> Generator[int, None, None]:
+        '''
+        Given a sequence of characters/ints, return the ascii value of the
+        string, or the int.
+        '''
+        for item in stream:
+            try:
+                yield ord(item)
+            except TypeError:
+                if not isinstance(item, int):
+                    raise
+                yield item
+
+    # Initialize the loop
+    loop: deque[int] = deque(range(loop_size))
+    # Track total amount we rotated, so it can be reversed later
+    total_rotation: int = 0
+    # Skip length will increment for each length processed in each round
+    skip: int = 0
+    # The data stream combined with the suffix will provide the lengths used in
+    # the transformations performed below
+    lengths: tuple[int, ...] = tuple(asciify(data)) + tuple(suffix)
+
+    for _ in range(rounds):
+
+        length: int
+        for length in lengths:
+            # Reverse a chunk of the specified length
+            loop.extendleft([loop.popleft() for _ in range(length)])
+            # Rotate the deque to put the current positon at the beginning
+            rotation: int = length + skip
+            loop.rotate(-rotation)
+            total_rotation += rotation
+            # Increase the skip length
+            skip += 1
+
+    # Reverse the rotation to get the original front of the deque
+    # back into position.
+    loop.rotate(total_rotation % len(loop))
+
+    # Return the calculated sparse hash
+    return list(loop)
+
+
+def knot_hash(
+    data: ByteStream,
+    rounds: int = ROUNDS,
+    suffix: tuple[int, ...] = SUFFIX,
+    loop_size: int = LOOP_SIZE,
+) -> None:
+    '''
+    Implement the knot_hash
+    '''
+    sparse: list[int] = sparse_hash(
+        data=data,
+        rounds=rounds,
+        suffix=suffix,
+        loop_size=loop_size,
+    )
+
+    group_size: int = 16
+    dense: list[int] = [
+        functools.reduce(operator.xor, sparse[i:i+group_size])
+        for i in range(0, len(sparse), group_size)
+    ]
+
+    return ''.join(hex(i)[2:].zfill(2) for i in dense)
 
 
 class AOC2017Day10(AOC):
@@ -27,57 +110,16 @@ class AOC2017Day10(AOC):
         super().__init__(example=example)
         self.size = 5 if self.example else 256
 
-    @staticmethod
-    def asciify(stream: ByteStream) -> Generator[int, None, None]:
-        '''
-        Given a sequence of characters/ints, return the ascii value of the
-        string, or the int.
-        '''
-        for item in stream:
-            try:
-                yield ord(item)
-            except TypeError:
-                if not isinstance(item, int):
-                    raise
-                yield item
-
     def knot_hash(
         self,
         data: ByteStream,
-        rounds: int = 1,
-        suffix: tuple[int, ...] = (),
+        rounds: int = 64,
+        suffix: tuple[int, ...] = (17, 31, 73, 47, 23),
+        size: int = 256,
     ) -> list[int]:
         '''
         Perform the Knot Hash algorithm
         '''
-        # Initialize the circle
-        circle: deque[int] = deque(range(self.size))
-        # Track total amount we rotated, so it can be reversed later
-        total_rotation: int = 0
-        # Skip length will increment for each length processed in each round
-        skip: int = 0
-        # The lengths to use
-        lengths: tuple[int, ...] = tuple(self.asciify(data)) + tuple(suffix)
-
-        for _ in range(rounds):
-
-            length: int
-            for length in lengths:
-                # Reverse a chunk of the specified length
-                circle.extendleft([circle.popleft() for _ in range(length)])
-                # Rotate the deque to put the current positon at the beginning
-                rotation: int = length + skip
-                circle.rotate(-rotation)
-                total_rotation += rotation
-                # Increase the skip length
-                skip += 1
-
-        # Reverse the rotation to get the original front of the deque
-        # back into the correct position.
-        circle.rotate(total_rotation % len(circle))
-
-        # Return the sequence of ints as a list
-        return list(circle)
 
     def part1(self) -> int:
         '''
@@ -86,10 +128,13 @@ class AOC2017Day10(AOC):
         the first two items in the resulting list.
         '''
         return math.prod(
-            self.knot_hash(
+            sparse_hash(
                 data=(
                     int(x) for x in self.input.read_text().split(',')
                 ),
+                rounds=1,
+                suffix=(),
+                loop_size=self.size,
             )[:2]
         )
 
@@ -97,17 +142,7 @@ class AOC2017Day10(AOC):
         '''
         Use the more-complex instructions from Part 2 to compute the hash
         '''
-        sparse_hash: list[int] = self.knot_hash(
-            data=self.asciify(self.input.read_text().strip()),
-            rounds=64,
-            suffix=(17, 31, 73, 47, 23),
-        )
-        group_size: int = 16
-        dense_hash: list[int] = [
-            functools.reduce(operator.xor, sparse_hash[i:i+group_size])
-            for i in range(0, len(sparse_hash), group_size)
-        ]
-        return ''.join(hex(i)[2:] for i in dense_hash)
+        return knot_hash(self.input.read_text().strip())
 
 
 if __name__ == '__main__':
