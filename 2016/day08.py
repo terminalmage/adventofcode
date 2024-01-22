@@ -8,27 +8,25 @@ import sys
 from collections.abc import Generator
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, XY
 
 # Typing shortcuts
-Coordinate = tuple[int, int]
-Operation = tuple[str | None, ...]
+Operation = tuple[str | int, ...]
 
 
 class AOC2016Day8(AOC):
     '''
     Day 8 of Advent of Code 2016
     '''
-    day = 8
-    op_re = re.compile(
+    op_re: re.Pattern = re.compile(
         r'rect (\d+)x(\d+)|rotate (row|column) [xy]=(\d+) by (\d+)'
     )
 
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Initialize the object
+        Set row and column count based on whether or not we are running against
+        example data
         '''
-        super().__init__(example=example)
         if self.example:
             self.rows = 3
             self.cols = 7
@@ -42,25 +40,27 @@ class AOC2016Day8(AOC):
         Get one operation at a time from the input file and pass it through the
         regex
         '''
-        with self.input.open() as fh:
-            for line in fh:
-                m = self.op_re.match(line)
-                if m:
-                    op = [item for item in m.groups() if item is not None]
-                    for idx, item in enumerate(op):
-                        try:
-                            op[idx] = int(op[idx])
-                        except ValueError:
-                            pass
-                    yield tuple(op)
+        for line in self.input.splitlines():
+            m: re.Match | None = self.op_re.match(line)
+            if m:
+                op: list[str] = [item for item in m.groups() if item is not None]
+                for idx, item in enumerate(op):
+                    try:
+                        op[idx] = int(op[idx])
+                    except ValueError:
+                        pass
+                yield tuple(op)
 
     @functools.cached_property
-    def pixels(self) -> set[Coordinate]:
+    def pixels(self) -> set[XY]:
         '''
         Execute all the operations, returning a set containing the coordinates
         of the remaining pixels.
         '''
-        pixels = set()
+        # Type hints
+        op: Operation
+
+        pixels: set[XY] = set()
         for op in self.operations:
             match op:
                 case (int(col), int(row)):
@@ -83,10 +83,11 @@ class AOC2016Day8(AOC):
 
         return pixels
 
-    def print(self, pixels: set[Coordinate]) -> None:
+    def print(self, pixels: set[XY]) -> None:
         '''
         Print the contents of the screen to stdout
         '''
+        row: int
         for row in range(self.rows):
             sys.stdout.write(
                 ''.join(
@@ -110,4 +111,6 @@ if __name__ == '__main__':
     # Run against actual data
     aoc = AOC2016Day8(example=False)
     aoc.run()
+    # The solution to Part 2 is the printed result, so do that in lieu of a
+    # part2 func
     aoc.print(aoc.pixels)

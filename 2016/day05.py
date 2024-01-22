@@ -2,39 +2,46 @@
 '''
 https://adventofcode.com/2016/day/5
 '''
-import collections
 import hashlib
+from collections import defaultdict
 from collections.abc import Generator
 
 # Local imports
 from aoc import AOC
+
+# Type hints
+MD5 = str
+MD5Record = tuple[MD5, int]
 
 
 class AOC2016Day5(AOC):
     '''
     Day 5 of Advent of Code 2016
     '''
-    day = 5
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Initialize the object
+        Load the door_id from the input and initialize the cache
         '''
-        super().__init__(example=example)
-        self.door_id = b'abc' if example else b'abbhdwsy'
-        self.cache = collections.defaultdict(dict)
+        self.door_id = self.input.encode()
+        self.cache: defaultdict[bytes, dict[int, MD5Record]] = defaultdict(dict)
 
     def hash_seq(
         self,
         length: int = 0,
-    ) -> Generator[str, None, None]:
+    ) -> Generator[MD5, None, None]:
         '''
         Generator which returns a sequence of "interesting" hashes.
 
         If length is > 0, stop the sequence after that many hashes, otherwise
         produce hashes indefinitely.
         '''
-        found = idx = 0
+        # Type hints
+        md5: MD5
+        idx: int
+        found: int
+        data: bytes
+
+        idx = found = 0
 
         while True:
             # Return the next value in the sequence for this door_id, if we
@@ -67,13 +74,15 @@ class AOC2016Day5(AOC):
         '''
         Return the password using the method from Part 2
         '''
-        length = 8
-        cols = length * [None]
-        hashes = self.hash_seq()
+        length: int = 8
+        cols: list[str | None] = length * [None]
+        hashes: Generator[MD5, None, None] = self.hash_seq()
         while any(col is None for col in cols):
+            pos: str
+            char: str
             pos, char = next(hashes)[5:7]
             try:
-                pos = int(pos)
+                pos: int = int(pos)
             except ValueError:
                 continue
             if pos >= length or cols[pos] is not None:

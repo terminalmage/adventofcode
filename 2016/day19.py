@@ -2,7 +2,7 @@
 '''
 https://adventofcode.com/2016/day/19
 '''
-import collections
+from collections import deque
 
 # Local imports
 from aoc import AOC
@@ -12,14 +12,11 @@ class AOC2016Day19(AOC):
     '''
     Day 19 of Advent of Code 2016
     '''
-    day: int = 19
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Set the number of elves to be used for the puzzle
         '''
-        super().__init__(example=example)
-        self.elves = 5 if self.example else 3004953
+        self.elves: int = int(self.input)
 
     def part1(self) -> int:
         '''
@@ -64,10 +61,10 @@ class AOC2016Day19(AOC):
         # first:    1 2 3
         # second:   6 5 4
         #
-        first: collections.deque[int] = collections.deque(
+        first: deque[int] = deque(
             elf for elf in range(1, (self.elves // 2) + 1)
         )
-        second: collections.deque[int] = collections.deque(
+        second: deque[int] = deque(
             elf for elf in range(self.elves + 1, (self.elves // 2) + 1, -1)
         )
 

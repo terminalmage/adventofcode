@@ -71,20 +71,15 @@ class AOC2016Day25(AOC):
     '''
     Day 25 of Advent of Code 2016
     '''
-    day = 25
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Initialize the computer and load the program from the puzzle input
+        Initialize the SignalGenerator and load the program from the puzzle input
         '''
-        super().__init__(example=example)
         self.generator: SignalGenerator = SignalGenerator()
         # Detect and optimize loops. Note that this is done here rather than in
         # the Generator class' run() method because we will need to run that
         # method many times, and we only want to optimize the program once.
-        self.program: Program = self.generator.optimize(
-            self.input.read_text().splitlines()
-        )
+        self.program: Program = self.generator.optimize(self.input.splitlines())
 
     def part1(self) -> int:
         '''

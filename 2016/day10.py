@@ -2,10 +2,10 @@
 '''
 https://adventofcode.com/2016/day/10
 '''
-import collections
 import heapq
 import math
 import re
+from collections import defaultdict, deque
 from typing import Literal
 
 # Local imports
@@ -16,14 +16,12 @@ class AOC2016Day10(AOC):
     '''
     Day 10 of Advent of Code 2016
     '''
-    day = 10
-
     def sort_chips(self, goal: list[int] | None = None) -> int:
         '''
         Load the initial chip values and rules, and then process bots with two
         chips according to the rules defined in the puzzle input.
         '''
-        Bucket = collections.defaultdict[list]
+        Bucket = defaultdict[list]
         Rule = tuple[str, int, str, int]
 
         value_re = re.compile(r'value (\d+) goes to bot (\d+)')
@@ -33,12 +31,12 @@ class AOC2016Day10(AOC):
         )
 
         buckets: dict[str, Bucket] = {
-            'bot': collections.defaultdict(list),
-            'output': collections.defaultdict(list),
+            'bot': defaultdict(list),
+            'output': defaultdict(list),
         }
         rules: dict[int, Rule] = {}
 
-        for line in self.input.read_text().splitlines():
+        for line in self.input.splitlines():
             try:
                 (
                     source, low_type, low_dest,
@@ -54,7 +52,7 @@ class AOC2016Day10(AOC):
         # To avoid repeated searches through the buckets, we'll use a deque to
         # store bots that have two chips (and thus are ready for their rule to
         # be processed).
-        dq: collections.deque = collections.deque()
+        dq: deque[int] = deque()
 
         # Add the bots that have 2 chips in their initial state to the deque
         bot: int

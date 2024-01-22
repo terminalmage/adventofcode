@@ -457,28 +457,24 @@ class AOC2016Day12(AOC):
     '''
     Day 12 of Advent of Code 2016
     '''
-    day = 12
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Initialize the computer and load the program from the puzzle input
         '''
-        super().__init__(example=example)
         self.computer: Computer = Computer()
-        self.program: Program = self.input.read_text().splitlines()
 
     def part1(self) -> int:
         '''
         Return the value in register a after the program runs to completion
         '''
-        self.computer.run(self.program)
+        self.computer.run(self.input.splitlines())
         return self.computer.a
 
     def part2(self) -> int:
         '''
         Same as part 1, but with register c initialized to 1
         '''
-        self.computer.run(self.program, c=1)
+        self.computer.run(self.input.splitlines(), c=1)
         return self.computer.a
 
 

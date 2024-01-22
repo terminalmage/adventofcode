@@ -13,13 +13,10 @@ class AOC2016Day24(AOC):
     '''
     Day 24 of Advent of Code 2016
     '''
-    day = 24
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Initialize the computer and load the program from the puzzle input
+        Initialize the Grid and calculate the distances between each point
         '''
-        super().__init__(example=example)
         self.map: Grid = Grid(self.input)
         self.num_pos: dict[int, XY] = {}
         for row_num, row in enumerate(self.map.data):

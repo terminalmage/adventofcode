@@ -12,13 +12,10 @@ class AOC2016Day6(AOC):
     '''
     Day 6 of Advent of Code 2016
     '''
-    day = 6
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Initialize the object
+        Load the Grid
         '''
-        super().__init__(example=example)
         self.grid = Grid(self.input)
 
     def part1(self) -> str:

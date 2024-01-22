@@ -10,17 +10,14 @@ class AOC2016Day20(AOC):
     '''
     Day 20 of Advent of Code 2016
     '''
-    day: int = 20
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load puzzle input as a sorted sequence of IP ranges
         '''
-        super().__init__(example=example)
         self.ip_ranges: tuple[tuple[int, int]] = tuple(
             sorted(
                 tuple(int(ip) for ip in line.split('-'))
-                for line in self.input.read_text().splitlines()
+                for line in self.input.splitlines()
             )
         )
 

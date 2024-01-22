@@ -19,8 +19,6 @@ class AOC2016Day4(AOC):
     '''
     Day 4 of Advent of Code 2016
     '''
-    day = 4
-
     @property
     def room_data(self) -> Generator[RoomData, None, None]:
         '''
@@ -28,11 +26,10 @@ class AOC2016Day4(AOC):
         file. A regex is used to ensure
         '''
         room_re = re.compile(r'^([a-z-]+)-(\d+)\[([a-z]+)\]')
-        with self.input.open() as fh:
-            for line in fh:
-                m = room_re.match(line)
-                if m:
-                    yield (m[1], int(m[2]), m[3])
+        for line in self.input.splitlines():
+            m = room_re.match(line)
+            if m:
+                yield (m[1], int(m[2]), m[3])
 
     @property
     def real_rooms(self) -> Generator[RoomData, None, None]:
@@ -94,10 +91,12 @@ class AOC2016Day4(AOC):
         # Generating checksums for each room to decide whether or not to apply
         # the shift cipher is slower than simply applying the cipher to every
         # room name.
+        target: str = 'northpole object storage'
         for (name, sector_id, _) in self.room_data:
-            if self.shift(name, sector_id) == 'northpole object storage':
+            if self.shift(name, sector_id) == target:
                 return sector_id
-        return 0
+
+        raise ValueError(f'Failed to find {target!r}')
 
 
 if __name__ == '__main__':

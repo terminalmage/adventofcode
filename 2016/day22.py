@@ -68,25 +68,21 @@ class AOC2016Day22(AOC):
     '''
     Day 22 of Advent of Code 2016
     '''
-    day: int = 22
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Load puzzle input as a sorted sequence of IP ranges
+        Initialize the StorageGrid
         '''
-        super().__init__(example=example)
         self.grid: StorageGrid = StorageGrid()
-        with self.input.open() as fh:
-            for line in fh:
-                try:
-                    x, y, size, used, avail, percent = (
-                        int(m) for m in re.findall(r'\d+', line)
-                    )
-                except ValueError:
-                    continue
-                self.grid.add_node(x, y, size, used, avail, percent)
-                if used == 0:
-                    self.empty = self.grid[(x, y)]
+        for line in self.input.splitlines():
+            try:
+                x, y, size, used, avail, percent = (
+                    int(m) for m in re.findall(r'\d+', line)
+                )
+            except ValueError:
+                continue
+            self.grid.add_node(x, y, size, used, avail, percent)
+            if used == 0:
+                self.empty = self.grid[(x, y)]
 
         self.max_x: int
         self.max_y: int

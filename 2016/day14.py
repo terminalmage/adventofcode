@@ -53,15 +53,6 @@ class AOC2016Day14(AOC):
     '''
     Day 14 of Advent of Code 2016
     '''
-    day: int = 14
-
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Set the correct md5 salt
-        '''
-        super().__init__(example=example)
-        self.salt = 'abc' if self.example else 'ahsbgdzn'
-
     def key_index(self, key_id: int, stretch: int = DEFAULT_STRETCH) -> int:
         '''
         Find the index of the key_id'th key
@@ -74,11 +65,11 @@ class AOC2016Day14(AOC):
         key_ids: list[int] = []
 
         for index in itertools.count():
-            triple = TRIPLE.search(get_hash(self.salt, index, stretch))
+            triple = TRIPLE.search(get_hash(self.input, index, stretch))
             if triple:
                 char: str = triple.group(1)
                 for fives_index in range(index + 1, index + 1001):
-                    if char in fives(self.salt, fives_index, stretch):
+                    if char in fives(self.input, fives_index, stretch):
                         key_ids.append(index)
                         if len(key_ids) == key_id:
                             return index

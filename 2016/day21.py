@@ -16,15 +16,6 @@ class AOC2016Day21(AOC):
     '''
     Day 21 of Advent of Code 2016
     '''
-    day: int = 21
-
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Load puzzle input as a sorted sequence of IP ranges
-        '''
-        super().__init__(example=example)
-        self.steps: tuple[str] = tuple(self.input.read_text().splitlines())
-
     @staticmethod
     def rotate(
         chars: Chars,
@@ -35,7 +26,7 @@ class AOC2016Day21(AOC):
         Rotate the sequence of characters by the specified amount of
         characters, in the specified direction.
         '''
-        index = index % len(chars)
+        index: int = index % len(chars)
         match direction:
             case 'left':
                 pass
@@ -46,7 +37,7 @@ class AOC2016Day21(AOC):
                 raise ValueError(f'Invalid direction {direction!r}')
 
         # Get elements up to the index
-        detached = chars[:index]
+        detached: Chars = chars[:index]
         # Remove those elements from the original list
         del chars[:index]
         # Append the detached elements to the end of list
@@ -117,7 +108,7 @@ class AOC2016Day21(AOC):
         x: int | str
         y: int | str
 
-        for step in self.steps:
+        for step in self.input.splitlines():
             match step.split():
                 case [
                     'swap', 'position' | 'letter', x,
@@ -160,7 +151,7 @@ class AOC2016Day21(AOC):
         x: int | str
         y: int | str
 
-        for step in reversed(self.steps):
+        for step in reversed(self.input.splitlines()):
             match step.split():
                 case [
                     'swap', 'position' | 'letter', x,

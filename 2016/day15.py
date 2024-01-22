@@ -16,14 +16,10 @@ class AOC2016Day15(AOC):
     '''
     Day 15 of Advent of Code 2016
     '''
-    day: int = 15
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the puzzle data
         '''
-        super().__init__(example=example)
-
         # Zipping a zipped sequence produces parallel unzipped sequences.
         # Gathering a sequence of position-count / position-number pairs from
         # the result of our regex pattern matching gives us such a sequence, so
@@ -32,13 +28,12 @@ class AOC2016Day15(AOC):
         pat: re.Pattern = re.compile(r'(\d+) positions; .+ position (\d+)')
         self.modulos: Numbers
         self.positions: Numbers
-        with self.input.open() as fh:
-            self.modulos, self.positions = zip(
-                *(
-                    (int(m) for m in pat.search(line).groups())
-                    for line in fh
-                )
+        self.modulos, self.positions = zip(
+            *(
+                (int(m) for m in pat.search(line).groups())
+                for line in self.input.splitlines()
             )
+        )
 
     @staticmethod
     def solve(modulos: Numbers, positions: Numbers) -> int:

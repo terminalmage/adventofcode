@@ -76,15 +76,12 @@ class AOC2016Day17(AOC):
     '''
     Day 17 of Advent of Code 2016
     '''
-    day: int = 17
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the puzzle data
         '''
-        super().__init__(example=example)
         self.grid: VaultGrid = VaultGrid()
-        self.passcode = b'kglvqrro' if self.example else b'vwbaicqe'
+        self.passcode: bytes = self.input.encode()
 
     def bfs(self) -> str:
         '''

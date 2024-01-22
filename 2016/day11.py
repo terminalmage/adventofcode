@@ -41,17 +41,14 @@ class AOC2016Day11(AOC):
     '''
     Day 11 of Advent of Code 2016
     '''
-    day = 11
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Hard-code the initial state since the puzzle input is not in a
         parseable format.
         '''
-        super().__init__(example=example)
         elevator: Elevator = 0
         if self.example:
-            self.initial_state = (
+            self.initial_state: State = (
                 elevator, (
                     self.floor(HYDROGEN, LITHIUM),
                     self.floor(-HYDROGEN),
@@ -60,7 +57,7 @@ class AOC2016Day11(AOC):
                 )
             )
         else:
-            self.initial_state = (
+            self.initial_state: State = (
                 elevator, (
                     self.floor(-PROMETHIUM, PROMETHIUM),
                     self.floor(-COBALT, -CURIUM, -RUTHENIUM, -PLUTONIUM),

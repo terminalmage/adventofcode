@@ -13,15 +13,13 @@ class AOC2016Day7(AOC):
     '''
     Day 7 of Advent of Code 2016
     '''
-    day = 7
-
-    def ipv7(self, part: int) -> Generator[str, None, None]:
+    def ipv7(self, data: str) -> Generator[str, None, None]:
         '''
         Generator which yields one IPv7 address at a time from the input file
         '''
-        with self.get_input(part=part).open() as fh:
-            for line in fh:
-                yield line.rstrip()
+        line: str
+        for line in data.splitlines():
+            yield line
 
     @staticmethod
     def split_ipv7(addr: str) -> list[str]:
@@ -81,17 +79,19 @@ class AOC2016Day7(AOC):
         '''
         Check to see if the IPv7 address supports SSL
         '''
-        splits = self.split_ipv7(addr)
+        splits: list[str] = self.split_ipv7(addr)
         if len(splits) == 1:
             # There were no brackets in the address, so it cannot possibly
             # support SSL
             return False
 
+        supernet: list[str]
         for supernet in splits[::2]:
+            aba: str
             for aba in self.aba_iter(supernet):
                 # Invert the ABA sequence and check for it in each of the
                 # hypernet sequences
-                bab = aba.translate(str.maketrans(aba[:2], aba[1::-1]))
+                bab: str = aba.translate(str.maketrans(aba[:2], aba[1::-1]))
                 if any(bab in hypernet for hypernet in splits[1::2]):
                     return True
 
@@ -101,13 +101,17 @@ class AOC2016Day7(AOC):
         '''
         Return the password using the method from Part 1
         '''
-        return sum(self.supports_tls(addr) for addr in self.ipv7(part=1))
+        return sum(
+            self.supports_tls(addr) for addr in self.ipv7(self.input_part1)
+        )
 
     def part2(self) -> int:
         '''
-        Return the password using the method from Part 1
+        Return the password using the method from Part 2
         '''
-        return sum(self.supports_ssl(addr) for addr in self.ipv7(part=2))
+        return sum(
+            self.supports_ssl(addr) for addr in self.ipv7(self.input_part2)
+        )
 
 
 if __name__ == '__main__':

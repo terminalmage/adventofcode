@@ -14,6 +14,9 @@ class Tile(Coordinate):
     '''
     Subclass of Coordinate with modified logic for valid neighbors
     '''
+    # This will be updated after reading the input
+    favorite_number: int = 0
+
     @property
     def neighbors(self) -> Generator[Self, None, None]:
         '''
@@ -26,7 +29,7 @@ class Tile(Coordinate):
             if x < 0 or y < 0:
                 continue
             # Use the specified formula to calculate this tile's integer value
-            result: int = x**2 + (3 * x) + (2 * x * y) + y + y**2 + 1362
+            result: int = x**2 + (3 * x) + (2 * x * y) + y + y**2 + self.favorite_number
             # If the number of bits that are 1 is even, this tile is an empty
             # space, yield it. Otherwise ignore it.
             if not bin(result).count('1') % 2:
@@ -37,7 +40,11 @@ class AOC2016Day13(AOC):
     '''
     Day 13 of Advent of Code 2016
     '''
-    day: int = 13
+    def post_init(self) -> None:
+        '''
+        Set the favorite number as a class attribute
+        '''
+        Tile.favorite_number = int(self.input)
 
     def bfs(
         self,

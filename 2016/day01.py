@@ -2,86 +2,80 @@
 '''
 https://adventofcode.com/2016/day/1
 '''
-import collections
 import re
+from collections import deque
 from collections.abc import Generator, Sequence
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, TupleMixin, XY, directions
 
-# Typing shortcuts
-Coordinate = tuple[int]
+START: XY = (0, 0)
+
+# Type hints
 Step = tuple[str, int]
 
-START = (0, 0)
 
-
-class AOC2016Day1(AOC):
+class AOC2016Day1(AOC, TupleMixin):
     '''
     Day 1 of Advent of Code 2016
     '''
-    day = 1
-
-    def load_directions(self, part: int) -> tuple[Step]:
+    def load_directions(self, data: str) -> tuple[Step]:
         '''
         Load the instructions
         '''
         return tuple(
             (m.group(1), int(m.group(2)))
-            for m in re.finditer(
-                r'([RL])(\d+),?',
-                self.get_input(part=part).read_text()
-            )
+            for m in re.finditer(r'([RL])(\d+),?', data)
         )
 
     @staticmethod
-    def distance(end: Coordinate, start: Coordinate = START) -> int:
+    def distance(end: XY, start: XY = START) -> int:
         '''
         Return the shortest distance in steps between two coordinates
         '''
         return sum(abs(x - y) for x, y in zip(end, start))
 
-    @staticmethod
-    def walk(steps: Sequence[Step]) -> Generator[Coordinate, None, None]:
+    def walk(self, steps: Sequence[Step]) -> Generator[XY, None, None]:
         '''
         Follow the directions, and then return the shortest number of steps
         to get to the destination.
         '''
         location = START
-        deltas = collections.deque(
+        deltas: deque[XY] = deque(
             (
-                (0, 1),     # North
-                (1, 0),     # East
-                (0, -1),    # South
-                (-1, 0),    # West
+                directions.NORTH,
+                directions.EAST,
+                directions.SOUTH,
+                directions.WEST,
             )
         )
+        turn: str
+        distance: int
         for turn, distance in steps:
             deltas.rotate(1 if turn == 'L' else -1)
             for _ in range(distance):
-                location = tuple(
-                    a + b for a, b in zip(location, deltas[0])
-                )
+                location: XY = self.tuple_add(location, deltas[0])
                 yield location
 
     def part1(self) -> int:
         '''
         Return the distance from the starting point
         '''
-        directions = self.load_directions(part=1)
-        return self.distance(list(self.walk(directions))[-1])
+        steps: tuple[Step] = self.load_directions(self.input_part1)
+        return self.distance(list(self.walk(steps))[-1])
 
     def part2(self) -> int:
         '''
         Return the distance from the first location visited twice
         '''
-        directions = self.load_directions(part=2)
-        visited = set()
-        for location in self.walk(directions):
+        steps: tuple[Step] = self.load_directions(self.input_part2)
+        visited: set[XY] = set()
+        for location in self.walk(steps):
             if location in visited:
                 return self.distance(location)
             visited.add(location)
-        return 0
+
+        raise RuntimeError('Failed to find solution')
 
 
 if __name__ == '__main__':

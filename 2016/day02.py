@@ -3,10 +3,9 @@
 https://adventofcode.com/2016/day/2
 '''
 # Local imports
-from aoc import AOC
+from aoc import AOC, XY, directions
 
 # Typing shortcuts
-Coordinate = tuple[int]
 Step = tuple[str, int]
 
 
@@ -14,20 +13,12 @@ class AOC2016Day2(AOC):
     '''
     Day 2 of Advent of Code 2016
     '''
-    day = 2
-
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Setup keypad
-        '''
-        super().__init__(example=example)
-        self.instructions = tuple(self.input.read_text().splitlines())
-        self.deltas = {
-            'U': (-1, 0),
-            'D': (1, 0),
-            'L': (0, -1),
-            'R': (0, 1),
-        }
+    deltas: dict[str, XY] = {
+        'U': directions.NORTH,
+        'D': directions.SOUTH,
+        'L': directions.WEST,
+        'R': directions.EAST,
+    }
 
     def find_code(
         self,
@@ -47,18 +38,20 @@ class AOC2016Day2(AOC):
 
         for row_idx, row in enumerate(keypad):
             if start in row:
-                position = (row_idx, row.index(start))
+                position: XY = (row_idx, row.index(start))
                 break
         else:
             raise ValueError(f'Start point {start!r} not found in keypad')
 
-        low = 0
-        high = len(keypad) - 1
-        code = ''
+        low: int = 0
+        high: int = len(keypad) - 1
+        code: str = ''
 
-        for line in self.instructions:
+        line: str
+        for line in self.input.splitlines():
+            step: str
             for step in line:
-                new_position = tuple(
+                new_position: tuple[int, ...] = tuple(
                     max(low, min(position[i] + self.deltas[step][i], high))
                     for i in range(len(position))
                 )
@@ -73,7 +66,10 @@ class AOC2016Day2(AOC):
         '''
         Return the code derived from following the instructions
         '''
-        keypad = (
+        # Type hints
+        KeypadLine = tuple[str, str, str]
+
+        keypad: tuple[KeypadLine, ...] = (
             ('1', '2', '3'),
             ('4', '5', '6'),
             ('7', '8', '9'),
@@ -84,7 +80,11 @@ class AOC2016Day2(AOC):
         '''
         Return the code derived from following the instructions
         '''
-        keypad = (
+        # Type hints
+        Tile = str | None
+        KeypadLine = tuple[Tile, Tile, Tile, Tile, Tile]
+
+        keypad: tuple[KeypadLine, ...] = (
             (None, None, '1', None, None),
             (None,  '2', '3',  '4', None),
             ( '5',  '6', '7',  '8',  '9'),

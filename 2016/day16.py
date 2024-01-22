@@ -10,15 +10,6 @@ class AOC2016Day16(AOC):
     '''
     Day 16 of Advent of Code 2016
     '''
-    day: int = 16
-
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Set the puzzle data
-        '''
-        super().__init__(example=example)
-        self.data: str = '10000' if self.example else '10001110011110000'
-
     def checksum(self, data: str):
         '''
         Calculate and return checksum of data
@@ -52,13 +43,13 @@ class AOC2016Day16(AOC):
         '''
         Expand the data until target size is reached, then return the checksum
         '''
-        return self.solve(self.data, 20 if self.example else 272)
+        return self.solve(self.input, 20 if self.example else 272)
 
     def part2(self) -> str:
         '''
         Expand the data until target size is reached, then return the checksum
         '''
-        return self.solve(self.data, 35651584)
+        return self.solve(self.input, 35651584)
 
 
 if __name__ == '__main__':

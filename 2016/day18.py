@@ -18,17 +18,14 @@ class AOC2016Day18(AOC):
     '''
     Day 18 of Advent of Code 2016
     '''
-    day: int = 18
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the puzzle data
         '''
-        super().__init__(example=example)
         # A "0" represents a safe tile, while a "1" represents a trap. For an
         # explanation of why, see the docstring for the "rule90" method below.
         trans: dict[int, int] = str.maketrans('.^', '01')
-        self.first_line = self.input.read_text().strip().translate(trans)
+        self.first_line: str = self.input.translate(trans)
 
     def rule90(self, num_lines: int) -> int:
         '''

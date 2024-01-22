@@ -62,26 +62,17 @@ class AOC2016Day9(AOC):
     '''
     Day 9 of Advent of Code 2016
     '''
-    day = 9
-
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Initialize the object
-        '''
-        super().__init__(example=example)
-        self.compressed = self.input.read_text().rstrip()
-
     def part1(self) -> int:
         '''
         Return the length of the decompressed data stream
         '''
-        return decompressed_size(self.compressed)
+        return decompressed_size(self.input)
 
     def part2(self) -> int:
         '''
         Return the length of the decompressed data stream (with recursion)
         '''
-        return decompressed_size(self.compressed, recurse=True)
+        return decompressed_size(self.input, recurse=True)
 
 
 if __name__ == '__main__':

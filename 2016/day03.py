@@ -16,16 +16,13 @@ class AOC2016Day3(AOC):
     '''
     Day 3 of Advent of Code 2016
     '''
-    day = 3
-
     @property
     def horizontal_sides(self) -> Generator[Sides, None, None]:
         '''
         Generator to produce a sequence of items from the input file
         '''
-        with self.input.open() as fh:
-            for line in fh:
-                yield tuple(int(x) for x in line.rstrip().split())
+        for line in self.input.splitlines():
+            yield tuple(int(x) for x in line.split())
 
     @property
     def vertical_sides(self) -> Generator[Sides, None, None]:
@@ -36,12 +33,11 @@ class AOC2016Day3(AOC):
         col2 = []
         col3 = []
 
-        with self.input.open() as fh:
-            for line in fh:
-                n1, n2, n3 = (int(x) for x in line.rstrip().split())
-                col1.append(n1)
-                col2.append(n2)
-                col3.append(n3)
+        for line in self.input.splitlines():
+            n1, n2, n3 = (int(x) for x in line.rstrip().split())
+            col1.append(n1)
+            col2.append(n2)
+            col3.append(n3)
 
         nums = itertools.chain.from_iterable((col1, col2, col3))
 
