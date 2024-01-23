@@ -10,27 +10,23 @@ class AOC2022Day1(AOC):
     '''
     Day 1 of Advent of Code 2022
     '''
-    day = 1
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Calculate calories
         '''
-        super().__init__(example=example)
-        self.elf_calories = {}
-        with self.input.open() as fh:
-            elf_number = 1
-            calories = 0
-            for line in fh:
-                try:
-                    calories += int(line.rstrip('\n'))
-                except ValueError:
-                    # We've reached the blank line dividing groups of snacks.
-                    # Save the result, and then zero out the calorie count and
-                    # increment the elf number
-                    self.elf_calories[elf_number] = calories
-                    calories = 0
-                    elf_number += 1
+        self.elf_calories: dict[int, int] = {}
+        elf_number: int = 1
+        calories: int = 0
+        for line in self.input.splitlines():
+            try:
+                calories += int(line)
+            except ValueError:
+                # We've reached the blank line dividing groups of snacks.
+                # Save the result, and then zero out the calorie count and
+                # increment the elf number
+                self.elf_calories[elf_number] = calories
+                calories = 0
+                elf_number += 1
 
             # When we get to the end of the file the exception above won't
             # trigger, so we need to save the last elf's calories.
@@ -40,13 +36,13 @@ class AOC2022Day1(AOC):
         '''
         Calculate the top calorie count
         '''
-        return max(aoc.elf_calories.values())
+        return max(self.elf_calories.values())
 
     def part2(self) -> int:
         '''
         Calculate the sum of the top three calorie counts
         '''
-        return sum(sorted(aoc.elf_calories.values(), reverse=True)[:3])
+        return sum(sorted(self.elf_calories.values(), reverse=True)[:3])
 
 
 if __name__ == '__main__':

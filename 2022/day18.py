@@ -2,44 +2,36 @@
 '''
 https://adventofcode.com/2022/day/18
 '''
-import collections
 import functools
+from collections import deque
 from collections.abc import Iterator
 
 # Local imports
-from aoc import AOC
-
-# Typing shortcuts
-Coordinate = tuple[int, int, int]
+from aoc import AOC, XYZ
 
 
 class AOC2022Day18(AOC):
     '''
     Day 18 of Advent of Code 2022
     '''
-    day = 18
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the move list and translate it to coordinate deltas
         '''
-        super().__init__(example=example)
+        self.droplet: frozenset[XYZ] = frozenset(
+            tuple(int(item) for item in line.split(','))
+            for line in self.input.splitlines()
+        )
 
-        with self.input.open() as fh:
-            self.droplet = frozenset(
-                tuple(int(item) for item in line.rstrip().split(','))
-                for line in fh
-            )
-
-        self.min_x = min(coord[0] for coord in self.droplet)
-        self.max_x = max(coord[0] for coord in self.droplet)
-        self.min_y = min(coord[1] for coord in self.droplet)
-        self.max_y = max(coord[1] for coord in self.droplet)
-        self.min_z = min(coord[2] for coord in self.droplet)
-        self.max_z = max(coord[2] for coord in self.droplet)
+        self.min_x: int = min(coord[0] for coord in self.droplet)
+        self.max_x: int = max(coord[0] for coord in self.droplet)
+        self.min_y: int = min(coord[1] for coord in self.droplet)
+        self.max_y: int = max(coord[1] for coord in self.droplet)
+        self.min_z: int = min(coord[2] for coord in self.droplet)
+        self.max_z: int = max(coord[2] for coord in self.droplet)
 
     @staticmethod
-    def adjacent(coord: Coordinate) -> Iterator[Coordinate]:
+    def adjacent(coord: XYZ) -> Iterator[XYZ]:
         '''
         Return a sequence of the x, y, z coordinates that are adjacent to the
         given coordinate
@@ -52,7 +44,7 @@ class AOC2022Day18(AOC):
         yield (coord[0], coord[1], coord[2] + 1)
 
     @property
-    def surface(self) -> Iterator[Coordinate]:
+    def surface(self) -> Iterator[XYZ]:
         '''
         Generator function to return a sequence of x, y, z coordinates which
         are 1 unit away in each of the 3 axes, and which are also not part of
@@ -65,7 +57,7 @@ class AOC2022Day18(AOC):
                     yield adjacent
 
     @functools.lru_cache
-    def out_of_bounds(self, coord: Coordinate) -> bool:
+    def out_of_bounds(self, coord: XYZ) -> bool:
         '''
         Returns True if the coordinate is outside the min/max value on any
         of the 3 axes, otherwise False
@@ -77,12 +69,12 @@ class AOC2022Day18(AOC):
         )
 
     @functools.lru_cache
-    def is_edge(self, coord: Coordinate) -> bool:
+    def is_edge(self, coord: XYZ) -> bool:
         '''
         Return True if the coordinate is outside the droplet, otherwise False
         '''
         visited = {coord}
-        dq = collections.deque(visited)
+        dq: deque[XYZ] = deque(visited)
 
         # Perform a breadth-first search starting at the specified coordinate,
         # only adding to the queue if the neighboring node is not one of the
@@ -93,7 +85,8 @@ class AOC2022Day18(AOC):
         # BFS started from a non-edge coordinate will never reach the edge, as
         # the search queue will run out of coordinates.
         while dq:
-            coord = dq.popleft()
+            coord: XYZ = dq.popleft()
+            adjacent: XYZ
             for adjacent in self.adjacent(coord):
                 if adjacent not in visited:
                     if self.out_of_bounds(adjacent):

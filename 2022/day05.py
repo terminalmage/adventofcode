@@ -31,7 +31,7 @@ class Stack:
         '''
         Create the list used to hold the stack items
         '''
-        self.items = []
+        self.items: list[str] = []
 
     def __repr__(self) -> str:
         '''
@@ -79,15 +79,12 @@ class AOC2022Day5(AOC):
     '''
     Day 5 of Advent of Code 2022 (first task)
     '''
-    day = 5
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the initial stack state and process each move
         '''
-        super().__init__(example=example)
-        self.stacks = []
-        self.moves = []
+        self.stacks: list[Stack] = []
+        self.moves: list[Move] = []
 
     def reset_stacks(self):
         '''
@@ -97,26 +94,30 @@ class AOC2022Day5(AOC):
         self.moves.clear()
 
         # Read in the input
-        with self.input.open() as fh:
-            lines = fh.readlines()
+        lines: list[str] = self.input.splitlines(keepends=True)
 
         # Find the blank line dividing the stack definition and the moves list
-        divider = lines.index('\n')
+        divider: int = lines.index('\n')
 
         # Create the stacks
         for _ in lines[divider - 1].rstrip().split():
             self.stacks.append(Stack())
 
         # Populate the stacks
-        width = 4
+        width: int = 4
+        line: str
         for line in lines[divider - 2::-1]:
+            index: int
+            stack: Stack
             for index, stack in enumerate(self.stacks):
+                start: int
+                col: str
                 start = index * width
                 col = line[start:start + width].strip()
                 if col:
                     stack.put(col.strip('[]'))
 
-        move = re.compile(r'move (\d+) from (\d+) to (\d+)')
+        move: re.Pattern = re.compile(r'move (\d+) from (\d+) to (\d+)')
 
         # Parse the moves list
         for line in lines[divider + 1:]:
@@ -130,7 +131,7 @@ class AOC2022Day5(AOC):
         Return the top item from each stack. If a stack is empty, return a
         singls space character for that stack.
         '''
-        ret = []
+        ret: list[str] = []
         for stack in self.stacks:
             try:
                 ret.append(stack[0])
@@ -144,10 +145,11 @@ class AOC2022Day5(AOC):
         '''
         self.reset_stacks()
 
+        move: Move
         for move in self.moves:
-            items = self.stacks[move.old - 1].get(move.amount)
+            items: list[str] | str = self.stacks[move.old - 1].get(move.amount)
             if move.amount == 1:
-                items = [items]
+                items: list[str] = [items]
             self.stacks[move.new - 1].put(*items)
 
         return ''.join(self.tops)
@@ -158,10 +160,11 @@ class AOC2022Day5(AOC):
         '''
         self.reset_stacks()
 
+        move: Move
         for move in self.moves:
-            items = self.stacks[move.old - 1].get(move.amount)
+            items: list[str] | str = self.stacks[move.old - 1].get(move.amount)
             if move.amount == 1:
-                items = [items]
+                items: list[str] = [items]
             self.stacks[move.new - 1].put(*reversed(items))
 
         return ''.join(self.tops)

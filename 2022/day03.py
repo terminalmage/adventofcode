@@ -19,11 +19,11 @@ class RucksackItem:
     '''
     Class to represent a single item from a RucksackCompartment
     '''
-    def __init__(self, item: str):
+    def __init__(self, item: str) -> None:
         '''
         Create the item
         '''
-        self.value = item
+        self.value: str = item
 
     def __repr__(self) -> str:
         '''
@@ -76,8 +76,8 @@ class RucksackItem:
         if item not in PRIORITY:
             raise ValueError(f'Invalid item {item!r}')
 
-        self.__value = item
-        self.priority = PRIORITY[item]
+        self.__value: str = item
+        self.priority: int = PRIORITY[item]
 
 
 class RucksackCompartment:
@@ -88,7 +88,7 @@ class RucksackCompartment:
         '''
         Add the items to the compartment as individual RucksackItem instances
         '''
-        self.items = [RucksackItem(item) for item in items]
+        self.items: list[RucksackItem] = [RucksackItem(item) for item in items]
 
     def __repr__(self) -> str:
         '''
@@ -107,13 +107,17 @@ class Rucksack:
     '''
     Class to represent a single Rucksack
     '''
-    def __init__(self, items: Sequence[str]):
+    def __init__(self, items: Sequence[str]) -> None:
         '''
         Place the items into two separate compartments
         '''
-        compartment_size = int(len(items) / 2)
-        self.compartment1 = RucksackCompartment(items[:compartment_size])
-        self.compartment2 = RucksackCompartment(items[compartment_size:])
+        compartment_size: int = int(len(items) / 2)
+        self.compartment1: RucksackCompartment = RucksackCompartment(
+            items[:compartment_size]
+        )
+        self.compartment2: RucksackCompartment = RucksackCompartment(
+            items[compartment_size:]
+        )
 
     def __repr__(self) -> str:
         '''
@@ -129,6 +133,7 @@ class Rucksack:
         '''
         Return a list of items that are in both compartments
         '''
+        item: RucksackItem
         for item in self.compartment1:
             yield item
         for item in self.compartment2:
@@ -155,23 +160,21 @@ class AOC2022Day3(AOC):
     '''
     Day 3 of Advent of Code 2022
     '''
-    day = 3
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the rucksack contents
         '''
-        super().__init__(example=example)
-        self.rucksacks = []
-        with self.input.open() as fh:
-            for line in fh:
-                self.rucksacks.append(Rucksack(line.rstrip('\n')))
+        self.rucksacks: list[Rucksack] = [
+            Rucksack(line)
+            for line in self.input.splitlines()
+        ]
 
-    def groups(self, size=3) -> Iterator[list[Rucksack]]:
+    def groups(self, size: int = 3) -> Iterator[list[Rucksack]]:
         '''
         Subdivide the rucksacks into groups of rucksacks
         '''
-        start = 0
+        start: int = 0
+        group: list[Rucksack]
         while True:
             if not (group := self.rucksacks[start:start + size]):
                 break
@@ -186,7 +189,7 @@ class AOC2022Day3(AOC):
         if len(group) <= 1:
             raise ValueError('Group must have more than one member')
 
-        itemset = {item.value for item in group[0].items}
+        itemset: set[str] = {item.value for item in group[0].items}
         for othersack in group[1:]:
             itemset &= {item.value for item in othersack.items}
 

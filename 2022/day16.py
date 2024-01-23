@@ -3,19 +3,19 @@
 https://adventofcode.com/2022/day/16
 '''
 from __future__ import annotations
-import collections
-import dataclasses
 import functools
 import re
+from collections import deque
 from collections.abc import Sequence
+from dataclasses import dataclass, field
 
 # Local imports
 from aoc import AOC
 
-TIME_LIMIT = 30
+TIME_LIMIT: int = 30
 
 
-@dataclasses.dataclass
+@dataclass
 class Results:
     '''
     Dataclass to hold the results of a depth-first search
@@ -24,7 +24,7 @@ class Results:
     segments: dict[frozenset, int]
 
 
-@dataclasses.dataclass
+@dataclass
 class Valve:
     '''
     Represents a single valve
@@ -32,17 +32,18 @@ class Valve:
     name: str
     rate: int
     neighbors: str | Sequence[str]
-    distance_to: dict[str, int] = dataclasses.field(default_factory=dict)
+    distance_to: dict[str, int] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         '''
         Split neighbors if passed as a string
         '''
         if isinstance(self.neighbors, str):
-            self.neighbors = [
+            self.neighbors: list[str] = [
                 item.strip() for item in self.neighbors.split(', ')
             ]
 
+        neighbor: str
         for neighbor in self.neighbors:
             if not re.match('^[A-Z]+$', neighbor):
                 raise ValueError(
@@ -54,31 +55,29 @@ class AOC2022Day16(AOC):
     '''
     Day 16 of Advent of Code 2022
     '''
-    day = 16
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the valve definitions
         '''
-        super().__init__(example=example)
-
-        self.valves = {}
-        valve_def = re.compile(
+        self.valves: dict[str, Valve] = {}
+        valve_def: re.Pattern = re.compile(
             r'^Valve ([A-Z]+) has flow rate=(\d+); '
             r'tunnels? leads? to valves? ([A-Z, ]+)$'
         )
-        self.start = 'AA'
-        self.best = {}
+        self.start: str = 'AA'
+        self.best = {}  # MAYBE REMOVE
 
-        with self.input.open() as fh:
-            for line in fh:
-                name, rate, neighbors = valve_def.match(line.rstrip()).groups()
-                self.valves[name] = Valve(
-                    name=name, rate=int(rate), neighbors=neighbors
-                )
+        for line in self.input.splitlines():
+            name: str
+            rate: str
+            neighbors: str
+            name, rate, neighbors = valve_def.match(line).groups()
+            self.valves[name] = Valve(
+                name=name, rate=int(rate), neighbors=neighbors
+            )
 
         # Only stop at valves with a nonzero flow rate
-        self.stops = tuple(
+        self.stops: tuple[str, ...] = tuple(
             item.name for item in self.valves.values()
             if item.rate or item.name == self.start
         )
@@ -92,9 +91,13 @@ class AOC2022Day16(AOC):
         '''
         Use breadth-first search to find distance of shortest path
         '''
-        visited = set()
+        visited: set[str] = set()
 
-        dq = collections.deque([(start, 0)])
+        dq: deque[tuple[str, int]] = deque([(start, 0)])
+
+        name: str
+        distance: int
+        neighbor: str
 
         while dq:
             name, distance = dq.popleft()
@@ -120,8 +123,8 @@ class AOC2022Day16(AOC):
         def _dfs(
             round_start: str,
             clock: int,
-            visited: set,
-            to_visit: set,
+            visited: set[str],
+            to_visit: set[str],
             pressure: int = 0,
         ):
             '''
@@ -129,28 +132,29 @@ class AOC2022Day16(AOC):
             '''
             # Create new distinct sets to use for this recursion level, unless no
             # set was passed, in which case initialize them.
-            visited = visited | {round_start}
-            to_visit = to_visit - visited
+            visited: set[str] = visited | {round_start}
+            to_visit: set[str] = to_visit - visited
 
             # The current path traversed is the set of visited nodes minus the
             # original start point (i.e. not the start of the current round)
-            path = frozenset(visited - {start})
+            path: frozenset[str] = frozenset(visited - {start})
             # Keep track of the pressure for different path segments
             path_segments[path] = max(path_segments.setdefault(path, 0), pressure)
 
-            highest_pressure = 0
+            highest_pressure: int = 0
 
+            dest: str
             for dest in to_visit:
                 # Subtract the time to get from the current location to the
                 # destination, and an extra second to open the valve
-                new_clock = clock - self.bfs(*sorted((round_start, dest))) - 1
+                new_clock: int = clock - self.bfs(*sorted((round_start, dest))) - 1
                 if new_clock > 0:
                     # Add the pressure for the destination valve multiplied by
                     # the number of remaining seconds. For example, if we are
                     # opening a valve with flow_rate 10, and there are 17
                     # seconds remaining on the clock, it will contribute a
                     # cumulative pressure of 170 to the total.
-                    new_pressure = self.valves[dest].rate * new_clock
+                    new_pressure: int = self.valves[dest].rate * new_clock
                     # Recurse to add the largest cumulative flow from the
                     # remaining unvisited valves
                     new_pressure += _dfs(
@@ -165,9 +169,9 @@ class AOC2022Day16(AOC):
 
             return highest_pressure
 
-        visited = set()
-        to_visit = set(self.stops)
-        pressure = _dfs(start, clock, visited, to_visit)
+        visited: set[str] = set()
+        to_visit: set[str] = set(self.stops)
+        pressure: int = _dfs(start, clock, visited, to_visit)
 
         return Results(pressure, path_segments)
 
@@ -182,20 +186,23 @@ class AOC2022Day16(AOC):
         Calculate the max pressure that can be released in the allotted time
         '''
         # Gather the best flow for the paths traversed in the "ideal" path
-        path_segments = self.dfs(start=self.start, clock=TIME_LIMIT - 4).segments
+        path_segments: dict[frozenset[str], int] = self.dfs(
+            start=self.start,
+            clock=TIME_LIMIT - 4,
+        ).segments
 
-        def _visit_remaining_path_segments(segment: frozenset | None):
+        def _visit_remaining_path_segments(segment: frozenset[str] | None):
             '''
             Recursively calculate the flow rate for subsegments of the "ideal"
             path. This lets us know the ideal next move for both parties, given
             whatever the current state of visited valves may be.
             '''
             if segment not in path_segments:
-                max_pressure = 0
+                max_pressure: int = 0
                 # Get the max pressure for this segment and subsegments
                 for valve in segment:
-                    subsegment = segment - {valve}
-                    max_pressure = max(
+                    subsegment: frozenset[str] = segment - {valve}
+                    max_pressure: int = max(
                         max_pressure,
                         _visit_remaining_path_segments(subsegment),
                     )
@@ -211,11 +218,12 @@ class AOC2022Day16(AOC):
         # gathered above in path_segments to determine the highest amount of
         # pressure that could be released. Start with the elephant visiting
         # zero rooms, and end with the elephant visiting (almost) all rooms
-        max_pressure = 0
+        max_pressure: int = 0
+        my_path: frozenset[str]
         for my_path in path_segments:
             # path_segments is keyed by frozenset
-            elephant_path = frozenset(set(self.stops) - my_path - {'AA'})
-            max_pressure = max(
+            elephant_path: frozenset[str] = frozenset(set(self.stops) - my_path - {'AA'})
+            max_pressure: int = max(
                 max_pressure,
                 path_segments[my_path] + path_segments[elephant_path]
             )

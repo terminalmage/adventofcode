@@ -12,22 +12,17 @@ class AOC2022Day8(AOC):
     '''
     Day 8 of Advent of Code 2022
     '''
-    day = 8
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the datastream
         '''
-        super().__init__(example=example)
+        self.trees: list[list[int]] = [
+            [int(item) for item in line]
+            for line in self.input.splitlines()
+        ]
 
-        self.trees = []
-
-        with self.input.open() as fh:
-            for line in fh:
-                self.trees.append([int(item) for item in line.rstrip('\n')])
-
-        self.last_row = len(self.trees) - 1
-        self.last_col = len(self.trees[0]) - 1
+        self.last_row: int = len(self.trees) - 1
+        self.last_col: int = len(self.trees[0]) - 1
 
     def visible(
         self,
@@ -42,7 +37,7 @@ class AOC2022Day8(AOC):
             return True
 
         try:
-            height = self.trees[y][x]
+            height: int = self.trees[y][x]
         except IndexError as exc:
             raise ValueError(f'Coordinate ({x},{y}) is out of bounds') from exc
 
@@ -76,9 +71,15 @@ class AOC2022Day8(AOC):
         Return the scenic score of a tree at the given coordinates
         '''
         try:
-            height = self.trees[y][x]
+            height: int = self.trees[y][x]
         except IndexError as exc:
             raise ValueError(f'Coordinate ({x},{y}) is out of bounds') from exc
+
+        north: int
+        south: int
+        east: int
+        west: int
+        item: int
 
         north = south = east = west = 0
 

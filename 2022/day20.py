@@ -2,13 +2,13 @@
 '''
 https://adventofcode.com/2022/day/20
 '''
-import collections
-from typing import TextIO
+from collections import deque
+from collections.abc import Sequence
 
 # Local imports
 from aoc import AOC
 
-DEFAULT_KEY = 1
+DEFAULT_KEY: int = 1
 
 
 class Cipher:
@@ -17,14 +17,14 @@ class Cipher:
     '''
     def __init__(
         self,
-        fh: TextIO,
+        data: str,
         key: int = DEFAULT_KEY,
     ) -> None:
         '''
         Load the cipher data from the filehandle
         '''
-        self.data = collections.deque(
-            enumerate(map(lambda x: int(x) * key, fh))
+        self.data: deque[tuple[int, int]] = deque(
+            enumerate(int(x) * key for x in data.splitlines())
         )
 
     @property
@@ -35,7 +35,7 @@ class Cipher:
         that position
         '''
         # Find the queue index of the zero value
-        pointer = enumerate(self.data)
+        pointer: Sequence[tuple[int, int]] = enumerate(self.data)
         while (item := next(pointer))[1][1] != 0:
             pass
         index = item[0]
@@ -49,8 +49,9 @@ class Cipher:
         '''
         Perform decryption logic
         '''
-        original_order = list(self.data)
+        original_order: list[int] = list(self.data)
         for _ in range(rounds):
+            item: int
             for item in original_order:
                 # Rotate until we get to the location of this value
                 self.data.rotate(-self.data.index(item))
@@ -66,20 +67,17 @@ class AOC2022Day20(AOC):
     '''
     Day 20 of Advent of Code 2022
     '''
-    day = 20
-
     def load_cipher(self, key=DEFAULT_KEY) -> Cipher:
         '''
         Load the input file into a Cipher object
         '''
-        with self.input.open() as fh:
-            return Cipher(fh, key=key)
+        return Cipher(self.input, key=key)
 
     def part1(self) -> int:
         '''
         Decrypt the cipher and return the coordinates
         '''
-        cipher = self.load_cipher()
+        cipher: Cipher = self.load_cipher()
         cipher.decrypt()
         return cipher.coordinates
 
@@ -87,7 +85,7 @@ class AOC2022Day20(AOC):
         '''
         Decrypt the cipher (10 rounds) using the key from part 2
         '''
-        cipher = self.load_cipher(key=811589153)
+        cipher: Cipher = self.load_cipher(key=811589153)
         cipher.decrypt(rounds=10)
         return cipher.coordinates
 

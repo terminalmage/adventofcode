@@ -5,32 +5,32 @@ https://adventofcode.com/2022/day/4
 # Local imports
 from aoc import AOC
 
+# Type hints
+Assignment = set[int]
+AssignmentPair = tuple[Assignment, Assignment]
+
 
 class AOC2022Day4(AOC):
     '''
     Day 4 of Advent of Code 2022
     '''
-    day = 4
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the cleaning assignment pairs into tuples of sets of ints
         '''
-        super().__init__(example=example)
-        self.assignment_pairs = []
-        with self.input.open() as fh:
-            for line in fh:
-                self.assignment_pairs.append(
-                    tuple(
-                        (
-                            set(range(int(begin), int(end) + 1))
-                            for begin, end in [
-                                section.split('-')
-                                for section in line.rstrip('\n').split(',')
-                            ]
-                        )
+        self.assignment_pairs: list[AssignmentPair] = []
+        for line in self.input.splitlines():
+            self.assignment_pairs.append(
+                tuple(
+                    (
+                        set(range(int(begin), int(end) + 1))
+                        for begin, end in [
+                            section.split('-')
+                            for section in line.split(',')
+                        ]
                     )
                 )
+            )
 
     def part1(self) -> int:
         '''

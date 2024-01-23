@@ -3,46 +3,45 @@
 https://adventofcode.com/2022/day/12
 '''
 from __future__ import annotations
-import collections
 import re
+from collections import deque
 from collections.abc import Iterator, Sequence
 
 # Local imports
-from aoc import AOC
-
-# Typing shortcuts
-Coordinate = tuple[int, int]
+from aoc import AOC, XY
 
 
 class AOC2022Day12(AOC):
     '''
     Day 12 of Advent of Code 2022
     '''
-    day = 12
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the move list and translate it to coordinate deltas
         '''
-        super().__init__(example=example)
+        self.nodes: list[list[int]] = []
+        self.start: XY | None = None
+        self.end: XY | None = None
+        valid: re.Pattern = re.compile('^[a-zSE]+$')
 
-        self.nodes = []
-        valid = re.compile('^[a-zSE]+$')
-        self.start = None
-        self.end = None
+        # Type hints
+        row: int
+        col: int
+        line: str
+        value: str
 
-        for row, line in enumerate(self.input.read_text().splitlines()):
+        for row, line in enumerate(self.input.splitlines()):
             if not valid.match(line):
                 raise ValueError(
                     f'Line #{row + 1} contains one or more invalid characters'
                 )
             self.nodes.append([])
             for col, value in enumerate(line):
-                coord = (row, col)
+                coord: XY = (row, col)
                 if value == 'E':
                     if self.end is not None:
                         raise ValueError('More than one end point found')
-                    self.end = coord
+                    self.end: XY = coord
                     value = 'z'
                 elif value == 'S':
                     if self.start is not None:
@@ -56,13 +55,15 @@ class AOC2022Day12(AOC):
                 # well as an elevation value.
                 self.nodes[row].append(ord(value))
 
-        self.num_rows = len(self.nodes)
-        self.num_cols = len(self.nodes[0])
+        self.num_rows: int = len(self.nodes)
+        self.num_cols: int = len(self.nodes[0])
 
-    def neighbors(self, row: int, col: int) -> Iterator[Coordinate]:
+    def neighbors(self, row: int, col: int) -> Iterator[XY]:
         '''
         Return all neighbors of the specified coordinate
         '''
+        neighbor_row: int
+        neighbor_col: int
         for neighbor_row, neighbor_col in (
             (row + 1, col),
             (row - 1, col),
@@ -76,35 +77,42 @@ class AOC2022Day12(AOC):
                 # Make sure to only yield coordinates that are in bounds
                 yield neighbor_row, neighbor_col
 
-    def matches(self, char: int) -> Iterator[Coordinate]:
+    def matches(self, char: int) -> Iterator[XY]:
         '''
         Generator which returns all coordinates matching the specified
         character
         '''
-        elevation = ord(char)
+        elevation: int = ord(char)
+        row: int
+        col: int
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 if self.nodes[row][col] == elevation:
                     yield row, col
 
-    def bfs(self, *starting_points: Sequence[Coordinate]) -> int:
+    def bfs(self, *starting_points: Sequence[XY]) -> int:
         '''
         Use breadth-first search to find distance of shortest path
         '''
         if not starting_points:
             raise ValueError('At least one start point is required')
 
-        visited = set()
+        visited: set[XY] = set()
 
-        dq = collections.deque((start, 0) for start in starting_points)
+        dq: deque[tuple[XY, int]] = deque((start, 0) for start in starting_points)
 
         while dq:
+            coord: XY
+            distance: int
             coord, distance = dq.popleft()
             if coord == self.end:
                 return distance
 
-            elevation = self.nodes[coord[0]][coord[1]]
+            elevation: int = self.nodes[coord[0]][coord[1]]
+            neighbor_coord: XY
             for neighbor_coord in self.neighbors(*coord):
+                row: int
+                col: int
                 row, col = neighbor_coord
                 if (
                     1 >= (self.nodes[row][col] - elevation)
@@ -117,14 +125,14 @@ class AOC2022Day12(AOC):
         '''
         Calculate the fewest number of steps from start to end
         '''
-        return self.bfs(aoc.start)
+        return self.bfs(self.start)
 
     def part2(self) -> int:
         '''
         Calculate the fewest number of steps from any starting point of
         elevation "a"
         '''
-        return aoc.bfs(*aoc.matches('a'))
+        return self.bfs(*self.matches('a'))
 
 
 if __name__ == '__main__':

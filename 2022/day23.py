@@ -2,15 +2,13 @@
 '''
 https://adventofcode.com/2022/day/23
 '''
-import collections
 import itertools
 import sys
+from collections import defaultdict, deque
+from collections.abc import Callable
 
 # Local imports
-from aoc import AOC
-
-# Typing shortcuts
-Coordinate = tuple[int, int]
+from aoc import AOC, XY
 
 # NOTE: Y-axis inverted because we read in the grid from top to bottom
 N = (0, -1)
@@ -27,19 +25,16 @@ class AOC2022Day23(AOC):
     '''
     Day 23 of Advent of Code 2022
     '''
-    day = 23
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the initial elf arrangement into a set
         '''
-        super().__init__(example=example)
-        self.elves = set()
-        all_directions = tuple(
+        self.elves: set[XY] = set()
+        all_directions: tuple[XY, ...] = tuple(
             coord for coord in itertools.product((-1, 0, 1), repeat=2)
             if coord != (0, 0)
         )
-        self.isolated = lambda elf: all(
+        self.isolated: Callable[[XY], bool] = lambda elf: all(
             tuple(sum(x) for x in zip(elf, direction)) not in self.elves
             for direction in all_directions
         )
@@ -50,13 +45,21 @@ class AOC2022Day23(AOC):
         Load the initial state of the elves, as well as that of the moves
         '''
         self.elves.clear()
-        with self.input.open() as fh:
-            for row, line in enumerate(fh):
-                for col, item in enumerate(line.rstrip()):
-                    if item == '#':
-                        self.elves.add((col, row))
+        row: int
+        col: int
+        line: str
+        item: str
+        for row, line in enumerate(self.input.splitlines()):
+            for col, item in enumerate(line):
+                if item == '#':
+                    self.elves.add((col, row))
 
-        self.moves = collections.deque(
+        # Deltas representing directions to look in
+        ViewCone = tuple[XY, XY, XY]
+        # If no one at that position, propose moving there
+        MoveDelta = XY
+
+        self.moves: deque[tuple[ViewCone, MoveDelta, str]] = deque(
             (
                 ((NW, N, NE), N, 'North'),
                 ((SW, S, SE), S, 'South'),
@@ -65,12 +68,15 @@ class AOC2022Day23(AOC):
             )
         )
 
-    def propose_move(self, elf: Coordinate) -> Coordinate | None:
+    def propose_move(self, elf: XY) -> XY | None:
         '''
         For an elf at the specified coordinate, return the proposed move
         '''
         if not self.isolated(elf):
+            view_cone: tuple[XY, XY, XY]
+            move_delta: XY
             for view_cone, move_delta, _ in self.moves:
+                direction: XY
                 for direction in view_cone:
                     if tuple(sum(x) for x in zip(elf, direction)) in self.elves:
                         # Stop checking this view cone, it's occupied
@@ -79,7 +85,7 @@ class AOC2022Day23(AOC):
                     return tuple(sum(x) for x in zip(elf, move_delta))
         return None
 
-    def call_for_proposals(self):
+    def call_for_proposals(self) -> dict[XY, XY]:
         '''
         Generate proposed moves for each elf according to the movement rules:
 
@@ -98,12 +104,15 @@ class AOC2022Day23(AOC):
         Moves will not be considered if multiple elves propose moving to the
         same coordinate.
         '''
-        moves = collections.defaultdict(list)
+        moves: defaultdict[XY, list[XY]] = defaultdict(list)
+        coord: XY
         for coord in self.elves:
-            move = self.propose_move(coord)
+            move: XY | None = self.propose_move(coord)
             if move is not None:
                 moves[move].append(coord)
 
+        # Discard any destinations for which multiple elves are trying to move
+        new_pos: XY
         for new_pos in list(moves):
             if len(moves[new_pos]) > 1:
                 del moves[new_pos]
@@ -126,6 +135,12 @@ class AOC2022Day23(AOC):
         '''
         Print the current state of the elves
         '''
+        min_x: int
+        max_x: int
+        min_y: int
+        max_y: int
+        row: int
+        col: int
         min_x, max_x, min_y, max_y = self.bounds
         for row in range(min_y, max_y + 1):
             for col in range(min_x, max_x + 1):
@@ -140,6 +155,8 @@ class AOC2022Day23(AOC):
         '''
         self.reset()
         for _ in range(10):
+            old_pos: XY
+            new_pos: XY
             for old_pos, new_pos in self.call_for_proposals().items():
                 self.elves.remove(old_pos)
                 self.elves.add(new_pos)
@@ -147,19 +164,25 @@ class AOC2022Day23(AOC):
             # the correct directions
             self.moves.rotate(-1)
 
+        min_x: int
+        max_x: int
+        min_y: int
+        max_y: int
         min_x, max_x, min_y, max_y = self.bounds
         return (max_x - min_x + 1) * (max_y - min_y + 1) - len(self.elves)
 
     def part2(self) -> int:  # pylint: disable=inconsistent-return-statements
         '''
-        Figure out the correct value to use for the "humn" variable, to make
-        the two components of the root monkey's equation equal
+        Return the number of the first round in which no elf moves
         '''
         self.reset()
+        index: int
         for index in itertools.count(1):
             proposals = self.call_for_proposals()
             if not proposals:
                 return index
+            old_pos: XY
+            new_pos: XY
             for old_pos, new_pos in proposals.items():
                 self.elves.remove(old_pos)
                 self.elves.add(new_pos)

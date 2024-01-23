@@ -7,6 +7,7 @@ import errno
 import os
 import re
 from collections.abc import Iterator
+from typing import Self
 
 # Local imports
 from aoc import AOC
@@ -16,22 +17,22 @@ class PathBase:
     '''
     Base class for Directory and File objects
     '''
-    def __init__(self, name: str, parent: Directory|None) -> None:
+    def __init__(self, name: str, parent: Directory | None) -> None:
         '''
         Create an empty directory
         '''
-        self.name = name
-        self.parent = parent
+        self.name: str = name
+        self.parent: Directory | None = parent
 
     @property
-    def parent(self):
+    def parent(self) -> Directory | None:
         '''
         Return the parent directory
         '''
         return self.__parent
 
     @parent.setter
-    def parent(self, value: Directory|None) -> None:
+    def parent(self, value: Directory | None) -> None:
         '''
         Validate and set the parent
         '''
@@ -39,7 +40,7 @@ class PathBase:
             raise ValueError(
                 f'Expected Directory or NoneType, not {type(value).__name__}'
             )
-        self.__parent = value
+        self.__parent: Directory | None = value
 
     @parent.deleter
     def parent(self) -> None:
@@ -53,7 +54,7 @@ class PathBase:
         Return the absolute path of this file/directory
         '''
         components = [self.name]
-        ptr = self
+        ptr: Self = self
         # Walk back up until you reach the root, adding to the list
         while (ptr := ptr.parent).name != os.path.sep:
             components.append(ptr.name)
@@ -212,55 +213,52 @@ class AOC2022Day7(AOC):
     '''
     Day 7 of Advent of Code 2022
     '''
-    day = 7
     disk_size = 70_000_000
 
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the datastream
         '''
-        super().__init__(example=example)
-        self.rootdir = Directory('/')
+        self.rootdir: Directory = Directory('/')
 
-        line_re = re.compile(r'^(\$|\d+|dir) (.+)')
-        ls = False
+        line_re: re.Pattern = re.compile(r'^(\$|\d+|dir) (.+)')
+        ls: bool = False
 
-        cwd = self.rootdir
+        cwd: Directory = self.rootdir
 
-        with self.input.open() as fh:
-            try:
-                while (line := next(fh).rstrip(os.linesep)):
-                    id_, rest = line_re.match(line).groups()
-                    if id_ == '$':
-                        if rest.startswith('cd '):
-                            dest = rest[3:]
-                            ls = False
-                            if dest == os.path.sep:
-                                cwd = self.rootdir
-                            else:
-                                cwd = cwd[dest]
-                        elif rest == 'ls':
-                            ls = True
-                        else:
-                            raise ValueError(f'{rest}: invalid command')
+        line: str
+        for line in self.input.splitlines():
+            id_: str
+            rest: str
+            id_, rest = line_re.match(line).groups()
+            if id_ == '$':
+                if rest.startswith('cd '):
+                    dest: str = rest[3:]
+                    ls = False
+                    if dest == os.path.sep:
+                        cwd = self.rootdir
                     else:
-                        if not ls:
-                            raise ValueError(
-                                'Encountered file listing outside of ls '
-                                'command'
-                            )
-                        try:
-                            size = int(id_)
-                        except ValueError:
-                            # This is a directory
-                            cwd.mkdir(rest)
-                        else:
-                            # This is a file
-                            cwd.add(rest, size=size)
-            except StopIteration:
-                pass
+                        cwd = cwd[dest]
+                elif rest == 'ls':
+                    ls = True
+                else:
+                    raise ValueError(f'{rest}: invalid command')
+            else:
+                if not ls:
+                    raise ValueError(
+                        'Encountered file listing outside of ls '
+                        'command'
+                    )
+                try:
+                    size: int = int(id_)
+                except ValueError:
+                    # This is a directory
+                    cwd.mkdir(rest)
+                else:
+                    # This is a file
+                    cwd.add(rest, size=size)
 
-    def __getitem__(self, path: str) -> Directory|File:
+    def __getitem__(self, path: str) -> Directory | File:
         '''
         Return the desired Directory or File object
         '''
@@ -285,7 +283,7 @@ class AOC2022Day7(AOC):
         '''
         Return the amount of unused space (disk space - size)
         '''
-        ret = self.disk_size - self.size
+        ret: int = self.disk_size - self.size
         if ret < 0:
             raise OSError(errno.ENOSPC, os.strerror(errno.ENOSPC))
         return ret
@@ -306,9 +304,10 @@ class AOC2022Day7(AOC):
         '''
         Calculate the cumulative size of dirs <= 100000 bytes in size
         '''
-        size = 0
-        for directory in aoc.dirs(recurse=True):
-            dir_size = directory.size
+        size: int = 0
+        directory: Directory
+        for directory in self.dirs(recurse=True):
+            dir_size: int = directory.size
             if dir_size <= 100_000:
                 size += dir_size
 
@@ -319,9 +318,9 @@ class AOC2022Day7(AOC):
         Calculate the size of the smallest dir that can be removed to bring the
         amount of unused space above the target
         '''
-        target_unused = 30_000_000
-        unused = self.unused_size
-        excess_size = target_unused - unused
+        target_unused: int = 30_000_000
+        unused: int = self.unused_size
+        excess_size: int = target_unused - unused
         if excess_size <= 0:
             raise RuntimeError(f'Unused space ({unused}) should be > {target_unused}')
 

@@ -1,11 +1,12 @@
 '''
 Base class for Advent of Code submissions
 '''
-import collections
 import functools
+import operator
 import re
 import sys
 import time
+from collections import namedtuple
 from collections.abc import Callable, Generator, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -17,7 +18,7 @@ XYZ = tuple[float, float, float]
 
 # NOTE: These coordinate deltas are (row, col) instead of (col, row), designed
 # for interacting with AoC inputs read in line-by-line.
-directions = collections.namedtuple(
+directions = namedtuple(
     'Directions',
     ('NORTH', 'SOUTH', 'WEST', 'EAST')
 )(
@@ -25,19 +26,61 @@ directions = collections.namedtuple(
 )
 # This namedtuple is a mirror of above, with the tuple indexes being the
 # opposite direction of their counterparts.
-opposite_directions = collections.namedtuple(
+opposite_directions = namedtuple(
     'Directions',
     ('SOUTH', 'NORTH', 'EAST', 'WEST')
 )(
     (1, 0), (-1, 0), (0, 1), (0, -1)
 )
 
-ordinal_directions = collections.namedtuple(
+ordinal_directions = namedtuple(
     'OrdinalDirections',
     ('NORTH_EAST', 'SOUTH_EAST', 'SOUTH_WEST', 'NORTH_WEST'),
 )(
     (-1, 1), (1, 1), (1, -1), (-1, -1)
 )
+
+# The below is a dictionary mapping operators to functions from the operator
+# module, allowing for math (as well as comparisons, <, >, etc.) to be
+# performed programatically without resorting to using eval(). For example,
+# oper_map['+'](a, b) would be equivalent to running a + b. Note that this will
+# not ensure you have int/float arguments, if a and b were '1' and '2',
+# respectively, the result would be '12' (i.e. string concatenation).
+#
+# It should be noted that in-place operators do not update the first operand
+# passed to them, so oper_map['+='](x, y) does not modify x in-place, but
+# rather has the same result as oper_map['+'](x, y).
+#
+# See: https://docs.python.org/3/library/operator.html#in-place-operators
+#
+# All of these functions take two arguments, unliess otherwise indicated.
+oper_map: dict[str, Callable[[Any, Any], Any]] = {
+    '<': operator.lt,
+    '<=': operator.le,
+    '==': operator.eq,
+    '!=': operator.ne,
+    '>': operator.gt,
+    '>=': operator.ge,
+    'is': operator.is_,
+    'is not': operator.is_not,
+    'abs': operator.abs,        # Takes single operand
+    '+': operator.add,
+    '+=': operator.iadd,
+    '-': operator.sub,
+    '-=': operator.isub,
+    '*': operator.mul,
+    '*=': operator.imul,
+    '/': operator.truediv,      # Division (produces float result)
+    '/=': operator.itruediv,
+    '//': operator.floordiv,    # Floor division (produces int result)
+    '//=': operator.ifloordiv,
+    '&': operator.and_,
+    '&=': operator.iand,
+    '|': operator.or_,
+    '|=': operator.ior,
+    '^': operator.xor,
+    '^=': operator.ixor,
+}
 
 
 @dataclass(frozen=True)
@@ -351,8 +394,8 @@ class Grid:
 
         grid = Grid(path, lambda col: int(col))
     '''
-    directions: collections.namedtuple = directions
-    opposite_directions: collections.namedtuple = opposite_directions
+    directions: namedtuple = directions
+    opposite_directions: namedtuple = opposite_directions
 
     def __init__(
         self,

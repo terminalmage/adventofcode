@@ -3,9 +3,9 @@
 https://adventofcode.com/2022/day/13
 '''
 from __future__ import annotations
-import functools
 import itertools
 import json
+import math
 from collections.abc import Iterator, Sequence
 
 # Local imports
@@ -110,21 +110,20 @@ class AOC2022Day13(AOC):
     '''
     Day 13 of Advent of Code 2022
     '''
-    day = 13
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Initialize the object
+        Initialize the list of packets
         '''
-        super().__init__(example=example)
-        self.packets = []
+        self.packets: list[Packet] = []
 
     @property
     def pairs(self) -> Iterator[tuple[Packet]]:
         '''
         Return packets in pairs until all packets are exhausted
         '''
+        index: int
         for index in itertools.count(0, 2):
+            pair: tuple[Packet, Packet]
             pair = tuple(self.packets[index:index + 2])
             if len(pair) != 2:
                 break
@@ -136,12 +135,11 @@ class AOC2022Day13(AOC):
         '''
         self.packets.clear()
 
-        with self.input.open() as fh:
-            self.packets.extend(
-                Packet(*(segment for segment in json.loads(line)))
-                for line in fh
-                if line != '\n'
-            )
+        self.packets.extend(
+            Packet(*(segment for segment in json.loads(line)))
+            for line in self.input.splitlines(keepends=True)
+            if line != '\n'
+        )
 
     def part1(self) -> int:
         '''
@@ -157,13 +155,10 @@ class AOC2022Day13(AOC):
         Compute the product of the indicies of the divider packets
         '''
         self.load_packets()
-        dividers = [Packet([2]), Packet([6])]
+        dividers: list[Packet] = [Packet([2]), Packet([6])]
         self.packets.extend(dividers)
         self.packets.sort()
-        return functools.reduce(
-            lambda x, y: x * y,
-            (self.packets.index(item) + 1 for item in dividers)
-        )
+        return math.prod(self.packets.index(item) + 1 for item in dividers)
 
 
 if __name__ == '__main__':

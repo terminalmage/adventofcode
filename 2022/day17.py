@@ -4,36 +4,34 @@ https://adventofcode.com/2022/day/17
 '''
 import itertools
 import sys
+from collections.abc import Sequence
+from typing import Callable
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, XY
 
 # Typing shortcuts
-Coordinate = tuple[int, int]
-Rock = set[Coordinate]
+Rock = set[XY]
 
 
 class AOC2022Day17(AOC):
     '''
     Day 17 of Advent of Code 2022
     '''
-    day = 17
     width = 7
 
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the jet pattern and define the rock sequence. The reset_chamber()
         function will create new itertools.cycle instances for both, which
         allow them to be repeated in a loop for as long as we need.
         '''
-        super().__init__(example=example)
-
         # Translate the jet pattern into a sequence of left/right. This way we
         # only need to translate once, and not repeat this several times for
         # each rock that is dropped.
         jet_map = {'<': 'left', '>': 'right'}
-        self.__jet_pattern = tuple(
-            jet_map[item] for item in self.input.read_text().rstrip()
+        self.__jet_pattern: tuple[str, ...] = tuple(
+            jet_map[item] for item in self.input
         )
 
         # Define the sequence of rocks as a sequence of lambdas, to which the
@@ -47,7 +45,7 @@ class AOC2022Day17(AOC):
         #
         # Each Rock's left side will start in the third column (i.e. column
         # index 2).
-        self.__rock_sequence = (
+        self.__rock_sequence: tuple[Callable, ...] = (
             #
             #  @@@@
             #
@@ -96,8 +94,8 @@ class AOC2022Day17(AOC):
             },
         )
 
-        self.chamber = set()
-        self.top = 0
+        self.chamber: set[XY] = set()
+        self.top: int = 0
 
     def move_down(self, rock: Rock) -> Rock:
         '''
@@ -107,7 +105,7 @@ class AOC2022Day17(AOC):
         successful, a new Rock representing the updated coordinates will be
         returned.
         '''
-        new_rock = {(col, row - 1) for col, row in rock}
+        new_rock: set[XY] = {(col, row - 1) for col, row in rock}
         return rock if new_rock & self.chamber else new_rock
 
 
@@ -121,7 +119,7 @@ class AOC2022Day17(AOC):
         is successful, a new Rock representing the updated coordinates will be
         returned.
         '''
-        new_rock = {(col - 1, row) for col, row in rock}
+        new_rock: set[XY] = {(col - 1, row) for col, row in rock}
         if any(coord[0] < 0 for coord in new_rock) or new_rock & self.chamber:
             # Rock was already against the wall or adjacent to another rock
             return rock
@@ -137,7 +135,7 @@ class AOC2022Day17(AOC):
         is successful, a new Rock representing the updated coordinates will be
         returned.
         '''
-        new_rock = {(col + 1, row) for col, row in rock}
+        new_rock: set[XY] = {(col + 1, row) for col, row in rock}
         if any(coord[0] >= self.width for coord in new_rock) or new_rock & self.chamber:
             # Rock was already against the wall or adjacent to another rock
             return rock
@@ -153,10 +151,14 @@ class AOC2022Day17(AOC):
         '''
         self.chamber.clear()
         self.chamber.update((col, 0) for col in range(self.width))
-        self.top = 0
+        self.top: int = 0
         # pylint: disable=attribute-defined-outside-init
-        self.jet_pattern = itertools.cycle(enumerate(self.__jet_pattern))
-        self.rock_sequence = itertools.cycle(enumerate(self.__rock_sequence))
+        self.jet_pattern: Sequence[tuple[int, str]] = itertools.cycle(
+            enumerate(self.__jet_pattern)
+        )
+        self.rock_sequence: Sequence[tuple[int, Callable]] = itertools.cycle(
+            enumerate(self.__rock_sequence)
+        )
         # pylint: enable=attribute-defined-outside-init
 
     def print_chamber(self) -> None:
@@ -164,6 +166,7 @@ class AOC2022Day17(AOC):
         Print the current state of the chamber to stdout
         '''
         # Write the rows from the top down
+        row: int
         for row in range(self.top, 0, -1):
             sys.stdout.write('|')
             for col in range(self.width):
@@ -180,6 +183,13 @@ class AOC2022Day17(AOC):
         '''
         # Empty the chamber in case a simulation has already been run
         self.reset_chamber()
+
+        # Type hints
+        rock_index: int
+        rock_gen: Callable
+        rock: Rock
+        jet_index: int
+        direction: str
 
         tracked = {}
 
@@ -203,18 +213,18 @@ class AOC2022Day17(AOC):
                     # compute the eventual height by adding a multiple of the
                     # amount of remaining cycle iterations and the amount the
                     # chamber's height increases each cycle.
-                    key = (rock_index, jet_index)
+                    key: tuple[int, int] = (rock_index, jet_index)
                     if key in tracked:
                         prev_rock_num, elevation = tracked[key]
-                        period = rock_num - prev_rock_num
+                        period: int = rock_num - prev_rock_num
                         if rock_num % period == num_rocks % period:
-                            print(
-                                f'Cycle of period {period} detected '
-                                f'(iterations {prev_rock_num} - {rock_num})'
-                            )
-                            cycle_height = self.top - elevation
-                            rocks_remaining = num_rocks - rock_num
-                            cycles_remaining = (rocks_remaining // period) + 1
+                            #print(
+                            #    f'Cycle of period {period} detected '
+                            #    f'(iterations {prev_rock_num} - {rock_num})'
+                            #)
+                            cycle_height: int = self.top - elevation
+                            rocks_remaining: int = num_rocks - rock_num
+                            cycles_remaining: int = (rocks_remaining // period) + 1
                             return elevation + (cycle_height * cycles_remaining)
                     else:
                         tracked[key] = (rock_num, self.top)
@@ -228,7 +238,7 @@ class AOC2022Day17(AOC):
                     # set of coordinates.
                     self.chamber.update(rock)
                     # Calculate new top of tower
-                    self.top = max(coord[1] for coord in self.chamber)
+                    self.top: int = max(coord[1] for coord in self.chamber)
                     # Nothing left to do for this rock, exit the loop
                     break
 

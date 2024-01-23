@@ -6,45 +6,41 @@ import re
 import sys
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, oper_map
 
-# Typing shortcuts
+# Type hints
 Expression = tuple[str, str, str]
+Monkeys = dict[str, tuple[int | Expression]]
 
 
 class AOC2022Day21(AOC):
     '''
     Day 21 of Advent of Code 2022
     '''
-    day = 21
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the monkeys into a data structure. If the monkey has an integer
         value associated with it, store that value. Otherwise, store a lambda
         that can be used to compute its value at a later time.
         '''
-        super().__init__(example=example)
-
-        monkey_re = re.compile(
+        monkey_re: re.Pattern = re.compile(
             r'([a-z]+): (?:(\d+)|([a-z]+) ([*/+-]) ([a-z]+))'
         )
 
-        self.monkeys = {}
-        with self.input.open() as fh:
-            for line in fh:
-                name, value, lvalue, operand, rvalue = monkey_re.match(line).groups()
-                if value is not None:
-                    self.monkeys[name] = int(value)
-                else:
-                    self.monkeys[name] = (lvalue, operand, rvalue)
+        self.monkeys: Monkeys = {}
+        for line in self.input.splitlines():
+            name, value, lvalue, operand, rvalue = monkey_re.match(line).groups()
+            if value is not None:
+                self.monkeys[name] = int(value)
+            else:
+                self.monkeys[name] = (lvalue, operand, rvalue)
 
     def evaluate(
         self,
         name: str,
-        monkeys: dict[str, int | Expression] | None = None,
+        monkeys: dict[str, float | Expression] | None = None,
         human: int | None = None,
-    ) -> int:
+    ) -> float:
         '''
         Calculate the value for the specified monkey
         '''
@@ -57,11 +53,10 @@ class AOC2022Day21(AOC):
         try:
             # Retrieve the lvalue and rvalue for the arithmetic expression,
             # computing those values if needed
-            lvalue = self.evaluate(value[0], monkeys=monkeys)
-            rvalue = self.evaluate(value[2], monkeys=monkeys)
-            # Evaluate the arithmetic expression and replace the monkey's value
-            # with the evaluated result
-            monkeys[name] = eval(f'{lvalue} {value[1]} {rvalue}', {}, {})  # pylint: disable=eval-used
+            lvalue: float = self.evaluate(value[0], monkeys=monkeys)
+            rvalue: float = self.evaluate(value[2], monkeys=monkeys)
+            # Evaluate the value for the monkey
+            monkeys[name] = oper_map[value[1]](lvalue, rvalue)
             # Return the evaluated result
             return monkeys[name]
         except TypeError:
@@ -73,7 +68,7 @@ class AOC2022Day21(AOC):
         '''
         If the value is an int, return an integer type
         '''
-        int_value = int(value)
+        int_value: int = int(value)
         if value == int_value:
             return int_value
         return value
@@ -87,8 +82,11 @@ class AOC2022Day21(AOC):
     def part2(self) -> int | float:
         '''
         Figure out the correct value to use for the "humn" variable, to make
-        the two components of the root monkey's equation equal
+        the two components of the root monkey's equation equal, using a binary
+        search.
         '''
+        left: str
+        right: str
         left, right = self.monkeys['root'][0], self.monkeys['root'][2]
 
         def _get_diff(human: int) -> int:
@@ -96,22 +94,22 @@ class AOC2022Day21(AOC):
             Calculate both left and right monkeys with the specified value for
             the "humn" variable, and return the difference
             '''
-            monkeys = self.monkeys.copy()
-            lvalue = self.evaluate(left, monkeys=monkeys, human=human)
-            rvalue = self.evaluate(right, monkeys=monkeys, human=human)
+            monkeys: Monkeys = self.monkeys.copy()
+            lvalue: int = self.evaluate(left, monkeys=monkeys, human=human)
+            rvalue: int = self.evaluate(right, monkeys=monkeys, human=human)
             return lvalue - rvalue
 
-        modifier = _get_diff(1) > 0
+        modifier: True = _get_diff(1) > 0
 
-        low = 0
-        high = sys.maxsize
+        low: int = 0
+        high: int = sys.maxsize
 
         while True:
             # Select the midpoint between low and high
-            human = (low + high) // 2
+            human: int = (low + high) // 2
 
             # Evaluate both lvalue and rvalue using this value for "humn"
-            diff = _get_diff(human)
+            diff: int = _get_diff(human)
 
             if not diff:
                 # Both lvalue and rvalue were identical, break out of loop

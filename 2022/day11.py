@@ -3,21 +3,14 @@
 https://adventofcode.com/2022/day/11
 '''
 from __future__ import annotations
-import functools
+import math
 import re
-from collections.abc import Callable, Iterator, Sequence
+from collections.abc import Callable, Iterator
 
 # Local imports
 from aoc import AOC
 
 DEFAULT_CALM = True
-
-
-def multiply_all(*items: Sequence[int]) -> int:
-    '''
-    Return the result of multiplying all the items in the sequence
-    '''
-    return functools.reduce(lambda x, y: x * y, *items)
 
 
 class Barrel:
@@ -28,7 +21,7 @@ class Barrel:
         '''
         Create an empty barrel
         '''
-        self.__monkeys = {}
+        self.__monkeys: dict[int, Monkey] = {}
         self.calm = calm
         self.cm = None
 
@@ -36,6 +29,7 @@ class Barrel:
         '''
         Iterate over the monkeys in ID order
         '''
+        key: int
         for key in sorted(self.__monkeys):
             yield self[key]
 
@@ -56,7 +50,7 @@ class Barrel:
         Add a monkey
         '''
         self.__monkeys[monkey.num] = monkey
-        self.cm = multiply_all(item.divisible_by for item in self.__monkeys.values())
+        self.cm: int = math.prod(item.divisible_by for item in self.__monkeys.values())
 
     def run(self, rounds: int) -> None:
         '''
@@ -101,13 +95,13 @@ class Monkey:
         '''
         Initialize the monkey
         '''
-        self.num = num
-        self.items = items
-        self.operation = operation
-        self.divisible_by = divisible_by
-        self.on_true = on_true
-        self.on_false = on_false
-        self.inspected = 0
+        self.num: int = num
+        self.items: list[int] = items
+        self.operation: Callable[[int], int] = operation
+        self.divisible_by: int = divisible_by
+        self.on_true: int = on_true
+        self.on_false: int = on_false
+        self.inspected: int = 0
 
     def __repr__(self) -> str:
         '''
@@ -120,8 +114,6 @@ class AOC2022Day11(AOC):
     '''
     Day 11 of Advent of Code 2022
     '''
-    day = 11
-
     def load_monkeys(self) -> Iterator[Monkey]:
         '''
         Load the input and return a sequence of Monkey objects
@@ -134,8 +126,8 @@ class AOC2022Day11(AOC):
             r'\s*Operation: new = old (\+|\*) (\d+|old)\n'
             r'\s*Test: divisible by (\d+)\n'
             r'\s*If true: throw to monkey (\d+)\n'
-            r'\s*If false: throw to monkey (\d+)\n',
-            self.input.read_text(),
+            r'\s*If false: throw to monkey (\d+)',
+            self.input,
             flags=re.MULTILINE,
         ):
             yield Monkey(
@@ -155,13 +147,13 @@ class AOC2022Day11(AOC):
         '''
         Let's get down to (monkey) business!
         '''
-        barrel = Barrel(calm=calm)
+        barrel: Barrel = Barrel(calm=calm)
+        item: Monkey
         for item in self.load_monkeys():
             barrel.add(item)
         barrel.run(rounds=rounds)
 
-        return functools.reduce(
-            lambda x, y: x * y,
+        return math.prod(
             sorted((item.inspected for item in barrel), reverse=True)[:2]
         )
 

@@ -6,12 +6,10 @@ import functools
 import math
 import re
 from dataclasses import dataclass
+from collections.abc import Callable
 
 # Local imports
-from aoc import AOC
-
-# Typing shortcuts
-Coordinate = tuple[int, int]
+from aoc import AOC, XY
 
 PATH = '.'
 WALL = '#'
@@ -30,36 +28,33 @@ class AOC2022Day22(AOC):
     '''
     Day 22 of Advent of Code 2022
     '''
-    day = 22
-    width = 7
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Load the jet pattern and define the rock sequence. The reset_chamber()
-        function will create new itertools.cycle instances for both, which
-        allow them to be repeated in a loop for as long as we need.
+        Load the input and set everything up for the path traversal
         '''
-        super().__init__(example=example)
+        lines: list[str] = self.input.splitlines()
+        path_lines: list[str] = lines[:-2]
+        moves: str = lines[-1]
 
-        lines = self.input.read_text().splitlines()
-        path_lines = lines[:-2]
-        moves = lines[-1]
-
-        lengths = [len(line) for line in path_lines]
-        self.width = max(*lengths)
-        self.height = len(lengths)
+        lengths: list[int] = [len(line) for line in path_lines]
+        self.width: int = max(*lengths)
+        self.height: int = len(lengths)
         # The length of each side of each face
-        self.face_size = math.gcd(*lengths)
+        self.face_size: int = math.gcd(*lengths)
 
         # Assign the input to the grid
-        self.grid = {}
+        self.grid: dict[XY, str] = {}
+        row: int
+        col: int
+        line: str
+        char: str
         for row, line in enumerate(path_lines):
             for col, char in enumerate(line.rstrip()):
                 if char in (PATH, WALL):
                     self.grid[(col, row)] = char
 
         # Mapping of directions to the x/y delta used to move in that direction
-        self.move_deltas = {
+        self.move_deltas: dict[int, XY] = {
             0: (1, 0),   # right
             1: (0, 1),   # down
             2: (-1, 0),  # left
@@ -68,7 +63,9 @@ class AOC2022Day22(AOC):
 
         # Reduce coordinate into a "face" coordinate
         # e.g. (50, 100) becomes (1, 2) for a face_size of 50
-        _coord_to_face = lambda coord: tuple(x // self.face_size for x in coord)
+        _coord_to_face: Callable[[XY], XY] = lambda coord: tuple(
+            x // self.face_size for x in coord
+        )
 
         # Assign adjacent faces that we can derive simply from analyzing where
         # path/wall characters exist in the grid. The "faces" attribute here
@@ -77,36 +74,48 @@ class AOC2022Day22(AOC):
         # coordinate positions divided by the face size. For example, given a
         # face size of 50, face (1, 2) would have a top-left corner located at
         # (50, 100), and a bottom-right corner located at (99, 149).
-        self.faces = {}
+        self.faces: dict[int, list[int]] = {}
+        row: int
+        col: int
         for row in range(0, self.height, self.face_size):
             for col in range(0, self.width, self.face_size):
                 # This coordinate is the top-left of a given face
-                coord = (col, row)
+                coord: XY = (col, row)
                 if coord in self.grid:
-                    face_coord = _coord_to_face(coord)
+                    face_coord: XY = _coord_to_face(coord)
                     # There is a face at this location. Check for
                     # directly-adjacent faces using the offsets defined above
+                    direction: int
+                    move_delta: XY
                     for direction, move_delta in self.move_deltas.items():
                         # Add the offsets to the current coordinate. This will
                         # result in "neighbor" containing the top-left
                         # coordinate of the face in that direction.
-                        offset = tuple(map(lambda x: self.face_size * x, move_delta))
-                        neighbor = tuple(sum(x) for x in zip(coord, offset))
-                        # If the face exists, assign it to the coordinate
+                        offset: XY = tuple(map(lambda x: self.face_size * x, move_delta))
+                        neighbor: XY = tuple(sum(x) for x in zip(coord, offset))
+                        # If the face exists, assign it to the coordinate. Once
+                        # each direction has been computed, self.faces will
+                        # contain the face number corresponding the four
+                        # directions from a given coordinate. The directions
+                        # for each face number correspond to the directions
+                        # defined above in self.move_deltas. So, for example,
+                        # self.faces[(15, 12)][1] would contain the face number
+                        # "down" from that coordinate.
                         if neighbor in self.grid:
                             self.faces.setdefault(
                                 face_coord, [None, None, None, None]
                             )[direction] = _coord_to_face(neighbor)
 
         def _get_relative(
-            face: Coordinate,
-            relative_to: int | Coordinate,
+            face: XY,
+            relative_to: int | XY,
             delta: int = 0,
-        ) -> Coordinate | None:
+        ) -> XY | None:
             '''
             Get the face, if known, that is the specified directional delta
             relative to the specified direction (or other coordinate)
             '''
+            index: int
             if isinstance(relative_to, int):
                 index = relative_to
             else:
@@ -155,7 +164,7 @@ class AOC2022Day22(AOC):
                         # "right"). This means that the face to the right of C
                         # is the face which is also to the right of A. With
                         # this knowledge, we can determine that B is to the
-                        # right of C. if the position of the shared face is not
+                        # right of C. If the position of the shared face is not
                         # yet known, again skip it, as it will be discovered in
                         # a future loop iteration.
                         #
@@ -185,10 +194,10 @@ class AOC2022Day22(AOC):
                             self.faces[face][direction] = shared_face
 
         # Load the path
-        self.path = tuple(re.findall(r'(?:\d+|[RL])', moves))
+        self.path: tuple[str, ...] = tuple(re.findall(r'(?:\d+|[RL])', moves))
 
         # The leftmost column of the first row
-        self.start = (self.col_bounds(0).min, 0)
+        self.start: XY = (self.col_bounds(0).min, 0)
 
         # Initialize position and direction
         self.reset()
@@ -197,11 +206,9 @@ class AOC2022Day22(AOC):
         '''
         Reset position and direction
         '''
-        # pylint: disable=attribute-defined-outside-init
-        self.position = self.start
-        # Face to the right
-        self.direction = 0
-        # pylint: enable=attribute-defined-outside-init
+        self.position: XY = self.start
+        # Face to the right (see self.move_deltas)
+        self.direction: int = 0
 
     @property
     def password(self) -> int:
@@ -214,6 +221,8 @@ class AOC2022Day22(AOC):
         NOTE: In self.grid, rows and columns are zero-indexed, but for the
         purpose of password calculation they need to be one-indexed.
         '''
+        col: int
+        row: int
         col, row = [value + 1 for value in self.position]
         return (1000 * row) + (4 * col) + self.direction
 
@@ -238,13 +247,13 @@ class AOC2022Day22(AOC):
         )
 
     @property
-    def move_delta(self) -> Coordinate:
+    def move_delta(self) -> XY:
         '''
         Return the x, y delta to move in the current direction
         '''
         return self.move_deltas[self.direction]
 
-    def get_face(self, position: Coordinate):
+    def get_face(self, position: XY):
         '''
         Get the face corresponding to the coordinates passed in
 
@@ -267,6 +276,7 @@ class AOC2022Day22(AOC):
         '''
         # pylint: disable=attribute-defined-outside-init
         self.reset()
+        move: str
         for move in self.path:
             match move:
                 case 'L':
@@ -316,7 +326,7 @@ class AOC2022Day22(AOC):
               (https://old.reddit.com/r/adventofcode/comments/zsct8w/2022_day_22_solutions/j17yjcz/)
         '''
         # pylint: disable=attribute-defined-outside-init
-        edge_offsets = (
+        edge_offsets: XY = (
             (0,0),
             (self.face_size-1, 0),
             (self.face_size-1,self.face_size-1),
@@ -324,6 +334,7 @@ class AOC2022Day22(AOC):
         )
         self.reset()
 
+        move: str
         for move in self.path:
             match move:
                 case 'L':
@@ -332,16 +343,17 @@ class AOC2022Day22(AOC):
                     self.direction = (self.direction + 1) % 4
                 case _:
                     for _ in range(int(move)):
-                        new_pos = tuple(
+                        new_pos: XY = tuple(
                             sum(x) for x in zip(self.position, self.move_delta)
                         )
                         if new_pos in self.grid:
                             # Direction is not changing because we are not
                             # wrapping around the cube
-                            new_dir = self.direction
+                            new_dir: int = self.direction
                         else:
                             # Discover the correct offset to apply in the
                             # translation
+                            corner_offset: int
                             for corner_offset in range(self.face_size):
                                 if tuple(
                                     (face_offset * self.face_size) + edge_offset
@@ -360,10 +372,10 @@ class AOC2022Day22(AOC):
                                     f'when wrapping from {self.position}'
                                 )
 
-                            #import pudb; pu.db
-                            new_face = self.faces[self.current_face][self.direction]
-                            new_dir = (self.faces[new_face].index(self.current_face) + 2) % 4
-                            new_pos = tuple(
+                            new_face: int = self.faces[self.current_face][self.direction]
+                            new_dir: int = \
+                                (self.faces[new_face].index(self.current_face) + 2) % 4
+                            new_pos: XY = tuple(
                                 (face_offset * self.face_size) + edge_offset
                                 + (move_delta * corner_offset)
                                 for face_offset, edge_offset, move_delta in
@@ -381,8 +393,8 @@ class AOC2022Day22(AOC):
                         # Update the current position to the new one and jump
                         # back to the beginning of the loop to continue moving
                         # (or make a left/right turn)
-                        self.position = new_pos
-                        self.direction = new_dir
+                        self.position: XY = new_pos
+                        self.direction: int = new_dir
 
         return self.password
 

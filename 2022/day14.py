@@ -7,7 +7,7 @@ import sys
 import time
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, XY
 
 # Color constants
 RED = '\033[38;5;1m'
@@ -23,48 +23,50 @@ class AOC2022Day14(AOC):
     '''
     Day 14 of Advent of Code 2022
     '''
-    day = 14
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the cleaning assignment pairs into tuples of sets of ints
         '''
-        super().__init__(example=example)
+        rocks: set[XY] = set()
 
-        rocks = set()
-
-        with self.input.open() as fh:
-            for line in fh:
-                rock_segment = []
-                for coord in line.rstrip().split(' -> '):
-                    x, y = (int(item) for item in coord.split(','))
-                    try:
-                        prev_x, prev_y = rock_segment[-1]
-                    except IndexError:
-                        pass
+        for line in self.input.splitlines():
+            rock_segment: list[XY] = []
+            coord: XY
+            for coord in line.split(' -> '):
+                x: int
+                y: int
+                x, y = (int(item) for item in coord.split(','))
+                try:
+                    prev_x: int
+                    prev_y: int
+                    prev_x, prev_y = rock_segment[-1]
+                except IndexError:
+                    pass
+                else:
+                    start: int
+                    end: int
+                    if x != prev_x:
+                        start, end = sorted((x, prev_x))
+                        rock_segment.extend(
+                            (x_pos, y) for x_pos in
+                            range(start, end + 1)
+                        )
                     else:
-                        if x != prev_x:
-                            start, end = sorted((x, prev_x))
-                            rock_segment.extend(
-                                (x_pos, y) for x_pos in
-                                range(start, end + 1)
-                            )
-                        else:
-                            start, end = sorted((y, prev_y))
-                            rock_segment.extend(
-                                (x, y_pos) for y_pos in
-                                range(start, end + 1)
-                            )
-                    rock_segment.append((x, y))
-                rocks.update(rock_segment)
+                        start, end = sorted((y, prev_y))
+                        rock_segment.extend(
+                            (x, y_pos) for y_pos in
+                            range(start, end + 1)
+                        )
+                rock_segment.append((x, y))
+            rocks.update(rock_segment)
 
-        self.offset = min(item[0] for item in rocks)
-        self.width = max(item[0] for item in rocks) - self.offset + 1
-        self.bottom_row = max(item[1] for item in rocks)
-        self.floor = self.bottom_row + 2
-        self.drop_point = (500, 0)
-        self.rocks = frozenset(rocks)
-        self.grid = {}
+        self.offset: int = min(item[0] for item in rocks)
+        self.width: int = max(item[0] for item in rocks) - self.offset + 1
+        self.bottom_row: int = max(item[1] for item in rocks)
+        self.floor: int = self.bottom_row + 2
+        self.drop_point: XY = (500, 0)
+        self.rocks: frozenset[XY] = frozenset(rocks)
+        self.grid: dict[XY, str] = {}
 
     def reset(self) -> None:
         '''
@@ -76,6 +78,8 @@ class AOC2022Day14(AOC):
         '''
         Draw the grid
         '''
+        coord: XY
+        newest_sand: XY | None
         for coord in list(self.grid)[-1:0:-1]:
             if self.grid[coord] == SAND:
                 newest_sand = coord
@@ -83,17 +87,18 @@ class AOC2022Day14(AOC):
         else:
             newest_sand = None
 
-        bottom = max(item[1] for item in self.grid)
-
-        col_min = min(item[0] for item in self.grid)
-        col_max = max(item[0] for item in self.grid)
+        bottom: int = max(item[1] for item in self.grid)
+        col_min: int = min(item[0] for item in self.grid)
+        col_max: int = max(item[0] for item in self.grid)
 
         os.system('clear')
+        row: int
+        col: int
         for row in range(0, bottom + 1):
             for col in range(col_min, col_max + 1):
-                coord = (col, row)
+                coord: XY = (col, row)
                 if coord in self.grid:
-                    substance = self.grid[coord]
+                    substance: str = self.grid[coord]
                     if substance == SAND and coord == newest_sand:
                         substance = '*'
                     sys.stdout.write(substance)
@@ -109,7 +114,8 @@ class AOC2022Day14(AOC):
         '''
         Drop a grain of sand
         '''
-        col = self.drop_point[0]
+        col: int = self.drop_point[0]
+        row: int
 
         match part:
             case 1:
@@ -154,7 +160,7 @@ class AOC2022Day14(AOC):
         # Reset the grid
         self.reset()
 
-        count = 0
+        count: int = 0
         while self.drop(part=part):
             count += 1
             if draw and (count % 100 == 0):

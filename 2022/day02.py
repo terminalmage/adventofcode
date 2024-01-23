@@ -5,15 +5,15 @@ https://adventofcode.com/2022/day/2
 # Local imports
 from aoc import AOC
 
-WINS = {
+WINS: dict[str, str] = {
     'rock': 'paper',
     'paper': 'scissors',
     'scissors': 'rock',
 }
-LOSES = {val: key for key, val in WINS.items()}
+LOSES: dict[str, str] = {val: key for key, val in WINS.items()}
 
 
-def normalize(value: str):
+def normalize(value: str) -> str:
     '''
     Translate the input from the strategy guide to the corresponding choice
     '''
@@ -32,11 +32,11 @@ class RockPaperScissors:
     '''
     Class to represent the result of a single game of rock, paper, scissors
     '''
-    def __init__(self, choice1, choice2):
-        self.choice1 = choice1
-        self.choice2 = choice2
+    def __init__(self, choice1: str, choice2: str):
+        self.choice1: str = choice1
+        self.choice2: str = choice2
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         '''
         Define repr() output for class
         '''
@@ -50,13 +50,15 @@ class RockPaperScissors:
         '''
         Calculate the score for this round
         '''
-        scores = {
+        scores: dict[str, int] = {
             'rock': 1,
             'paper': 2,
             'scissors': 3,
         }
         # pylint: disable=attribute-defined-outside-init
         # Determine result
+        self.result: str
+        self.score: int
         if self.choice2 == self.choice1:
             self.result = 'draw'
             self.score = 3
@@ -86,7 +88,7 @@ class RockPaperScissors:
         return self.__choice2
 
     @staticmethod
-    def __validate(value: str):
+    def __validate(value: str) -> str:
         '''
         Validate the value for this choice
         '''
@@ -97,20 +99,20 @@ class RockPaperScissors:
                 return normalize(value)
 
     @choice1.setter
-    def choice1(self, value: str):
+    def choice1(self, value: str) -> None:
         '''
         Set the first choice
         '''
-        self.__choice1 = self.__validate(value)
+        self.__choice1: str = self.__validate(value)
         if hasattr(self, 'choice2'):
             self.__calculate_score()
 
     @choice2.setter
-    def choice2(self, value: str):
+    def choice2(self, value: str) -> None:
         '''
         Set the second choice
         '''
-        self.__choice2 = self.__validate(value)
+        self.__choice2: str = self.__validate(value)
         if hasattr(self, 'choice1'):
             self.__calculate_score()
 
@@ -119,46 +121,47 @@ class AOC2022Day2(AOC):
     '''
     Day 2 of Advent of Code 2022
     '''
-    day = 2
-
     def part1(self) -> int:
         '''
         Calculate the total score, assuming that the guide is describing which
         choices should be made by both parties
         '''
-        with self.input.open() as fh:
-            return sum(
-                game.score for game in (
-                    RockPaperScissors(*line.rstrip().split())
-                    for line in fh
-                )
+        return sum(
+            game.score for game in (
+                RockPaperScissors(*line.split())
+                for line in self.input.splitlines()
             )
+        )
 
     def part2(self) -> int:
         '''
         Calculate the total score, assuming that the second column of each line
         in the guide instructs you whether to win, lose, or draw
         '''
-        total = 0
+        # Type hints
+        choice1: str
+        choice2: str
+        result: str
 
-        with self.input.open() as fh:
-            for line in fh:
-                choice1, result = line.rstrip().split()
-                choice1 = normalize(choice1)
-                match result:
-                    case 'X':
-                        # Need to lose
-                        choice2 = LOSES[choice1]
-                    case 'Y':
-                        # Need to draw
-                        choice2 = choice1
-                    case 'Z':
-                        # Need to win
-                        choice2 = WINS[choice1]
-                    case _:
-                        raise ValueError(f'Invalid result: {result!r}')
+        total: int = 0
 
-                total += RockPaperScissors(choice1, choice2).score
+        for line in self.input.splitlines():
+            choice1, result = line.split()
+            choice1 = normalize(choice1)
+            match result:
+                case 'X':
+                    # Need to lose
+                    choice2 = LOSES[choice1]
+                case 'Y':
+                    # Need to draw
+                    choice2 = choice1
+                case 'Z':
+                    # Need to win
+                    choice2 = WINS[choice1]
+                case _:
+                    raise ValueError(f'Invalid result: {result!r}')
+
+            total += RockPaperScissors(choice1, choice2).score
 
         return total
 

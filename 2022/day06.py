@@ -10,21 +10,13 @@ class AOC2022Day6(AOC):
     '''
     Day 6 of Advent of Code 2022
     '''
-    day = 6
-
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Load the datastream
-        '''
-        super().__init__(example=example)
-        self.datastream = self.input.read_text()
-
     def marker_index(self, length: int) -> int:
         '''
         Return the index of the marker
         '''
-        for start in range(len(self.datastream) - length):
-            if len(set(self.datastream[start:start + length])) == length:
+        start: int
+        for start in range(len(self.input) - length):
+            if len(set(self.input[start:start + length])) == length:
                 return start
 
         raise ValueError(f'Invalid datastream for packet length: {length}')

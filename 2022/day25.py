@@ -20,6 +20,7 @@ class SNAFU:
         or from SNAFU notation.
         '''
         # Load internally as an integer for ease of computation
+        self.value: int
         if isinstance(value, int):
             self.value = value
         else:
@@ -64,8 +65,9 @@ class SNAFU:
         '''
         Convert SNAFU notation to integer
         '''
-        ceiling = 5**len(value)
-        ret = 0
+        ceiling: int = 5**len(value)
+        ret: int = 0
+        col: str
         for col in value:
             ceiling //= 5
             match col:
@@ -107,16 +109,14 @@ class AOC2022Day25(AOC):
     '''
     Day 25 of Advent of Code 2022
     '''
-    day = 25
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Calculate calories
+        Load the numbers from the input file
         '''
-        super().__init__(example=example)
-
-        with self.input.open() as fh:
-            self.numbers = tuple(SNAFU(line.rstrip()) for line in fh)
+        self.numbers = tuple(
+            SNAFU(line)
+            for line in self.input.splitlines()
+        )
 
     def part1(self) -> str:
         '''

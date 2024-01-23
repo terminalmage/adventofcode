@@ -3,6 +3,7 @@
 https://adventofcode.com/2022/day/19
 '''
 import functools
+import math
 import re
 from collections.abc import Iterator
 
@@ -25,21 +26,22 @@ class Blueprint:
         '''
         Initialize the object
         '''
-        self.blueprint_id = blueprint_id
-        self.ore_cost = ore_cost
-        self.clay_cost = clay_cost
+        self.blueprint_id: int = blueprint_id
+        self.ore_cost: int = ore_cost
+        self.clay_cost: int = clay_cost
         # tuple of ore and clay cost
-        self.obsidian_cost = obsidian_cost
+        self.obsidian_cost: tuple[int, int] = obsidian_cost
         # tuple of ore and obsidian cost
-        self.geode_cost = geode_cost
+        self.geode_cost: tuple[int, int] = geode_cost
 
         # Initialize the attributes for the simulated number of minutes, and
         # the max number of geodes that can be produced in the simulated time
-        self.minutes = self.max_geodes = 0
+        self.minutes: int = 0
+        self.max_geodes: int = 0
 
         # Don't make more ore robots than we need to generate enough ore to
         # build any kind of robot
-        self.ore_robot_threshold = max(
+        self.ore_robot_threshold: int = max(
             self.ore_cost,
             self.clay_cost,
             self.obsidian_cost[0],
@@ -81,8 +83,8 @@ class Blueprint:
         this instance's "minutes" and "max_geodes" attributes.
         '''
         # Set the minutes attribute and reset max_geodes
-        self.minutes = minutes
-        self.max_geodes = 0
+        self.minutes: int = minutes
+        self.max_geodes: int = 0
 
         def _simulate(
             minutes: int,
@@ -256,6 +258,7 @@ class Blueprint:
 
             ### End of _simulate closure
 
+        robot_type: str
         for robot_type in self.robot_types:
             _simulate(minutes, robot_type)
 
@@ -266,33 +269,31 @@ class AOC2022Day19(AOC):
     '''
     Day 19 of Advent of Code 2022
     '''
-    day = 19
-
     def load_blueprints(self) -> list[Blueprint]:
         '''
         Return a list of Blueprint objects as loaded from the input file
         '''
-        with self.input.open() as fh:
-            return [
-                Blueprint(
-                    blueprint_id=values[0],
-                    ore_cost=values[1],
-                    clay_cost=values[2],
-                    obsidian_cost=values[3:5],
-                    geode_cost=values[5:7],
-                )
-                for values in (
-                    tuple(map(int, re.findall(r'\d+', line)))
-                    for line in fh
-                )
-            ]
+        return [
+            Blueprint(
+                blueprint_id=values[0],
+                ore_cost=values[1],
+                clay_cost=values[2],
+                obsidian_cost=values[3:5],
+                geode_cost=values[5:7],
+            )
+            for values in (
+                tuple(map(int, re.findall(r'\d+', line)))
+                for line in self.input.splitlines()
+            )
+        ]
 
     def part1(self) -> int:
         '''
         Calculate the sum of the quality levels for each of the blueprints
         '''
         # Run the simulation on all blueprints
-        blueprints = self.load_blueprints()
+        blueprints: list[Blueprint] = self.load_blueprints()
+        blueprint: Blueprint
         for blueprint in blueprints:
             blueprint.simulate(minutes=24)
         # Return the sum of all the quality levels
@@ -303,15 +304,13 @@ class AOC2022Day19(AOC):
         Calculate the product of the maximum number of geodes that can be
         produced for each of the first three blueprints in the list
         '''
-        blueprints = self.load_blueprints()[:3]
+        blueprints: list[Blueprint] = self.load_blueprints()[:3]
+        blueprint: Blueprint
         for blueprint in blueprints:
             blueprint.simulate(minutes=32)
         # Return the product of the max_geodes that can be produced by the
         # first three blueprints
-        return functools.reduce(
-            lambda x, y: x * y,
-            (blueprint.max_geodes for blueprint in blueprints)
-        )
+        return math.prod((blueprint.max_geodes for blueprint in blueprints))
 
 
 if __name__ == '__main__':
