@@ -3,6 +3,7 @@
 https://adventofcode.com/2015/day/6
 '''
 import re
+import textwrap
 from typing import Callable, Literal
 
 # Local imports
@@ -13,6 +14,17 @@ class AOC2015Day6(AOC):
     '''
     Day 6 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        turn on 490,490 through 499,499
+        turn off 495,495 through 500,500
+        toggle 494,494 through 496,496
+        '''
+    )
+
+    validate_part1: int = 74
+    validate_part2: int = 93
+
     def post_init(self) -> None:
         '''
         Load the instructions
@@ -76,10 +88,5 @@ class AOC2015Day6(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day6(example=True)
-    aoc.validate(aoc.part1(), 74)
-    aoc.validate(aoc.part2(), 93)
-    # Run against actual data
-    aoc = AOC2015Day6(example=False)
+    aoc = AOC2015Day6()
     aoc.run()

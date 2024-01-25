@@ -3,6 +3,7 @@
 https://adventofcode.com/2015/day/10
 '''
 import re
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -12,6 +13,15 @@ class AOC2015Day10(AOC):
     '''
     Day 10 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        111221
+        '''
+    )
+
+    validate_part1: int = 237746
+    validate_part2: int = 3369156
+
     def look_and_say(self, rounds: int) -> str:
         '''
         Perform a depth-first search with the specified strategy
@@ -41,10 +51,5 @@ class AOC2015Day10(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day10(example=True)
-    aoc.validate(aoc.part1(), 237746)
-    aoc.validate(aoc.part2(), 3369156)
-    # Run against actual data
-    aoc = AOC2015Day10(example=False)
+    aoc = AOC2015Day10()
     aoc.run()

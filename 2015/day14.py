@@ -4,6 +4,7 @@ https://adventofcode.com/2015/day/14
 '''
 import itertools
 import re
+import textwrap
 from collections.abc import Iterator
 
 # Local imports
@@ -60,6 +61,16 @@ class AOC2015Day14(AOC):
     '''
     Day 14 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.
+        Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds.
+        '''
+    )
+
+    validate_part1: int = 1120
+    validate_part2: int = 689
+
     def post_init(self) -> None:
         '''
         Load the instructions
@@ -115,10 +126,5 @@ class AOC2015Day14(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day14(example=True)
-    aoc.validate(aoc.part1(), 1120)
-    aoc.validate(aoc.part2(), 689)
-    # Run against actual data
-    aoc = AOC2015Day14(example=False)
+    aoc = AOC2015Day14()
     aoc.run()

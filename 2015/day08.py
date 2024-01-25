@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2015/day/8
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
@@ -10,6 +12,18 @@ class AOC2015Day8(AOC):
     '''
     Day 8 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        r'''
+        ""
+        "abc"
+        "aaa\"aaa"
+        "\x27"
+        '''
+    )
+
+    validate_part1: int = 12
+    validate_part2: int = 19
+
     def part1(self) -> int:
         '''
         Return the difference between the length of the encoded string and the
@@ -57,10 +71,5 @@ class AOC2015Day8(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day8(example=True)
-    aoc.validate(aoc.part1(), 12)
-    aoc.validate(aoc.part2(), 19)
-    # Run against actual data
-    aoc = AOC2015Day8(example=False)
+    aoc = AOC2015Day8()
     aoc.run()

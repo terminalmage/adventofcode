@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2015/day/16
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
@@ -90,6 +92,5 @@ class AOC2015Day16(AOC):
 
 
 if __name__ == '__main__':
-    # Run against actual data
-    aoc = AOC2015Day16(example=False)
+    aoc = AOC2015Day16()
     aoc.run()

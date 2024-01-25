@@ -3,6 +3,7 @@
 https://adventofcode.com/2015/day/19
 '''
 import functools
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -28,6 +29,18 @@ class AOC2015Day19(AOC):
     '''
     Day 19 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        H => HO
+        H => OH
+        O => HH
+
+        HOHOHO
+        '''
+    )
+
+    validate_part1: int = 7
+
     def post_init(self) -> None:
         '''
         Load the input data
@@ -73,9 +86,5 @@ class AOC2015Day19(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day19(example=True)
-    aoc.validate(aoc.part1(), 7)
-    # Run against actual data
-    aoc = AOC2015Day19(example=False)
+    aoc = AOC2015Day19()
     aoc.run()

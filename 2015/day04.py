@@ -5,6 +5,7 @@ https://adventofcode.com/2015/day/4
 import hashlib
 import itertools
 import re
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -14,6 +15,15 @@ class AOC2015Day4(AOC):
     '''
     Day 4 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        pqrstuv
+        '''
+    )
+
+    validate_part1: int = 1048970
+    validate_part2: int = 5714438
+
     def coin_machine_go_brrr(  # pylint: disable=inconsistent-return-statements
         self,
         pattern: str,
@@ -42,10 +52,5 @@ class AOC2015Day4(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day4(example=True)
-    aoc.validate(aoc.part1(), 1048970)
-    aoc.validate(aoc.part2(), 5714438)
-    # Run against actual data
-    aoc = AOC2015Day4(example=False)
+    aoc = AOC2015Day4()
     aoc.run()

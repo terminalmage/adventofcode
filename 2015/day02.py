@@ -3,6 +3,7 @@
 https://adventofcode.com/2015/day/2
 '''
 import functools
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -12,6 +13,16 @@ class AOC2015Day2(AOC):
     '''
     Day 2 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        2x3x4
+        1x1x10
+        '''
+    )
+
+    validate_part1: int = 101
+    validate_part2: int = 48
+
     def post_init(self) -> None:
         '''
         Load the packages, sorting the side lengths to easily get the two
@@ -55,10 +66,5 @@ class AOC2015Day2(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day2(example=True)
-    aoc.validate(aoc.part1(), 101)
-    aoc.validate(aoc.part2(), 48)
-    # Run against actual data
-    aoc = AOC2015Day2(example=False)
+    aoc = AOC2015Day2()
     aoc.run()

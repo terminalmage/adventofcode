@@ -3,6 +3,7 @@
 https://adventofcode.com/2015/day/12
 '''
 import json
+import textwrap
 from collections.abc import Iterator
 from typing import Any
 
@@ -14,6 +15,15 @@ class AOC2015Day12(AOC):
     '''
     Day 12 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        {"a":2,"b":4,"c":[3,"red",[[[-1]]]],"d":{"foo": 12, "bar": "red"}}
+        '''
+    )
+
+    validate_part1: int = 20
+    validate_part2: int = 8
+
     def post_init(self) -> None:
         '''
         Load the JSON document into a data structure
@@ -64,10 +74,5 @@ class AOC2015Day12(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day12(example=True)
-    aoc.validate(aoc.part1(), 20)
-    aoc.validate(aoc.part2(), 8)
-    # Run against actual data
-    aoc = AOC2015Day12(example=False)
+    aoc = AOC2015Day12()
     aoc.run()

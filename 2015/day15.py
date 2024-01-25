@@ -5,6 +5,7 @@ https://adventofcode.com/2015/day/15
 import functools
 import itertools
 import re
+import textwrap
 from dataclasses import dataclass
 
 # Local imports
@@ -27,6 +28,16 @@ class AOC2015Day15(AOC):
     '''
     Day 15 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
+        Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3
+        '''
+    )
+
+    validate_part1: int = 62842880
+    validate_part2: int = 57600000
+
     def post_init(self) -> None:
         '''
         Load the ingredients
@@ -97,10 +108,5 @@ class AOC2015Day15(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day15(example=True)
-    aoc.validate(aoc.part1(), 62842880)
-    aoc.validate(aoc.part2(), 57600000)
-    # Run against actual data
-    aoc = AOC2015Day15(example=False)
+    aoc = AOC2015Day15()
     aoc.run()

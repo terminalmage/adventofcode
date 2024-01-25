@@ -3,6 +3,7 @@
 https://adventofcode.com/2015/day/9
 '''
 import re
+import textwrap
 from collections import defaultdict
 from typing import Callable
 
@@ -14,6 +15,16 @@ class AOC2015Day9(AOC):
     '''
     Day 9 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        London to Dublin = 464
+        London to Belfast = 518
+        Dublin to Belfast = 141
+        '''
+    )
+
+    validate_part1: int = 605
+
     def post_init(self) -> None:
         '''
         Load the distances
@@ -86,9 +97,5 @@ class AOC2015Day9(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day9(example=True)
-    aoc.validate(aoc.part1(), 605)
-    # Run against actual data
-    aoc = AOC2015Day9(example=False)
+    aoc = AOC2015Day9()
     aoc.run()

@@ -6,6 +6,7 @@ from __future__ import annotations
 import copy
 import itertools
 import string
+import textwrap
 from collections.abc import Sequence
 
 # Local imports
@@ -184,6 +185,5 @@ class AOC2015Day11(AOC):
 
 
 if __name__ == '__main__':
-    # No example input
     aoc = AOC2015Day11()
     aoc.run()

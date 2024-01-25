@@ -4,6 +4,7 @@ https://adventofcode.com/2015/day/7
 '''
 import functools
 import re
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -119,6 +120,21 @@ class AOC2015Day7(AOC):
     '''
     Day 7 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        123 -> x
+        456 -> y
+        x AND y -> d
+        x OR y -> e
+        x LSHIFT 2 -> f
+        y RSHIFT 2 -> g
+        NOT x -> h
+        NOT y -> i
+        '''
+    )
+
+    validate_part1: int = 65412
+
     def post_init(self) -> None:
         '''
         Setup the Circuit
@@ -142,9 +158,5 @@ class AOC2015Day7(AOC):
         return self.circuit['a']
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day7(example=True)
-    aoc.validate(aoc.part1(), 65412)
-    # Run against actual data
-    aoc = AOC2015Day7(example=False)
+    aoc = AOC2015Day7()
     aoc.run()

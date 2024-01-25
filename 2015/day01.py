@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2015/day/1
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
@@ -10,6 +12,15 @@ class AOC2015Day1(AOC):
     '''
     Day 1 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        ))(((((
+        '''
+    )
+
+    validate_part1: int = 3
+    validate_part2: int = 1
+
     def part1(self) -> int:
         '''
         Return the floor to which the instructions lead
@@ -31,10 +42,5 @@ class AOC2015Day1(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day1(example=True)
-    aoc.validate(aoc.part1(), 3)
-    aoc.validate(aoc.part2(), 1)
-    # Run against actual data
-    aoc = AOC2015Day1(example=False)
+    aoc = AOC2015Day1()
     aoc.run()

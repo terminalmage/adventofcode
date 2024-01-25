@@ -3,6 +3,7 @@
 https://adventofcode.com/2015/day/3
 '''
 import itertools
+import textwrap
 
 # Local imports
 from aoc import AOC, XY
@@ -12,6 +13,15 @@ class AOC2015Day3(AOC):
     '''
     Day 3 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        ^v^v^v^v^v
+        '''
+    )
+
+    validate_part1: int = 2
+    validate_part2: int = 11
+
     def post_init(self) -> None:
         '''
         Load the directions, translating them to coordinate deltas
@@ -63,10 +73,5 @@ class AOC2015Day3(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day3(example=True)
-    aoc.validate(aoc.part1(), 2)
-    aoc.validate(aoc.part2(), 11)
-    # Run against actual data
-    aoc = AOC2015Day3(example=False)
+    aoc = AOC2015Day3()
     aoc.run()

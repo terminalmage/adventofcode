@@ -4,6 +4,7 @@ https://adventofcode.com/2015/day/13
 '''
 import itertools
 import re
+import textwrap
 from collections import defaultdict
 
 # Local imports
@@ -17,6 +18,26 @@ class AOC2015Day13(AOC):
     '''
     Day 13 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        Alice would gain 54 happiness units by sitting next to Bob.
+        Alice would lose 79 happiness units by sitting next to Carol.
+        Alice would lose 2 happiness units by sitting next to David.
+        Bob would gain 83 happiness units by sitting next to Alice.
+        Bob would lose 7 happiness units by sitting next to Carol.
+        Bob would lose 63 happiness units by sitting next to David.
+        Carol would lose 62 happiness units by sitting next to Alice.
+        Carol would gain 60 happiness units by sitting next to Bob.
+        Carol would gain 55 happiness units by sitting next to David.
+        David would gain 46 happiness units by sitting next to Alice.
+        David would lose 7 happiness units by sitting next to Bob.
+        David would gain 41 happiness units by sitting next to Carol.
+        '''
+    )
+
+    validate_part1: int = 330
+    validate_part2: int = 286
+
     def load_guests(self) -> defaultdict[str, dict]:
         '''
         Load the guests from the config file
@@ -76,10 +97,5 @@ class AOC2015Day13(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day13(example=True)
-    aoc.validate(aoc.part1(), 330)
-    aoc.validate(aoc.part2(), 286)
-    # Run against actual data
-    aoc = AOC2015Day13(example=False)
+    aoc = AOC2015Day13()
     aoc.run()

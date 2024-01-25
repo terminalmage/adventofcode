@@ -3,6 +3,7 @@
 https://adventofcode.com/2015/day/5
 '''
 import re
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -12,6 +13,19 @@ class AOC2015Day5(AOC):
     '''
     Day 5 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        ugknbfddgicrmopn
+        aaa
+        jchzalrnumimnmhp
+        haegwjzuvuyypxyu
+        dvszwmarrgswjxmb
+        '''
+    )
+
+    validate_part1: int = 2
+    validate_part2: int = 2
+
     def post_init(self) -> None:
         '''
         Load the strings
@@ -52,10 +66,5 @@ class AOC2015Day5(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day5(example=True)
-    aoc.validate(aoc.part1(), 2)
-    aoc.validate(aoc.part2(), 2)
-    # Run against actual data
-    aoc = AOC2015Day5(example=False)
+    aoc = AOC2015Day5()
     aoc.run()

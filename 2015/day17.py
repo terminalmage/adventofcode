@@ -2,6 +2,7 @@
 '''
 https://adventofcode.com/2015/day/17
 '''
+import textwrap
 from collections import defaultdict
 from collections.abc import Iterator
 
@@ -13,6 +14,19 @@ class AOC2015Day17(AOC):
     '''
     Day 17 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        20
+        15
+        10
+        5
+        5
+        '''
+    )
+
+    validate_part1: int = 4
+    validate_part2: int = 3
+
     def post_init(self) -> None:
         '''
         Load the instructions
@@ -93,10 +107,5 @@ class AOC2015Day17(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day17(example=True)
-    aoc.validate(aoc.part1(), 4)
-    aoc.validate(aoc.part2(), 3)
-    # Run against actual data
-    aoc = AOC2015Day17(example=False)
+    aoc = AOC2015Day17()
     aoc.run()

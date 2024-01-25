@@ -3,6 +3,7 @@
 https://adventofcode.com/2015/day/18
 '''
 import itertools
+import textwrap
 
 # Local imports
 from aoc import AOC, XY
@@ -15,6 +16,20 @@ class AOC2015Day18(AOC):
     '''
     Day 18 of Advent of Code 2015
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        .#.#.#
+        ...##.
+        #....#
+        ..#...
+        #.#..#
+        ####..
+        '''
+    )
+
+    validate_part1: int = 4
+    validate_part2: int = 17
+
     def animate(self, rounds: int, stuck_corners: bool = False) -> int:
         '''
         Animate the grid for the specified number of rounds, and returns the
@@ -102,10 +117,5 @@ class AOC2015Day18(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day18(example=True)
-    aoc.validate(aoc.part1(), 4)
-    aoc.validate(aoc.part2(), 17)
-    # Run against actual data
-    aoc = AOC2015Day18(example=False)
+    aoc = AOC2015Day18()
     aoc.run()
