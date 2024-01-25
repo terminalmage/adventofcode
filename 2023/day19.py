@@ -2,36 +2,31 @@
 '''
 https://adventofcode.com/2023/day/19
 '''
+from __future__ import annotations
 import math
 import operator
 import re
+import textwrap
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Literal
 
 # Local imports
 from aoc import AOC
 
-# Typing shortcuts
+# Type hints
 Category = Literal['x', 'm', 'a', 's']
 Bounds = dict[Category, 'Range']
+ComparisonFunc = Callable[[int, int], bool]
 
 
+@dataclass
 class Range:
     '''
     Contains low/high values
     '''
-    def __init__(self, low: int = 1, high: int = 4000):
-        '''
-        Assign initial values
-        '''
-        self.low = low
-        self.high = high
-
-    def __repr__(self) -> str:
-        '''
-        Define repr() output
-        '''
-        return f'Range(low={self.low}, high={self.high})'
+    low: int = 1
+    high: int = 4000
 
     @property
     def size(self) -> int:
@@ -40,39 +35,7 @@ class Range:
         '''
         return self.high - self.low + 1
 
-    @property
-    def low(self) -> int:
-        '''
-        Define the "low" attribute
-        '''
-        return self._low
-
-    @low.setter
-    def low(self, value: int) -> None:
-        '''
-        Assign the "low" attribute
-        '''
-        if hasattr(self, '_high') and value > self._high:
-            raise ValueError(f'Low value cannot be > high ({self._high})')
-        self._low = value
-
-    @property
-    def high(self) -> int:
-        '''
-        Define the "high" attribute
-        '''
-        return self._high
-
-    @high.setter
-    def high(self, value: int) -> None:
-        '''
-        Assign the "high" attribute
-        '''
-        if hasattr(self, '_low') and value < self._low:
-            raise ValueError(f'High value cannot be < low ({self._low})')
-        self._high = value
-
-    def copy(self) -> 'Range':
+    def copy(self) -> Range:
         '''
         Return a new Range object with the same parameters
         '''
@@ -88,9 +51,9 @@ class Part:
     m: int
     a: int
     s: int
-    workflows: dict[str, 'Workflow']
+    workflows: dict[str, Workflow]
 
-    def run_workflow(self, workflow: 'Workflow') -> str:
+    def run_workflow(self, workflow: Workflow) -> str:
         '''
         Run a workflow on this Part
         '''
@@ -152,14 +115,14 @@ class Condition:
         '''
         match self.operator:
             case '>':
-                opfunc = operator.gt
+                opfunc: ComparisonFunc = operator.gt
             case '<':
-                opfunc = operator.lt
+                opfunc: ComparisonFunc = operator.lt
 
         return opfunc(getattr(part, self.category), self.value)
 
     @property
-    def inverse(self) -> 'Condition':
+    def inverse(self) -> Condition:
         '''
         Return a Condition object representing the opposite comparison. We are
         assured of only integer values for this puzzle, so we can avoid needing
@@ -170,6 +133,9 @@ class Condition:
         _higher_ than 5 (i.e. 6, 7, 8, etc.), while the inverse would be < 5+1
         (i.e. 5, 4, 3, etc.).
         '''
+        oper: str
+        value: int
+
         match self.operator:
             case '>':
                 oper = '<'
@@ -198,13 +164,17 @@ class Workflow:
         '''
         Load and parse the workflow def
         '''
+        name: str
+        rules: str
         try:
             name, rules = re.match(r'([a-z]+)\{(.+)\}', workflow_def).groups()
         except AttributeError as exc:
             raise ValueError(f'Invalid workflow def {workflow_def!r}') from exc
 
-        self.name = name
-        self.rules = tuple(self.parse_rule(rule) for rule in rules.split(','))
+        self.name: str = name
+        self.rules: tuple[Rule, ...] = tuple(
+            self.parse_rule(rule) for rule in rules.split(',')
+        )
 
     @staticmethod
     def parse_rule(rule_def: str) -> Rule:
@@ -238,22 +208,45 @@ class AOC2023Day19(AOC):
     '''
     Day 19 of Advent of Code 2023
     '''
-    day = 19
-
-    def __init__(self, example: bool = False) -> None:
+    example_data: str = textwrap.dedent(
         '''
-        Load the steps
+        px{a<2006:qkq,m>2090:A,rfg}
+        pv{a>1716:R,A}
+        lnx{m>1548:A,A}
+        rfg{s<537:gd,x>2440:R,A}
+        qs{s>3448:A,lnx}
+        qkq{x<1416:A,crn}
+        crn{x>2662:A,R}
+        in{s<1351:px,qqz}
+        qqz{s>2770:qs,m<1801:hdj,R}
+        gd{a>3333:R,R}
+        hdj{m>838:A,pv}
+
+        {x=787,m=2655,a=1222,s=2876}
+        {x=1679,m=44,a=2067,s=496}
+        {x=2036,m=264,a=79,s=2244}
+        {x=2461,m=1339,a=466,s=291}
+        {x=2127,m=1623,a=2188,s=1013}
         '''
-        super().__init__(example=example)
+    )
 
-        workflow_defs, part_defs = self.input.read_text().split('\n\n')
+    validate_part1: int = 19114
+    validate_part2: int = 167409079868000
 
-        self.workflows = {}
+    def post_init(self) -> None:
+        '''
+        Load the workflows from the puzzle input
+        '''
+        workflow_defs: str
+        part_defs: str
+        workflow_defs, part_defs = self.input.split('\n\n')
+
+        self.workflows: dict[str, Workflow] = {}
         for line in workflow_defs.splitlines():
             workflow = Workflow(line)
             self.workflows[workflow.name] = workflow
 
-        self.parts = tuple(
+        self.parts: tuple[Part, ...] = tuple(
             Part(int(x), int(m), int(a), int(s), self.workflows)
             for x, m, a, s in (
                 re.search(r'x=(\d+),m=(\d+),a=(\d+),s=(\d+)', line).groups()
@@ -270,9 +263,11 @@ class AOC2023Day19(AOC):
         Use the rule to narrow the bounds passed in, returning new bounds.
         '''
         # Make shallow copy of bounds dict
-        new_bounds = bounds.copy()
-        # Replace the category's bounds with a new Range object
-        new_range = bounds[condition.category].copy()
+        new_bounds: Bounds = bounds.copy()
+        # Replace the category's bounds with a new Range object, so that
+        # updating its ranges does not modify the Range object from the
+        # Bounds dict passed in.
+        new_range: Range = bounds[condition.category].copy()
         new_bounds[condition.category] = new_range
 
         # Update Range object according to the specified Condition. Note that a
@@ -306,10 +301,14 @@ class AOC2023Day19(AOC):
         representing the subranges that matched a given rule for a given
         workflow path.
         '''
-        bounds = bounds or {category: Range() for category in 'xmas'}
+        bounds: Bounds = bounds or {category: Range() for category in 'xmas'}
 
         ret = []
         for rule in self.workflows[workflow].rules:
+
+            overlap: Bounds
+            non_overlap: Bounds | None
+
             if rule.condition is not None:
                 overlap = self.filter_bounds(bounds, rule.condition)
                 non_overlap = self.filter_bounds(bounds, rule.condition.inverse)
@@ -367,10 +366,5 @@ class AOC2023Day19(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day19(example=True)
-    aoc.validate(aoc.part1(), 19114)
-    aoc.validate(aoc.part2(), 167409079868000)
-    # Run against actual data
-    aoc = AOC2023Day19(example=False)
+    aoc = AOC2023Day19()
     aoc.run()

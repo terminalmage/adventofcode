@@ -2,16 +2,16 @@
 '''
 https://adventofcode.com/2023/day/23
 '''
-import collections
+import textwrap
+from collections import deque
 from collections.abc import Generator
-from pathlib import Path
 
 # Local imports
-from aoc import AOC, Coordinate, Grid, directions
+from aoc import AOC, XY, Grid, TupleMixin
 
 # Typing shortcuts
-Branch = tuple[Coordinate, int]
-Graph = dict[Coordinate, list[Branch]]
+Branch = tuple[XY, int]
+Graph = dict[XY, list[Branch]]
 
 
 class DeadEnd(Exception):
@@ -21,27 +21,28 @@ class DeadEnd(Exception):
     '''
 
 
-class HikingPath(Grid):
+class HikingPath(Grid, TupleMixin):
     '''
     Modified Grid object with puzzle-specific movement rules
     '''
-    def __init__(self, path: Path) -> None:  # pylint: disable=arguments-differ
+    def __init__(self, data: str) -> None:  # pylint: disable=arguments-differ
         '''
         Add path entrance/exit
         '''
-        super().__init__(path)
-        self.entrance: Coordinate = (0, 1)
-        self.exit: Coordinate = (self.max_row, self.max_col - 1)
+        super().__init__(data)
+        self.entrance: XY = (0, 1)
+        self.exit: XY = (self.max_row, self.max_col - 1)
 
     def neighbors(  # pylint: disable=arguments-differ
         self,
-        coord: Coordinate,
+        coord: XY,
         slopes_traversable: bool = False
-    ) -> Generator[Coordinate, None, None]:
+    ) -> Generator[XY, None, None]:
         '''
         Generator which yields a tuple of each neigbboring coordinate and the
         value stored at that coordinate.
         '''
+        tile: str
         try:
             tile = self[coord]
         except (TypeError, IndexError):
@@ -54,24 +55,25 @@ class HikingPath(Grid):
             # of selecting possible directions in the match statement below.
             tile = '.'
 
+        possible: tuple[XY, ...]
         match tile:
             case '.':
-                possible = directions
+                possible = self.directions
             case '>':
-                possible = (directions.EAST,)
+                possible = (self.directions.EAST,)
             case 'v':
-                possible = (directions.SOUTH,)
+                possible = (self.directions.SOUTH,)
             case '<':
-                possible = (directions.WEST,)
+                possible = (self.directions.WEST,)
             case '^':
-                possible = (directions.NORTH,)
+                possible = (self.directions.NORTH,)
             case _:
                 raise ValueError(f'Invalid position: {coord}')
 
-        row, col = coord
         for direction in possible:
-            row_delta, col_delta = direction
-            new_row, new_col = row + row_delta, col + col_delta
+            new_row: int
+            new_col: int
+            new_row, new_col = self.tuple_add(coord, direction)
             try:
                 if (
                     new_row >= 0 and new_col >= 0
@@ -90,8 +92,8 @@ class HikingPath(Grid):
         traverse it in the opposite direction it points), then coordinates
         containing slopes will also be added to the graph.
         '''
-        nodes: collections.deque[Coordinate] = collections.deque([(0, 1)])
-        visited: set[Coordinate] = set()
+        nodes: deque[XY] = deque([(0, 1)])
+        visited: set[XY] = set()
         graph: Graph = {}
         while nodes:
             node = nodes.pop()
@@ -102,13 +104,13 @@ class HikingPath(Grid):
             visited.add(node)
             graph[node] = []
 
-            cur: Coordinate
+            cur: XY
             for cur in self.neighbors(node, slopes_traversable):
-                prev: Coordinate = node
+                prev: XY = node
                 distance: int = 1
                 try:
                     while True:
-                        neighbors: list[Coordinate] = list(
+                        neighbors: list[XY] = list(
                             self.neighbors(cur, slopes_traversable)
                         )
                         if neighbors == [prev] and self[cur] in '>v<^':
@@ -129,7 +131,7 @@ class HikingPath(Grid):
                             # of the loop to add the new node.
                             break
 
-                        neighbor: Coordinate
+                        neighbor: XY
                         for neighbor in neighbors:
                             if neighbor == prev:
                                 continue
@@ -163,9 +165,9 @@ class HikingPath(Grid):
         #   1. Visited nodes
         #   2. The latest node visited
         #   3. The cumulative length hiked
-        lifo: collections.deque[tuple[frozenset[Coordinate], Coordinate, int]]
+        lifo: deque[tuple[frozenset[XY], XY, int]]
         # Start at the entrance (of course)
-        lifo = collections.deque([
+        lifo = deque([
             (frozenset({self.entrance}), self.entrance, 0)
         ])
         # Aggregates completed hikes
@@ -193,13 +195,41 @@ class AOC2023Day23(AOC):
     '''
     Day 23 of Advent of Code 2023
     '''
-    day = 23
+    example_data: str = textwrap.dedent(
+        '''
+        #.#####################
+        #.......#########...###
+        #######.#########.#.###
+        ###.....#.>.>.###.#.###
+        ###v#####.#v#.###.#.###
+        ###.>...#.#.#.....#...#
+        ###v###.#.#.#########.#
+        ###...#.#.#.......#...#
+        #####.#.#.#######.#.###
+        #.....#.#.#.......#...#
+        #.#####.#.#.#########v#
+        #.#...#...#...###...>.#
+        #.#.#v#######v###.###v#
+        #...#.>.#...>.>.#.###.#
+        #####v#.#.###v#.#.###.#
+        #.....#...#...#.#.#...#
+        #.#########.###.#.#.###
+        #...###...#...#...#.###
+        ###.###.#.###v#####v###
+        #...#...#.#.>.>.#.>.###
+        #.###.###.#.###.#.#v###
+        #.....###...###...#...#
+        #####################.#
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 94
+    validate_part2: int = 154
+
+    def post_init(self) -> None:
         '''
         Load the input data
         '''
-        super().__init__(example=example)
         self.path: HikingPath = HikingPath(self.input)
 
     def part1(self) -> int:
@@ -216,10 +246,5 @@ class AOC2023Day23(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day23(example=True)
-    aoc.validate(aoc.part1(), 94)
-    aoc.validate(aoc.part2(), 154)
-    # Run against actual data
-    aoc = AOC2023Day23(example=False)
+    aoc = AOC2023Day23()
     aoc.run()

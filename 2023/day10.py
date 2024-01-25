@@ -2,21 +2,22 @@
 '''
 https://adventofcode.com/2023/day/10
 '''
+from __future__ import annotations
 import math
 import re
+import textwrap
 from collections.abc import Generator
 from dataclasses import dataclass
-from typing import Self
 
 # Local imports
 from aoc import AOC, XY, XYMixin, directions, opposite_directions
 
-OPPOSITE = {
+OPPOSITE: dict[int, XY] = {
     directions._fields[n][0]: opposite_directions._fields[n][0]
     for n in range(len(directions))
 }
 
-SHAPES = frozenset('|-LJ7F')
+SHAPES: frozenset[str] = frozenset('|-LJ7F')
 
 
 @dataclass
@@ -26,7 +27,7 @@ class PipeCoord:
     '''
     value: XY
 
-    def __getitem__(self, name: str) -> Self:
+    def __getitem__(self, name: str) -> PipeCoord:
         '''
         Handle directional movement
         '''
@@ -44,7 +45,7 @@ class PipeCoord:
 
         return PipeCoord(tuple(a + b for a, b in zip(self.value, delta)))
 
-    def __eq__(self, other: Self) -> bool:
+    def __eq__(self, other: PipeCoord) -> bool:
         '''
         Define == operator
         '''
@@ -74,33 +75,38 @@ class PipeMap:
         '''
         Read in the map data and create PipeSegment
         '''
-        self.sketch = sketch
-        self.segments = {}
-        self.start = None
+        self.sketch: str = sketch
+        self.segments: dict[XY, PipeSegment] = {}
+        self.start: PipeSegment | None = None
 
-        lines = self.sketch.splitlines()
-        self.num_rows = len(lines)
-        self.num_cols = len(lines[0])
+        lines: list[str] = self.sketch.splitlines()
+        self.num_rows: int = len(lines)
+        self.num_cols: int = len(lines[0])
 
+        row_num: int
+        col_num: int
+        row: str
+        shape: str
         for row_num, row in enumerate(lines):
             for col_num, shape in enumerate(row):
                 if shape in SHAPES or shape == 'S':
-                    coord = PipeCoord((row_num, col_num))
+                    coord: PipeCoord = PipeCoord((row_num, col_num))
                     self.segments[coord.as_tuple] = PipeSegment(
                         coord=coord,
                         shape=shape,
                         parent=self,
                     )
                     if shape == 'S':
-                        self.start = self.segments[coord.as_tuple]
+                        self.start: PipeSegment = self.segments[coord.as_tuple]
 
         if self.start is None:
             raise ValueError('No start point detected in pipe map')
 
         # Discover exits for start pipe
+        direction: XY
         for direction in OPPOSITE:
             try:
-                neighbor = self.segments[self.start.coord[direction].as_tuple]
+                neighbor: PipeSegment = self.segments[self.start.coord[direction].as_tuple]
             except KeyError:
                 continue
             else:
@@ -137,36 +143,36 @@ class PipeMap:
                 raise ValueError('Failed to detect shape of start point')
 
     @property
-    def loop_segments(self) -> Generator['PipeSegment', None, None]:
+    def loop_segments(self) -> Generator[PipeSegment, None, None]:
         '''
         Generator which yields a sequence of PipeSegment objects, starting at
         the start point, and ending when the start has been reached again.
         '''
-        location = self.start
-        direction = self.start.exits[0]
+        location: XY = self.start
+        direction: str = self.start.exits[0]
 
         while True:
             yield location
 
             # Find next PipeSegment based on the current direction
-            next_coord = location.coord[direction]
-            next_segment = self.segments[next_coord.as_tuple]
+            next_coord: XY = location.coord[direction]
+            next_segment: PipeSegment = self.segments[next_coord.as_tuple]
 
             if next_segment == self.start:
                 # We've reached the beginning of the loop again
                 break
 
             # Update location for next loop iteration
-            location = next_segment
+            location: PipeSegment = next_segment
 
             # Find the new direction. Start by getting the direction from which
             # we entered the new segment, which will be the opposite of the
             # direction which we are currently pointed.
-            entry = OPPOSITE[direction]
+            entry: str = OPPOSITE[direction]
             # Get the string index of the new direction
-            next_direction_index = (next_segment.exits.index(entry) + 1) % 2
+            next_direction_index: int = (next_segment.exits.index(entry) + 1) % 2
             # Update direction for next loop iteration
-            direction = next_segment.exits[next_direction_index]
+            direction: str = next_segment.exits[next_direction_index]
 
     @property
     def inside_loop(self) -> Generator[tuple[int], None, None]:
@@ -174,10 +180,14 @@ class PipeMap:
         Use regexes to implement even-odd method for detecting whether a point
         is inside a polygon.
         '''
-        loop_coords = frozenset(
+        loop_coords: frozenset[XY] = frozenset(
             segment.coord.as_tuple for segment in self.loop_segments
         )
-        border_re = re.compile(r'\||F-*J|L-*7')
+        border_re: re.Pattern = re.compile(r'\||F-*J|L-*7')
+        row_num: int
+        col_num: int
+        row: str
+        col: str
         for row_num, row in enumerate(self.sketch.splitlines()):
             # Rewrite the line, replacing all non-loop columns with dots. With
             # non-loop pipe segments removed, the regex defined above will
@@ -233,7 +243,7 @@ class PipeSegment:
             case _:
                 raise ValueError(f'Invalid shape {shape!r}')
 
-    def __eq__(self, other: 'PipeSegment') -> bool:
+    def __eq__(self, other: PipeSegment) -> bool:
         '''
         Define == operator
         '''
@@ -250,7 +260,32 @@ class AOC2023Day10(AOC, XYMixin):
     '''
     Day 10 of Advent of Code 2023
     '''
-    day = 10
+    example_data_part1: str = textwrap.dedent(
+        '''
+        ..F7.
+        .FJ|.
+        SJ.L7
+        |F--J
+        LJ...
+        '''
+    )
+    example_data_part2: str = textwrap.dedent(
+        '''
+        FF7FSF7F7F7F7F7F---7
+        L|LJ||||||||||||F--J
+        FL-7LJLJ||||||LJL-77
+        F--JF--7||LJLJ7F7FJ-
+        L---JF-JLJ.||-FJLJJ7
+        |F|F-JF---7F7-L7L|7|
+        |FFJF7L7F-JF7|JL---7
+        7-L-JL7||F7|L7F-7F7|
+        L.L7LFJ|||||FJL7||LJ
+        L7JLJL-JLJLJL--JLJ.L
+        '''
+    )
+
+    validate_part1: int = 8
+    validate_part2: int = 10
 
     def part1(self) -> int:
         '''
@@ -260,14 +295,14 @@ class AOC2023Day10(AOC, XYMixin):
         be ceil(7.5), or 8. If there are 200 segments in the loop, the furthest
         length will be ceil(100), or 100.
         '''
-        pipe_map = PipeMap(self.get_input(part=1).read_text())
+        pipe_map: PipeMap = PipeMap(self.input_part1)
         return math.ceil(len(list(pipe_map.loop_segments)) / 2)
 
     def part2(self) -> int:
         '''
         Return the number of tiles that are within the loop
         '''
-        pipe_map = PipeMap(self.get_input(part=2).read_text())
+        pipe_map: PipeMap = PipeMap(self.input_part2)
         return len(list(pipe_map.inside_loop))
 
     def part2_alt(self) -> int:
@@ -278,7 +313,7 @@ class AOC2023Day10(AOC, XYMixin):
         Formula. For a more detailed explanation of this, see the docstring for
         the "solve" method in 2023 Day 18.
         '''
-        pipe_map = PipeMap(self.get_input(part=2).read_text())
+        pipe_map: PipeMap = PipeMap(self.input_part2)
         bounds = [p.coord.as_tuple for p in pipe_map.loop_segments]
         A = self.shoelace(bounds)
         b = self.perimeter(bounds)
@@ -287,10 +322,5 @@ class AOC2023Day10(AOC, XYMixin):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day10(example=True)
-    aoc.validate(aoc.part1(), 8)
-    aoc.validate(aoc.part2(), 10)
-    # Run against actual data
-    aoc = AOC2023Day10(example=False)
+    aoc = AOC2023Day10()
     aoc.run()

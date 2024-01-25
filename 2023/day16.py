@@ -2,151 +2,130 @@
 '''
 https://adventofcode.com/2023/day/16
 '''
-import queue
 import sys
-from pathlib import Path
+import textwrap
+from queue import SimpleQueue
+from typing import Literal
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, Grid, TupleMixin, XYMixin, XY
 
-# Typing shortcuts
-Coordinate = tuple[int, int]
+# Type hints
+StartState = dict[Literal['start', 'direction'], XY]
 
-DEFAULT_START = (0, 0)
-DEFAULT_DIRECTION = 'E'
+DEFAULT_START: XY = (0, 0)
+DEFAULT_DIRECTION: XY = Grid.directions.EAST
 
 
-class Contraption:
+class Contraption(Grid, TupleMixin, XYMixin):
     '''
     Represents the Contraption from this puzzle
     '''
-    directions = 'NSEW'
-    reflections = {
-        '\\': str.maketrans('NSEW', 'WESN'),
-        '/': str.maketrans('NSEW', 'EWNS'),
+    reflections: dict[str, dict[XY, XY]] = {
+        '\\': {
+            Grid.directions.NORTH: Grid.directions.WEST,
+            Grid.directions.SOUTH: Grid.directions.EAST,
+            Grid.directions.WEST: Grid.directions.NORTH,
+            Grid.directions.EAST: Grid.directions.SOUTH,
+        },
+        '/': {
+            Grid.directions.NORTH: Grid.directions.EAST,
+            Grid.directions.SOUTH: Grid.directions.WEST,
+            Grid.directions.WEST: Grid.directions.SOUTH,
+            Grid.directions.EAST: Grid.directions.NORTH,
+        },
     }
-
-    def __init__(self, path: Path) -> None:
-        '''
-        Load the input file
-        '''
-        self.grid = {}
-        self.rows = 0
-        with path.open() as fh:
-            for row_idx, row in enumerate(fh):
-                for col_idx, col in enumerate(row.rstrip()):
-                    self.grid[(row_idx, col_idx)] = col
-
-        self.rows = max(x[0] for x in self.grid) + 1
-        self.cols = max(x[1] for x in self.grid) + 1
-
-    @staticmethod
-    def move(
-        current: Coordinate,
-        direction: str,
-    ) -> Coordinate:
-        '''
-        Return the new position after moving one tile in the specified
-        direction.
-        '''
-        match direction:
-            case 'N':
-                delta = (-1, 0)
-            case 'S':
-                delta = (1, 0)
-            case 'E':
-                delta = (0, 1)
-            case 'W':
-                delta = (0, -1)
-            case _:
-                raise ValueError(f'Invalid direction {direction!r}')
-
-        return tuple(a + b for a, b in zip(current, delta))
 
     def shine_light(
         self,
-        tasks: queue.SimpleQueue,
-        energized: set[Coordinate],
-        start: Coordinate = DEFAULT_START,
-        direction: str = DEFAULT_DIRECTION,
+        tasks: SimpleQueue,
+        energized: set[XY],
+        start: XY = DEFAULT_START,
+        direction: XY = DEFAULT_DIRECTION,
     ) -> None:
         '''
         Simulate shining the light through the grid starting at the specified
         position and in the specified direction, returning a set of energized
         coordinates.
         '''
-        if direction not in self.directions:
-            raise ValueError(f'Invalid direction {direction!r}')
-
         # If the start point is outside the grid, the light is not in the grid
-        if start not in self.grid:
+        if start not in self:
             return
 
         # Begin by energizing the starting coordinate
         energized.add(start)
 
-        position = None
+        position: XY | None = None
         while (
             position := start if position is None
-            else self.move(position, direction)
-        ) in self.grid:
+            else self.tuple_add(position, direction)
+        ) in self:
             # Energize the current position
             energized.add(position)
             # Figure out what action (if any) to take
-            match self.grid[position]:
+            match self[position]:
                 case '-':
-                    if direction in 'NS':
-                        # Split the beam east and west
-                        for new_direction in 'EW':
+                    if direction in (
+                        self.directions.NORTH,
+                        self.directions.SOUTH,
+                    ):
+                        # Split the beam west and east
+                        for new_direction in (
+                            self.directions.WEST,
+                            self.directions.EAST,
+                        ):
                             tasks.put({
                                 'start': position,
                                 'direction': new_direction,
                             })
                         return
                 case '|':
-                    if direction in 'EW':
+                    if direction in (
+                        self.directions.WEST,
+                        self.directions.EAST,
+                    ):
                         # Split the beam north and south
-                        for new_direction in 'NS':
+                        for new_direction in (
+                            self.directions.NORTH,
+                            self.directions.SOUTH,
+                        ):
                             tasks.put({
                                 'start': position,
                                 'direction': new_direction,
                             })
                         return
                 case ('/' | '\\'):
-                    # Bounce the beam using the string translation tables
-                    # defined as class attributes.
-                    direction = direction.translate(
-                        self.reflections[self.grid[position]]
-                    )
+                    # Bounce the beam using the reflections dict
+                    direction = self.reflections[self[position]][direction]
                 case '.':
                     # Do nothing
                     pass
                 case _:
                     raise ValueError(
-                        f'Unhandled grid character {self.grid[position]!r}'
+                        f'Unhandled grid character {self[position]!r}'
                     )
 
         return
 
     def run(
         self,
-        start: Coordinate = DEFAULT_START,
-        direction: str = DEFAULT_DIRECTION,
+        start: XY = DEFAULT_START,
+        direction: XY = DEFAULT_DIRECTION,
     ) -> int:
         '''
         Run a beam of light through the Contraption, returning the number of
         coordinates that are energized.
         '''
         # Initialize the task queue
-        tasks = queue.SimpleQueue()
+        tasks: SimpleQueue[StartState] = SimpleQueue()
         tasks.put({'start': start, 'direction': direction})
         # Create sets to store the energized coordinates and the permutations
         # we've already called
-        energized = set()
-        calls = set()
+        energized: set[XY] = set()
+        calls: set[tuple[XY, XY]] = set()
 
         while not tasks.empty():
-            kwargs = tasks.get(block=False)
+            kwargs: StartState = tasks.get(block=False)
             if (kwargs['start'], kwargs['direction']) in calls:
                 continue
             # Run the task
@@ -165,34 +144,47 @@ class Contraption:
         Run all possible starting points and directions, returning the highest
         number of energized tiles this Contraption is capable of producing.
         '''
-        calls = []
+        calls: list[StartState] = []
         # Queue up all the coordinates in the top row
         calls.extend(
-            {'start': (0, col), 'direction': 'S'}
+            {
+                'start': (0, col),
+                'direction': self.directions.SOUTH,
+            }
             for col in range(self.cols)
         )
         # Queue up all the coordinates in the bottom row
         calls.extend(
-            {'start': (self.rows - 1, col), 'direction': 'N'}
+            {
+                'start': (self.rows - 1, col),
+                'direction': self.directions.NORTH,
+            }
             for col in range(self.cols)
         )
         # Queue up all the coordinates in the leftmost column
         calls.extend(
-            {'start': (row, 0), 'direction': 'E'}
+            {
+                'start': (row, 0),
+                'direction': self.directions.EAST,
+            }
             for row in range(self.rows)
         )
         # Queue up all the coordinates in the rightmost column
         calls.extend(
-            {'start': (row, self.cols - 1), 'direction': 'W'}
+            {
+                'start': (row, self.cols - 1),
+                'direction': self.directions.WEST,
+            }
             for row in range(self.rows)
         )
         return max(self.run(**params) for params in calls)
 
-    def print(self, energized: set[Coordinate]) -> None:
+    def print(self, energized: set[XY]) -> None:  # pylint: disable=arguments-differ
         '''
         Print the grid, with energized coordinates showing as "#" and
         non-energized coordinates showing as "."
         '''
+        row_id: int
         for row_id in range(self.rows):
             sys.stdout.write(
                 ''.join(
@@ -206,14 +198,29 @@ class AOC2023Day16(AOC):
     '''
     Day 16 of Advent of Code 2023
     '''
-    day = 16
+    example_data: str = textwrap.dedent(
+        r'''
+        .|...\....
+        |.-.\.....
+        .....|-...
+        ........|.
+        ..........
+        .........\
+        ..../.\\..
+        .-.-/..|..
+        .|....-|.\
+        ..//.|....
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 46
+    validate_part2: int = 51
+
+    def post_init(self) -> None:
         '''
         Load the steps
         '''
-        super().__init__(example=example)
-        self.contraption = Contraption(self.input)
+        self.contraption: Contraption = Contraption(self.input)
 
     def part1(self) -> int:
         '''
@@ -229,10 +236,5 @@ class AOC2023Day16(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day16(example=True)
-    aoc.validate(aoc.part1(), 46)
-    aoc.validate(aoc.part2(), 51)
-    # Run against actual data
-    aoc = AOC2023Day16(example=False)
+    aoc = AOC2023Day16()
     aoc.run()

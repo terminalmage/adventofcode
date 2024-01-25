@@ -3,6 +3,7 @@
 https://adventofcode.com/2023/day/2
 '''
 import math
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -12,14 +13,17 @@ class Cubes:
     '''
     Representation of a collection of cubes
     '''
-    colors = frozenset({'red', 'green', 'blue'})
+    colors: frozenset[str] = frozenset({'red', 'green', 'blue'})
 
     def __init__(self, description: str) -> None:
         '''
         Initialize the object based on the description
         '''
-        self.description = description.strip()
+        self.description: str = description.strip()
+        count_def: str
         for count_def in self.description.split(','):
+            count: str
+            color: str
             count, color = count_def.strip().split()
             setattr(self, color, int(count))
 
@@ -62,7 +66,9 @@ class Game:
         '''
         Initialize Cubes objects for each handful
         '''
-        self.handfuls = [Cubes(handful) for handful in handfuls.split(';')]
+        self.handfuls: list[Cubes] = [
+            Cubes(handful) for handful in handfuls.split(';')
+        ]
 
     def valid(self, bag_contents: Cubes) -> bool:
         '''
@@ -86,20 +92,31 @@ class AOC2023Day2(AOC):
     '''
     Day 2 of Advent of Code 2023
     '''
-    day = 2
+    example_data: str = textwrap.dedent(
+        '''
+        Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+        Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+        Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
+        Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
+        Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
+        '''
+    )
 
-    bag_contents = Cubes('12 red, 13 green, 14 blue')
+    validate_part1: int = 8
+    validate_part2: int = 2286
 
-    def __init__(self, example: bool = False) -> None:
+    bag_contents: Cubes = Cubes('12 red, 13 green, 14 blue')
+
+    def post_init(self) -> None:
         '''
         Initialize the object
         '''
-        super().__init__(example=example)
-        self.games = {}
-        with self.input.open() as fh:
-            for line in fh:
-                game_id, handfuls = line.split(None, 2)[1:]
-                self.games[int(game_id.rstrip(':'))] = Game(handfuls)
+        self.games: dict[int, Game] = {}
+        for line in self.input.splitlines():
+            game_id: str
+            handfuls: str
+            game_id, handfuls = line.split(None, 2)[1:]
+            self.games[int(game_id.rstrip(':'))] = Game(handfuls)
 
     def part1(self) -> int:
         '''
@@ -118,10 +135,5 @@ class AOC2023Day2(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day2(example=True)
-    aoc.validate(aoc.part1(), 8)
-    aoc.validate(aoc.part2(), 2286)
-    # Run against actual data
-    aoc = AOC2023Day2(example=False)
+    aoc = AOC2023Day2()
     aoc.run()

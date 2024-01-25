@@ -3,6 +3,7 @@
 https://adventofcode.com/2023/day/7
 '''
 import collections
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -13,14 +14,24 @@ class AOC2023Day7(AOC):
     Day 7 of Advent of Code 2023
 
     '''
-    day = 7
+    example_data: str = textwrap.dedent(
+        '''
+        32T3K 765
+        T55J5 684
+        KK677 28
+        KTJJT 220
+        QQQJA 483
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 6440
+    validate_part2: int = 5905
+
+    def post_init(self) -> None:
         '''
         Load hands from input file
         '''
-        super().__init__(example=example)
-        self.hands = self.input.read_text().splitlines()
+        self.hands: list[str] = self.input.splitlines()
 
     @staticmethod
     def key_func(hand: str, joker: bool = False) -> list[int]:
@@ -96,19 +107,23 @@ class AOC2023Day7(AOC):
 
         '''
         if joker:
-            card_rank = 'J23456789TQKA'
+            card_rank: str = 'J23456789TQKA'
             # A hand of all jokers would still be a 5-of-a-kind, so there would
             # be no "partial" hand in that case.
-            partial = hand.replace('J', '') if hand != 'JJJJJ' else hand
+            partial: str = hand.replace('J', '') if hand != 'JJJJJ' else hand
             # Get the spread of card frequencies, ordered descendingly
-            key = sorted(collections.Counter(partial).values(), reverse=True)
+            key: list[int] = sorted(
+                collections.Counter(partial).values(), reverse=True
+            )
             # Add the joker count to the most common card count (unless the
             # hand was all jokers)
             key[0] += len(hand) - len(partial)
         else:
-            card_rank = '23456789TJQKA'
+            card_rank: str = '23456789TJQKA'
             # Get the spread of card frequencies, ordered descendingly
-            key = sorted(collections.Counter(hand).values(), reverse=True)
+            key: list[int] = sorted(
+                collections.Counter(hand).values(), reverse=True
+            )
 
         # Add integers representing the value of each card in the hand
         key.extend(map(card_rank.index, hand))
@@ -143,10 +158,5 @@ class AOC2023Day7(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day7(example=True)
-    aoc.validate(aoc.part1(), 6440)
-    aoc.validate(aoc.part2(), 5905)
-    # Run against actual data
-    aoc = AOC2023Day7(example=False)
+    aoc = AOC2023Day7()
     aoc.run()

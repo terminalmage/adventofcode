@@ -3,6 +3,7 @@
 https://adventofcode.com/2023/day/6
 '''
 import math
+import textwrap
 from dataclasses import dataclass
 
 # Local imports
@@ -59,7 +60,7 @@ class Race:
         '''
         # First, calculate sqrt(t² - 4d)
         try:
-            delta = math.sqrt(self.time**2 - (4 * self.distance))
+            delta: float = math.sqrt(self.time**2 - (4 * self.distance))
         except ValueError as exc:
             raise ValueError('No possible winning solution') from exc
 
@@ -71,8 +72,8 @@ class Race:
         # bound, and subtract 1 from the upper bound (holding too long will
         # result in falling short of the record). Finally, floor and ceiling
         # functions are used to get the nearest integer in both directions.
-        lower = math.floor(((self.time - delta) / 2) + 1)
-        upper = math.ceil(((self.time + delta) / 2) - 1)
+        lower: int = math.floor(((self.time - delta) / 2) + 1)
+        upper: int = math.ceil(((self.time + delta) / 2) - 1)
 
         return lower, upper
 
@@ -81,6 +82,8 @@ class Race:
         '''
         Return the number of winning combinations
         '''
+        lower: int
+        upper: int
         lower, upper = self.bounds
         return upper - lower + 1
 
@@ -89,16 +92,25 @@ class AOC2023Day6(AOC):
     '''
     Day 6 of Advent of Code 2023
     '''
-    day = 6
+    example_data: str = textwrap.dedent(
+        '''
+        Time:      7  15   30
+        Distance:  9  40  200
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 288
+    validate_part2: int = 71503
+
+    def post_init(self) -> None:
         '''
         Load race data
         '''
-        super().__init__(example=example)
+        self.times: str
+        self.distances: str
         self.times, self.distances = (
             line.split(None, 1)[-1]
-            for line in self.input.read_text().splitlines()
+            for line in self.input.splitlines()
         )
 
     def part1(self) -> int:
@@ -127,10 +139,5 @@ class AOC2023Day6(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day6(example=True)
-    aoc.validate(aoc.part1(), 288)
-    aoc.validate(aoc.part2(), 71503)
-    # Run against actual data
-    aoc = AOC2023Day6(example=False)
+    aoc = AOC2023Day6()
     aoc.run()

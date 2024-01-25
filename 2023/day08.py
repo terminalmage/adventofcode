@@ -4,13 +4,16 @@ https://adventofcode.com/2023/day/8
 '''
 import itertools
 import math
-from collections.abc import Callable
+import textwrap
+from collections.abc import Callable, Sequence
+from typing import Literal
 
 # Local imports
 from aoc import AOC
 
 # Typing shortcuts
-NodeMap = dict[str, dict[str, str]]
+Direction = Literal['L', 'R']
+NodeMap = dict[str, dict[Direction, str]]
 
 
 class AOC2023Day8(AOC):
@@ -18,18 +21,46 @@ class AOC2023Day8(AOC):
     Day 8 of Advent of Code 2023
 
     '''
-    day = 8
+    example_data_part1: str = textwrap.dedent(
+        '''
+        LLR
 
-    def load_input(self, part: int) -> tuple[str, NodeMap]:
+        AAA = (BBB, BBB)
+        BBB = (AAA, ZZZ)
+        ZZZ = (ZZZ, ZZZ)
+        '''
+    )
+    example_data_part2: str = textwrap.dedent(
+        '''
+        LR
+
+        11A = (11B, XXX)
+        11B = (XXX, 11Z)
+        11Z = (11B, XXX)
+        22A = (22B, XXX)
+        22B = (22C, 22C)
+        22C = (22Z, 22Z)
+        22Z = (22B, 22B)
+        XXX = (XXX, XXX)
+        '''
+    )
+
+    validate_part1: int = 6
+    validate_part2: int = 6
+
+    def load(self, data: str) -> tuple[str, NodeMap]:
         '''
         Load the input file
         '''
-        data = self.get_input(part=part).read_text().splitlines()
+        lines: list[str] = data.splitlines()
 
-        directions = data[0]
-        node_map = {}
+        directions: str = lines[0]
+        node_map: NodeMap = {}
 
-        for line in data[2:]:
+        for line in lines[2:]:
+            name: str
+            left: str
+            right: str
             name, _, left, right = line.split()
             left = left.strip('(,')
             right = right.strip(')')
@@ -48,9 +79,9 @@ class AOC2023Day8(AOC):
         Traverse the node map, returning the number of steps before the
         condition returns True.
         '''
-        steps = 1
-        node = start_node
-        path = itertools.cycle(directions)
+        steps: int = 1
+        node: str = start_node
+        path: Sequence[Direction] = itertools.cycle(directions)
 
         while not condition(node := node_map[node][next(path)]):
             steps += 1
@@ -61,7 +92,9 @@ class AOC2023Day8(AOC):
         '''
         Return the number of steps to reach node ZZZ
         '''
-        directions, node_map = self.load_input(part=1)
+        directions: str
+        node_map: NodeMap
+        directions, node_map = self.load(self.input_part1)
 
         return self.traverse(
             node_map=node_map,
@@ -79,7 +112,9 @@ class AOC2023Day8(AOC):
         This is calculated by deriving the lowest common multiple of the steps
         it takes to traverse from each start node to any exit node.
         '''
-        directions, node_map = self.load_input(part=2)
+        directions: str
+        node_map: NodeMap
+        directions, node_map = self.load(self.input_part2)
 
         return math.lcm(
             *(
@@ -98,10 +133,5 @@ class AOC2023Day8(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day8(example=True)
-    aoc.validate(aoc.part1(), 6)
-    aoc.validate(aoc.part2(), 6)
-    # Run against actual data
-    aoc = AOC2023Day8(example=False)
+    aoc = AOC2023Day8()
     aoc.run()

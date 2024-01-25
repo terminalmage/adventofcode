@@ -2,19 +2,23 @@
 '''
 https://adventofcode.com/2023/day/14
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC, Grid
 
-# Typing shortcuts
+# Type hints
 Pattern = tuple[str]
+State = tuple[tuple[str, ...]]
+
 
 class Platform(Grid):
     '''
     Represents the platform from 2023 Day 14
     '''
-    rounded = 'O'
-    cube = '#'
-    empty = '.'
+    rounded: str = 'O'
+    cube: str = '#'
+    empty: str = '.'
 
     @property
     def load(self) -> int:
@@ -27,7 +31,7 @@ class Platform(Grid):
         )
 
     @property
-    def state(self) -> tuple[tuple[str]]:
+    def state(self) -> State:
         '''
         Return the grid as a tuple of tuples, providing a hashable grid state
         '''
@@ -42,6 +46,9 @@ class Platform(Grid):
         # grid. So, we'll need to use range() to get an index and use list
         # indexing to access the current value of a given position. Note that
         # the 2D array can be indexed off the object itself.
+        row: int
+        col: int
+        new_row: int
         for row in range(1, self.rows):
             for col in range(self.cols):
                 if (
@@ -66,6 +73,9 @@ class Platform(Grid):
         '''
         Same concept as north(), but move the rocks to the left instead
         '''
+        row: int
+        col: int
+        new_col: int
         for row in range(self.rows):
             for col in range(1, self.cols):
                 if (
@@ -85,6 +95,9 @@ class Platform(Grid):
         '''
         Same concept as north(), but move the rocks down instead
         '''
+        row: int
+        col: int
+        new_row: int
         for row in range(self.rows - 2, -1, -1):
             for col in range(self.cols):
                 if (
@@ -104,6 +117,9 @@ class Platform(Grid):
         '''
         Same concept as north(), but move the rocks to the right instead
         '''
+        row: int
+        col: int
+        new_col: int
         for row in range(self.rows):
             for col in range(self.cols - 2, -1, -1):
                 if (
@@ -124,13 +140,29 @@ class AOC2023Day14(AOC):
     '''
     Day 14 of Advent of Code 2023
     '''
-    day = 14
+    example_data: str = textwrap.dedent(
+        '''
+        O....#....
+        O.OO#....#
+        .....##...
+        OO.#O....O
+        .O.....O#.
+        O.#..O.#.#
+        ..O..#O..O
+        .......O..
+        #....###..
+        #OO..#....
+        '''
+    )
+
+    validate_part1: int = 136
+    validate_part2: int = 64
 
     def part1(self) -> int:
         '''
         Solve for Part 1
         '''
-        platform = Platform(self.input)
+        platform: Platform = Platform(self.input)
         platform.tilt_north()
         return platform.load
 
@@ -138,11 +170,11 @@ class AOC2023Day14(AOC):
         '''
         Solve for Part 2
         '''
-        platform = Platform(self.input)
+        platform: Platform = Platform(self.input)
 
-        states = {}
-        index = 0
-        cycles = 1_000_000_000
+        states: dict[State, int] = {}
+        index: int = 0
+        cycles: int = 1_000_000_000
 
         while index < cycles:
             platform.tilt_north()
@@ -156,7 +188,7 @@ class AOC2023Day14(AOC):
                 states[state] = index
             else:
                 # Cycle detected
-                period = index - states[state]
+                period: int = index - states[state]
                 # Skip ahead as many periods as possible
                 index += ((cycles - index) // period) * period
                 # We've reset the index position, so all of our previous cycle
@@ -167,10 +199,5 @@ class AOC2023Day14(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day14(example=True)
-    aoc.validate(aoc.part1(), 136)
-    aoc.validate(aoc.part2(), 64)
-    # Run against actual data
-    aoc = AOC2023Day14(example=False)
+    aoc = AOC2023Day14()
     aoc.run()

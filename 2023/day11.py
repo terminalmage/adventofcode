@@ -4,12 +4,13 @@ https://adventofcode.com/2023/day/11
 '''
 import itertools
 import re
+import textwrap
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, XY
 
 # Typing shortcuts
-Galaxy = tuple[int]
+Galaxy = XY
 Universe = list[Galaxy]
 
 
@@ -17,20 +18,34 @@ class AOC2023Day11(AOC):
     '''
     Day 11 of Advent of Code 2023
     '''
-    day = 11
+    example_data: str = textwrap.dedent(
+        '''
+        ...#......
+        .......#..
+        #.........
+        ..........
+        ......#...
+        .#........
+        .........#
+        ..........
+        .......#..
+        #...#.....
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 374
+    validate_part2: int = 8410
+
+    def post_init(self) -> None:
         '''
-        Initialize the object
+        Make an apple pie from scratch
         '''
-        super().__init__(example=example)
-        self.universe = []
-        with self.input.open() as fh:
-            for row_num, row in enumerate(fh):
-                self.universe.extend(
-                    (row_num, m.start())
-                    for m in re.finditer(r'#', row)
-                )
+        self.universe: list[Galaxy] = []
+        for row_num, row in enumerate(self.input.splitlines()):
+            self.universe.extend(
+                (row_num, m.start())
+                for m in re.finditer(r'#', row)
+            )
 
     @staticmethod
     def expand(
@@ -45,14 +60,18 @@ class AOC2023Day11(AOC):
             raise ValueError('factor must be >= 2')
 
         # Get all the empty rows and cols
+        rows: set[int]
+        cols: set[int]
         rows, cols = (set(x) for x in zip(*universe))
-        empty_rows = [x for x in range(max(rows)) if x not in rows]
-        empty_cols = [x for x in range(max(cols)) if x not in cols]
+        empty_rows: list[int] = [x for x in range(max(rows)) if x not in rows]
+        empty_cols: list[int] = [x for x in range(max(cols)) if x not in cols]
 
-        expanded = []
-        row_trans = {}
-        col_trans = {}
+        expanded: Galaxy = []
+        row_trans: dict[int, int] = {}
+        col_trans: dict[int, int] = {}
 
+        row: int
+        col: int
         for (row, col) in universe:
             if row in row_trans:
                 # Use already-calculated translated row number, if one exists
@@ -70,6 +89,8 @@ class AOC2023Day11(AOC):
                 # so, then the translated row number can be calculated by
                 # multiplying the index by the number of rows we need to add
                 # (i.e. the growth factor minus 1).
+                index: int
+                gap: int
                 for index, gap in reversed(list(enumerate(empty_rows, 1))):
                     if row > gap:
                         # Calculate number of rows to add
@@ -117,7 +138,7 @@ class AOC2023Day11(AOC):
 
     def part1(self) -> int:
         '''
-        Solve for Part 1, with a growth factor of 1
+        Solve for Part 1, with a growth factor of 2
         '''
         return self.solve()
 
@@ -130,10 +151,5 @@ class AOC2023Day11(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day11(example=True)
-    aoc.validate(aoc.part1(), 374)
-    aoc.validate(aoc.part2(), 8410)
-    # Run against actual data
-    aoc = AOC2023Day11(example=False)
+    aoc = AOC2023Day11()
     aoc.run()

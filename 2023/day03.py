@@ -4,6 +4,7 @@ https://adventofcode.com/2023/day/3
 '''
 import math
 import re
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -15,13 +16,13 @@ class Item:
 
     NOTE: This class assumes that items cannot span multiple lines.
     '''
-    def __init__(self, label: str, row: int, span: tuple[int]) -> None:
+    def __init__(self, label: str, row: int, span: tuple[int, int]) -> None:
         '''
         Initialize the object
         '''
-        self.label = label
-        self.row = row
-        self.span = span
+        self.label: str = label
+        self.row: int = row
+        self.span: tuple[int, int] = span
 
     def __repr__(self) -> str:
         '''
@@ -38,7 +39,7 @@ class Item:
         if abs(self.row - other.row) > 1:
             return False
 
-        other_cols = set(range(*other.span))
+        other_cols: set[int] = set(range(*other.span))
 
         if self.row == other.row:
             # Other item is on the same line. neighbor_cols represents the cols
@@ -60,31 +61,45 @@ class AOC2023Day3(AOC):
     '''
     Day 3 of Advent of Code 2023
     '''
-    day = 3
+    example_data: str = textwrap.dedent(
+        '''
+        467..114..
+        ...*......
+        ..35..633.
+        ......#...
+        617*......
+        .....+.58.
+        ..592.....
+        ......755.
+        ...$.*....
+        .664.598..
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 4361
+    validate_part2: int = 467835
+
+    def post_init(self) -> None:
         '''
         Read in the engine document
         '''
-        super().__init__(example=example)
+        self.numbers: list[Item] = []
+        self.symbols: list[Item] = []
 
-        self.numbers = []
-        self.symbols = []
+        number_re: re.Pattern = re.compile(r'\d+')
+        symbol_re: re.Pattern = re.compile(r'[^\d.]')
 
-        number_re = re.compile(r'\d+')
-        symbol_re = re.compile(r'[^\d.]')
-
-        with self.input.open() as fh:
-            for row, line in enumerate(fh):
-                line = line.rstrip()
-                self.numbers.extend(
-                    Item(number.group(0), row, number.span(0))
-                    for number in number_re.finditer(line)
-                )
-                self.symbols.extend(
-                    Item(symbol.group(0), row, symbol.span(0))
-                    for symbol in symbol_re.finditer(line)
-                )
+        row: int
+        line: str
+        for row, line in enumerate(self.input.splitlines()):
+            self.numbers.extend(
+                Item(number.group(0), row, number.span(0))
+                for number in number_re.finditer(line)
+            )
+            self.symbols.extend(
+                Item(symbol.group(0), row, symbol.span(0))
+                for symbol in symbol_re.finditer(line)
+            )
 
     def part1(self) -> int:
         '''
@@ -99,11 +114,12 @@ class AOC2023Day3(AOC):
         '''
         Return the sum of the gear ratios for all gears
         '''
-        total = 0
+        total: int = 0
 
+        symbol: Item
         for symbol in self.symbols:
             if symbol.label == '*':
-                gear_neighbors = [
+                gear_neighbors: list[int] = [
                     int(number.label) for number in self.numbers
                     if symbol.adjacent_to(number)
                 ]
@@ -114,10 +130,5 @@ class AOC2023Day3(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day3(example=True)
-    aoc.validate(aoc.part1(), 4361)
-    aoc.validate(aoc.part2(), 467835)
-    # Run against actual data
-    aoc = AOC2023Day3(example=False)
+    aoc = AOC2023Day3()
     aoc.run()

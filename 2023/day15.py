@@ -2,7 +2,8 @@
 '''
 https://adventofcode.com/2023/day/15
 '''
-import collections
+import textwrap
+from collections import defaultdict
 
 # Local imports
 from aoc import AOC
@@ -12,21 +13,28 @@ class AOC2023Day15(AOC):
     '''
     Day 15 of Advent of Code 2023
     '''
-    day = 15
+    example_data: str = textwrap.dedent(
+        '''
+        rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 1320
+    validate_part2: int = 145
+
+    def post_init(self) -> None:
         '''
         Load the steps
         '''
-        super().__init__(example=example)
-        self.steps = tuple(self.input.read_text().rstrip().split(','))
+        self.steps: tuple[str, ...] = tuple(self.input.split(','))
 
     @staticmethod
     def hash(text: str) -> int:
         '''
         Calculate the hash for a given string
         '''
-        ret = 0
+        ret: int = 0
+        char: str
         for char in text:
             ret = ((ret + ord(char)) * 17) % 256
         return ret
@@ -41,7 +49,8 @@ class AOC2023Day15(AOC):
         '''
         Calculate and return the lens' focusing power
         '''
-        boxes = collections.defaultdict(dict)
+        boxes: defaultdict[str, dict[str, int]] = defaultdict(dict)
+        step: str
         for step in self.steps:
             # Operations are defined in one of two formats:
             #
@@ -75,10 +84,5 @@ class AOC2023Day15(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day15(example=True)
-    aoc.validate(aoc.part1(), 1320)
-    aoc.validate(aoc.part2(), 145)
-    # Run against actual data
-    aoc = AOC2023Day15(example=False)
+    aoc = AOC2023Day15()
     aoc.run()

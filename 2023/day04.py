@@ -3,6 +3,7 @@
 https://adventofcode.com/2023/day/4
 '''
 import functools
+import textwrap
 from collections.abc import Sequence
 
 # Local imports
@@ -22,9 +23,9 @@ class ScratchCard:
         '''
         Initialize the object
         '''
-        self.card_num = card_num
-        self.winners = frozenset(winners)
-        self.picks = frozenset(picks)
+        self.card_num: int = card_num
+        self.winners: frozenset[int] = frozenset(winners)
+        self.picks: frozenset[int] = frozenset(picks)
 
     def __repr__(self) -> str:
         '''
@@ -48,7 +49,7 @@ class ScratchCard:
         '''
         Returns the score of the game
         '''
-        matches = len(self.matches)
+        matches: int = len(self.matches)
 
         if matches:
             return 2 ** (matches - 1)
@@ -60,25 +61,39 @@ class AOC2023Day4(AOC):
     '''
     Day 4 of Advent of Code 2023
     '''
-    day = 4
+    example_data: str = textwrap.dedent(
+        '''
+        Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
+        Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
+        Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
+        Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
+        Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
+        Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 13
+    validate_part2: int = 30
+
+    def post_init(self) -> None:
         '''
         Read in scratch cards
         '''
-        super().__init__(example=example)
-        self.cards = {}
-        with self.input.open() as fh:
-            for line in fh:
-                card_num, card_def = line.split(None, 2)[1:]
-                card_num = int(card_num.rstrip(':'))
-                winners, picks = card_def.split('|')
+        self.cards: dict[int, ScratchCard] = {}
+        for line in self.input.splitlines():
+            card_num: int
+            card_def: str
+            card_num, card_def = line.split(None, 2)[1:]
+            card_num = int(card_num.rstrip(':'))
+            winners: str
+            picks: str
+            winners, picks = card_def.split('|')
 
-                self.cards[card_num] = ScratchCard(
-                    card_num,
-                    (int(item) for item in winners.strip().split()),
-                    (int(item) for item in picks.strip().split()),
-                )
+            self.cards[card_num] = ScratchCard(
+                card_num,
+                (int(item) for item in winners.strip().split()),
+                (int(item) for item in picks.strip().split()),
+            )
 
     def part1(self) -> int:
         '''
@@ -91,13 +106,16 @@ class AOC2023Day4(AOC):
         Return the total number of cards earned after playing through each of
         them once
         '''
-        stacks = {card_num: 1 for card_num in self.cards}
+        stacks: dict[int, int] = {card_num: 1 for card_num in self.cards}
 
+        card_num: int
+        card: ScratchCard
         for card_num, card in self.cards.items():
             # As we cycle through the cards, always make sure to add its
             # winners to the stacks once for each copy of that card.
-            copies = stacks[card_num]
+            copies: int = stacks[card_num]
             # This for loop will be a no-op if there are no matches
+            earned: int
             for earned in range(card_num + 1, card_num + 1 + len(card.matches)):
                 # Membership check to prevent out-of-bounds (i.e. the last
                 # card can't win any subsequent cards)
@@ -108,10 +126,5 @@ class AOC2023Day4(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day4(example=True)
-    aoc.validate(aoc.part1(), 13)
-    aoc.validate(aoc.part2(), 30)
-    # Run against actual data
-    aoc = AOC2023Day4(example=False)
+    aoc = AOC2023Day4()
     aoc.run()

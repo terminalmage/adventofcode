@@ -4,6 +4,7 @@ https://adventofcode.com/2023/day/24
 '''
 import itertools
 import re
+import textwrap
 
 # 3rd-party imports
 import z3
@@ -16,14 +17,28 @@ class AOC2023Day24(AOC):
     '''
     Day 24 of Advent of Code 2023
     '''
-    day = 24
+    example_data: str = textwrap.dedent(
+        '''
+        19, 13, 30 @ -2,  1, -2
+        18, 19, 22 @ -1, -1, -2
+        20, 25, 34 @ -2, -2, -4
+        12, 31, 28 @ -1, -2, -1
+        20, 19, 15 @  1, -5, -3
+        '''
+    )
 
-    int_re = re.compile(r'-?\d+')
+    validate_part1: int = 2
+
+    int_re: re.Pattern = re.compile(r'-?\d+')
 
     def part1(self) -> int:
         '''
         Calculate number of intersections that happen within the test area
         '''
+        min_x: int
+        max_x: int
+        min_y: int
+        max_y: int
         if self.example:
             min_x = min_y = 7
             max_x = max_y = 27
@@ -38,17 +53,20 @@ class AOC2023Day24(AOC):
             )
             for x1, y1, _, x2, y2, _ in (
                 tuple(int(x) for x in self.int_re.findall(line))
-                for line in self.input.read_text().splitlines()
+                for line in self.input.splitlines()
             )
         )
 
         intersections: dict[frozenset[LineSegment], Coordinate] = {}
+        seg1: LineSegment
+        seg2: LineSegment
         for seg1, seg2 in itertools.combinations(paths, 2):
+            intersect: Coordinate | None
             intersect = seg1 & seg2
             if intersect is not None:
                 # Rule out past intersections
-                vx1 = seg1.second.x - seg1.first.x
-                vx2 = seg2.second.x - seg2.first.x
+                vx1: int = seg1.second.x - seg1.first.x
+                vx2: int = seg2.second.x - seg2.first.x
                 # pylint: disable=too-many-boolean-expressions
                 if (
                     intersect.x > seg1.first.x and vx1 > 0
@@ -70,7 +88,7 @@ class AOC2023Day24(AOC):
         '''
         Use z3 to cheat and get the answer to this awful puzzle
         '''
-        lines: list[str] = self.input.read_text().splitlines()
+        lines: list[str] = self.input.splitlines()
         # Reduce the number of hailstones down to a smaller subset, with the
         # assumption that rock that collides with 10% of them will be the
         # solution to this puzzle.
@@ -108,9 +126,5 @@ class AOC2023Day24(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day24(example=True)
-    aoc.validate(aoc.part1(), 2)
-    # Run against actual data
-    aoc = AOC2023Day24(example=False)
+    aoc = AOC2023Day24()
     aoc.run()

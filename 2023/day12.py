@@ -3,15 +3,21 @@
 https://adventofcode.com/2023/day/12
 '''
 import functools
+import textwrap
 
 # Local imports
 from aoc import AOC
+
+# Type hints
+Definition = str
+Groups = tuple[int, ...]
+Configuration = tuple[tuple[Definition, Groups], ...]
 
 
 @functools.cache
 def possible_arrangements(
     substr: str,
-    groups: tuple[int],
+    groups: Groups,
     partial: int = 0,
 ) -> int:
     '''
@@ -30,7 +36,7 @@ def possible_arrangements(
     if len(substr) < sum(groups) + len(groups) - 1 - partial:
         return 0
 
-    ret = 0
+    ret: int = 0
 
     if substr[0] in '#?':
         # Assume that the current position is (or could be) part of a group of
@@ -68,24 +74,34 @@ class AOC2023Day12(AOC):
     '''
     Day 12 of Advent of Code 2023
     '''
-    day = 12
+    example_data: str = textwrap.dedent(
+        '''
+        ???.### 1,1,3
+        .??..??...?##. 1,1,3
+        ?#?#?#?#?#?#?#? 1,3,1,6
+        ????.#...#... 4,1,1
+        ????.######..#####. 1,6,5
+        ?###???????? 3,2,1
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 21
+    validate_part2: int = 525152
+
+    def post_init(self) -> None:
         '''
-        Initialize the object
+        Load configurations from the input file
         '''
-        super().__init__(example=example)
-        with self.input.open() as fh:
-            self.configurations = tuple(
-                (definition, tuple((int(x) for x in groups.split(','))))
-                for definition, groups in (
-                    line.rstrip().split()
-                    for line in fh
-                )
+        self.configurations: tuple[Configuration] = tuple(
+            (definition, tuple((int(x) for x in groups.split(','))))
+            for definition, groups in (
+                line.split()
+                for line in self.input.splitlines()
             )
+        )
 
     @staticmethod
-    def solve(definition: str, groups: tuple[int]) -> int:
+    def solve(definition: Definition, groups: Groups) -> int:
         '''
         The recursive function to get the possible arrangements depends on
         dots to denote the end of a group. If a definition ends in a "#" it
@@ -119,10 +135,5 @@ class AOC2023Day12(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day12(example=True)
-    aoc.validate(aoc.part1(), 21)
-    aoc.validate(aoc.part2(), 525152)
-    # Run against actual data
-    aoc = AOC2023Day12(example=False)
+    aoc = AOC2023Day12()
     aoc.run()

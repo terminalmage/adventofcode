@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2023/day/18
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC, XYMixin, XY, directions
 
@@ -10,7 +12,27 @@ class AOC2023Day18(AOC, XYMixin):
     '''
     Day 18 of Advent of Code 2023
     '''
-    day = 18
+    example_data: str = textwrap.dedent(
+        '''
+        R 6 (#70c710)
+        D 5 (#0dc571)
+        L 2 (#5713f0)
+        D 2 (#d2c081)
+        R 2 (#59c680)
+        D 2 (#411b91)
+        L 5 (#8ceee2)
+        U 2 (#caa173)
+        L 1 (#1b58a2)
+        U 2 (#caa171)
+        R 2 (#7807d2)
+        U 3 (#a77fa3)
+        L 2 (#015232)
+        U 2 (#7a21e3)
+        '''
+    )
+
+    validate_part1: int = 62
+    validate_part2: int = 952408144115
 
     def solve(self, bounds: list[XY]) -> int:
         '''
@@ -55,9 +77,9 @@ class AOC2023Day18(AOC, XYMixin):
         we can add this to our perimeter (b) to get the answer.
         '''
         # These helper functions come from the XYMixin
-        A = self.shoelace(bounds)
-        b = self.perimeter(bounds)
-        i = A - (b / 2) + 1
+        A: int = self.shoelace(bounds)
+        b: int = self.perimeter(bounds)
+        i: float = A - (b / 2) + 1
         # Because of the way the puzzle is worded, we know that the answer will
         # be a whole number, so convert to an int before returning.
         return int(i + b)
@@ -66,25 +88,29 @@ class AOC2023Day18(AOC, XYMixin):
         '''
         Solve for Part 1
         '''
-        deltas = {
+        deltas: dict[str, XY] = {
             'U': directions.NORTH,
             'D': directions.SOUTH,
             'L': directions.WEST,
             'R': directions.EAST,
         }
 
-        row = col = 0
-        bounds = [(row, col)]
+        row: int = 0
+        col: int = 0
+        bounds: list[XY] = [(row, col)]
 
-        with self.input.open() as fh:
-            for line in fh:
-                direction, distance = line.split(None, 2)[:2]
-                distance = int(distance)
-                row, col = (
-                    item + distance * delta
-                    for item, delta in zip((row, col), deltas[direction])
-                )
-                bounds.append((row, col))
+        for line in self.input.splitlines():
+            direction: str
+            distance: str
+            direction, distance = line.split(None, 2)[:2]
+            distance: int = int(distance)
+            row: int
+            col: int
+            row, col = (
+                item + distance * delta
+                for item, delta in zip((row, col), deltas[direction])
+            )
+            bounds.append((row, col))
 
         return self.solve(bounds)
 
@@ -92,35 +118,32 @@ class AOC2023Day18(AOC, XYMixin):
         '''
         Solve for Part 2
         '''
-        deltas = {
+        deltas: dict[str, XY] = {
             '0': directions.EAST,
             '1': directions.SOUTH,
             '2': directions.WEST,
             '3': directions.NORTH,
         }
 
-        row = col = 0
-        bounds = [(row, col)]
+        row: int = 0
+        col: int = 0
+        bounds: list[XY] = [(row, col)]
 
-        with self.input.open() as fh:
-            for line in fh:
-                color_hex = line.split()[-1][2:8]
-                distance = int(color_hex[:5], 16)
-                direction = color_hex[-1]
-                row, col = (
-                    item + distance * delta
-                    for item, delta in zip((row, col), deltas[direction])
-                )
-                bounds.append((row, col))
+        for line in self.input.splitlines():
+            color_hex: str = line.split()[-1][2:8]
+            distance: int = int(color_hex[:5], 16)
+            direction: str = color_hex[-1]
+            row: int
+            col: int
+            row, col = (
+                item + distance * delta
+                for item, delta in zip((row, col), deltas[direction])
+            )
+            bounds.append((row, col))
 
         return self.solve(bounds)
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day18(example=True)
-    aoc.validate(aoc.part1(), 62)
-    aoc.validate(aoc.part2(), 952408144115)
-    # Run against actual data
-    aoc = AOC2023Day18(example=False)
+    aoc = AOC2023Day18()
     aoc.run()

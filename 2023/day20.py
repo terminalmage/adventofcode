@@ -2,11 +2,12 @@
 '''
 https://adventofcode.com/2023/day/20
 '''
-import collections
+from __future__ import annotations
 import functools
 import math
+import textwrap
+from collections import deque
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Literal
 
 # Local imports
@@ -27,8 +28,8 @@ class Module:
         '''
         Initialize inputs and outputs
         '''
-        self.name = name
-        self.outputs: list['Module'] = []
+        self.name: str = name
+        self.outputs: list[Module] = []
 
     def __repr__(self) -> str:
         '''
@@ -36,7 +37,7 @@ class Module:
         '''
         return f'{self.__class__.__name__}(name={self.name!r})'
 
-    def add_output(self, module: 'Module') -> None:
+    def add_output(self, module: Module) -> None:
         '''
         Function to add a module to this module's outputs
         '''
@@ -44,8 +45,8 @@ class Module:
 
     def pulse(
         self,
-        sender: 'Module',   # pylint: disable=unused-argument
-        pulse: Pulse,       # pylint: disable=unused-argument
+        sender: Module,   # pylint: disable=unused-argument
+        pulse: Pulse,     # pylint: disable=unused-argument
     ) -> PulseOutput:
         '''
         Read incoming pulse and output the appropriate pulse
@@ -139,7 +140,7 @@ class Conjunction(Module):
         '''
         Initialize the last received pulse from the newly-added input
         '''
-        self.registers[module] = LowPulse
+        self.registers[module]: Pulse = LowPulse
 
     def pulse(
         self,
@@ -215,7 +216,7 @@ class Machine:
     State machine which maintains a queue to ensure pulses are processed in the
     correct order
     '''
-    def __init__(self, path: Path):
+    def __init__(self, data: str):
         '''
         Load the machine configuration from the input file
         '''
@@ -223,36 +224,41 @@ class Machine:
 
         # Do a first pass on the input file to instantiate all the modules
         output_map: dict[Module, str] = {}
-        with path.open() as fh:
-            for line in fh:
-                label, outputs = line.rstrip().split(' -> ')
-                if label.startswith('%'):
-                    label = label[1:]
-                    module = FlipFlop(label)
-                elif label.startswith('&'):
-                    label = label[1:]
-                    module = Conjunction(label)
-                elif label == 'broadcaster':
-                    module = Broadcaster()
-                else:
-                    raise ValueError(f'Invalid module {label!r}')
+        for line in data.splitlines():
+            label: str
+            outputs: str
+            label, outputs = line.split(' -> ')
+            if label.startswith('%'):
+                label = label[1:]
+                module = FlipFlop(label)
+            elif label.startswith('&'):
+                label = label[1:]
+                module = Conjunction(label)
+            elif label == 'broadcaster':
+                module = Broadcaster()
+            else:
+                raise ValueError(f'Invalid module {label!r}')
 
-                self.modules[label] = module
-                output_map[module] = outputs.split(', ')
+            self.modules[label]: Module = module
+            output_map[module]: list[str] = outputs.split(', ')
 
-        self.rx_parent = None
+        self.rx_parent: str | None = None
 
         # Now that all the modules have been instantiated, assign all outputs
+        module: Module
+        outputs: list[str]
         for module, outputs in output_map.items():
+            output_label: str
             for output_label in outputs:
                 if output_label not in self.modules:
                     # Output is a dummy output module
+                    output: Output
                     output = self.modules[output_label] = Output(output_label)
                     if output_label == 'rx':
-                        self.rx_parent: str = module.name
+                        self.rx_parent = module.name
                 else:
                     # Locate output module
-                    output = self.modules[output_label]
+                    output: Module = self.modules[output_label]
                 # Append to the module's outputs
                 module.outputs.append(output)
                 # If output is a Conjunction, add the module to the
@@ -267,6 +273,7 @@ class Machine:
         '''
         Reset all modules, counters, etc. to initial state
         '''
+        module: Module
         for module in self.modules.values():
             module.reset()
 
@@ -288,15 +295,18 @@ class Machine:
 
         # Initialize pulse counter for this button press. Don't forget to count
         # the low pulse sent by the button itself.
-        counter = PulseCount(low=1)
+        counter: PulseCount = PulseCount(low=1)
 
         # Initialize queue
-        pulses = collections.deque()
-        pulses.append(self.modules['broadcaster'].pulse(LowPulse))
+        pulses: deque[tuple[Module, Pulse]] = deque(
+            [self.modules['broadcaster'].pulse(LowPulse)]
+        )
 
         while pulses:
             try:
                 # Read from queue
+                sender: Module
+                pulse: Pulse
                 sender, pulse = pulses.popleft()
             except TypeError:
                 # No pulse was output
@@ -333,7 +343,17 @@ class AOC2023Day20(AOC):
     '''
     Day 20 of Advent of Code 2023
     '''
-    day = 20
+    example_data: str = textwrap.dedent(
+        '''
+        broadcaster -> a, b, c
+        %a -> b
+        %b -> c
+        %c -> inv
+        &inv -> a
+        '''
+    )
+
+    validate_part1: int = 32000000
 
     def part1(self) -> int:
         '''
@@ -361,9 +381,5 @@ class AOC2023Day20(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day20(example=True)
-    aoc.validate(aoc.part1(), 32000000)
-    # Run against actual data
-    aoc = AOC2023Day20(example=False)
+    aoc = AOC2023Day20()
     aoc.run()

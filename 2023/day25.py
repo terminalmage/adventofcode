@@ -2,14 +2,14 @@
 '''
 https://adventofcode.com/2023/day/25
 '''
-import collections
 import copy
 import itertools
 import math
 import random
 import sys
+import textwrap
+from collections import defaultdict
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Self
 
 # Local imports
@@ -71,19 +71,20 @@ class ComponentGraph:
     Represents the connectivities described by the puzzle input as a
     connected graph.
     '''
-    def __init__(self, path: Path):
+    def __init__(self, data: str):
         '''
         Load the input file
         '''
-        data = collections.defaultdict(set)
+        node_connections: defaultdict[set[str]] = defaultdict(set)
 
-        for line in path.read_text().splitlines():
+        for line in data.splitlines():
             cols: list[str] = line.replace(':', '').split()
             node: str = cols[0]
             connections: list[str] = cols[1:]
-            data[node].update(connections)
+            node_connections[node].update(connections)
+            connection: str
             for connection in connections:
-                data[connection].add(node)
+                node_connections[connection].add(node)
 
         # Use the Edge dataclass' hash function to disambiguate edges which are
         # inverse of each other, resulting in a list of distinct edges.
@@ -94,7 +95,7 @@ class ComponentGraph:
                         (
                             Edge(node, connection)
                             for connection in connections
-                        ) for node, connections in data.items()
+                        ) for node, connections in node_connections.items()
                     )
                 )
             )
@@ -119,7 +120,7 @@ class ComponentGraph:
             edges = copy.deepcopy(self.edges)
             random.shuffle(edges)
 
-            nodes = collections.defaultdict(list)
+            nodes = defaultdict(list)
 
             for edge in edges:
                 nodes[edge.u].append(edge)
@@ -179,7 +180,25 @@ class AOC2023Day25(AOC):
     '''
     Day 25 of Advent of Code 2023
     '''
-    day = 25
+    example_data: str = textwrap.dedent(
+        '''
+        jqt: rhn xhk nvd
+        rsh: frs pzl lsr
+        xhk: hfx
+        cmg: qnr nvd lhk bvb
+        rhn: xhk bvb hfx
+        bvb: xhk hfx
+        pzl: lsr hfx nvd
+        qnr: nvd
+        ntq: jqt hfx bvb xhk
+        nvd: lhk
+        lsr: lhk
+        rzs: qnr cmg lsr rsh
+        frs: qnr lhk lsr
+        '''
+    )
+
+    validate_part1: int = 54
 
     def part1(self) -> int:
         '''
@@ -201,9 +220,5 @@ class AOC2023Day25(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day25(example=True)
-    aoc.validate(aoc.part1(), 54)
-    # Run against actual data
-    aoc = AOC2023Day25(example=False)
+    aoc = AOC2023Day25()
     aoc.run()

@@ -3,6 +3,7 @@
 https://adventofcode.com/2023/day/1
 '''
 import re
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -12,10 +13,31 @@ class AOC2023Day1(AOC):
     '''
     Day 1 of Advent of Code 2023
     '''
-    day = 1
+    example_data_part1: str = textwrap.dedent(
+        '''
+        1abc2
+        pqr3stu8vwx
+        a1b2c3d4e5f
+        treb7uchet
+        '''
+    )
+    example_data_part2: str = textwrap.dedent(
+        '''
+        two1nine
+        eightwothree
+        abcone2threexyz
+        xtwone3four
+        4nineeightseven2
+        zoneight234
+        7pqrstsixteen
+        '''
+    )
 
-    digits = re.compile(r'\d')
-    digit_words = re.compile(
+    validate_part1: int = 142
+    validate_part2: int = 281
+
+    digits: re.Pattern = re.compile(r'\d')
+    digit_words: re.Pattern = re.compile(
         r'(?=(\d|(?:zero|one|two|three|four|five|six|seven|eight|nine)))'
     )
 
@@ -23,11 +45,11 @@ class AOC2023Day1(AOC):
         '''
         Return the sum of all the calibration values
         '''
-        values = []
-        with self.get_input(part=1).open() as fh:
-            for line in fh:
-                digits = self.digits.findall(line)
-                values.append(int(f'{digits[0]}{digits[-1]}'))
+        values: list[int] = []
+        line: str
+        for line in self.input_part1.splitlines():
+            digits: list[str] = self.digits.findall(line)
+            values.append(int(f'{digits[0]}{digits[-1]}'))
 
         return sum(values)
 
@@ -35,7 +57,7 @@ class AOC2023Day1(AOC):
         '''
         Return the sum of all the calibration values
         '''
-        digit_map = {
+        digit_map: dict[str, int] = {
             'zero': 0,
             'one': 1,
             'two': 2,
@@ -61,20 +83,14 @@ class AOC2023Day1(AOC):
                 except KeyError as exc:
                     raise ValueError(f'Invalid digit: {digit!r}') from exc
 
-        values = []
-        with self.get_input(part=2).open() as fh:
-            for line in fh:
-                digits = self.digit_words.findall(line)
-                values.append(int(f'{resolve(digits[0])}{resolve(digits[-1])}'))
+        values: list[int] = []
+        for line in self.input_part2.splitlines():
+            digits: list[str] = self.digit_words.findall(line)
+            values.append(int(f'{resolve(digits[0])}{resolve(digits[-1])}'))
 
         return sum(values)
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day1(example=True)
-    aoc.validate(aoc.part1(), 142)
-    aoc.validate(aoc.part2(), 281)
-    # Run against actual data
-    aoc = AOC2023Day1(example=False)
+    aoc = AOC2023Day1()
     aoc.run()

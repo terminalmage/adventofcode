@@ -2,24 +2,24 @@
 '''
 https://adventofcode.com/2023/day/22
 '''
-import collections
 import re
-from pathlib import Path
+import textwrap
+from collections import deque
 
 # Local imports
-from aoc import AOC, Coordinate3D
+from aoc import AOC, XYZ
 
 
 class Brick:
     '''
     Represents a single brick
     '''
-    def __init__(self, begin: Coordinate3D, end: Coordinate3D) -> int:
+    def __init__(self, begin: XYZ, end: XYZ) -> int:
         '''
         Initialize object
         '''
-        self.begin: Coordinate3D = begin
-        self.end: Coordinate3D = end
+        self.begin: XYZ = begin
+        self.end: XYZ = end
         self.children: set[Brick] = set()
         self.parents: set[Brick] = set()
 
@@ -30,7 +30,7 @@ class Brick:
         return f'Brick(begin={self.begin!r}, end={self.end!r})'
 
     @property
-    def coordinates(self) -> set[Coordinate3D]:
+    def coordinates(self) -> set[XYZ]:
         '''
         Return all coordinates that belong to this brick
         '''
@@ -77,9 +77,9 @@ class Chasm:
     '''
     Object which manages a Brick object for each brick defined in the input
     '''
-    def __init__(self, path: Path) -> None:
+    def __init__(self, data: str) -> None:
         '''
-        Load all the bricks from the input file
+        Load all the bricks from the puzzle input
 
         Key insights about the input:
 
@@ -114,12 +114,12 @@ class Chasm:
         of bricks in the exact order needed to simulate the initial drop
         defined in the puzzle (i.e. lowest bricks first, highest bricks last).
         '''
-        self.bricks: tuple[Brick] = tuple(
+        self.bricks: tuple[Brick, ...] = tuple(
             Brick(begin=(x1, y1, z1), end=(x2, y2, z2))
             for x1, y1, z1, x2, y2, z2 in sorted(
                 (
                     tuple(int(x) for x in re.findall(r'\d+', line))
-                    for line in path.read_text().splitlines()
+                    for line in data.splitlines()
                 ),
                 key=lambda brick_xyzxyz: brick_xyzxyz[2]
             )
@@ -129,7 +129,7 @@ class Chasm:
         # used to map its coordinates to the Brick instance, so that the bricks
         # in subsequent loop iterations know exactly which brick(s) they are
         # colliding with.
-        new_locations: dict[Coordinate3D, Brick] = {}
+        new_locations: dict[XYZ, Brick] = {}
 
         # Simulate dropping bricks, detecting which bricks would collide with
         # which other bricks. If a brick collides with another brick, it is a
@@ -201,7 +201,7 @@ class Chasm:
         # Aggregates all children we've checked
         visited: set[Brick] = set()
         ret: set[Brick] = set()
-        dq: collections.deque[Brick] = collections.deque([brick])
+        dq: deque[Brick] = deque([brick])
 
         # This loop simulates the chain reaction which would result from this
         # brick being removed. Each of the children of this brick will be
@@ -227,13 +227,25 @@ class AOC2023Day22(AOC):
     '''
     Day 22 of Advent of Code 2023
     '''
-    day = 22
+    example_data: str = textwrap.dedent(
+        '''
+        1,0,1~1,2,1
+        0,0,2~2,0,2
+        0,2,3~2,2,3
+        0,0,4~0,2,4
+        2,0,5~2,2,5
+        0,1,6~2,1,6
+        1,1,8~1,1,9
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 5
+    validate_part2: int = 7
+
+    def post_init(self) -> None:
         '''
         Load the input data
         '''
-        super().__init__(example=example)
         self.chasm: Chasm = Chasm(self.input)
 
     def part1(self) -> int:
@@ -255,10 +267,5 @@ class AOC2023Day22(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day22(example=True)
-    aoc.validate(aoc.part1(), 5)
-    aoc.validate(aoc.part2(), 7)
-    # Run against actual data
-    aoc = AOC2023Day22(example=False)
+    aoc = AOC2023Day22()
     aoc.run()

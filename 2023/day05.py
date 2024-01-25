@@ -4,6 +4,7 @@ https://adventofcode.com/2023/day/5
 '''
 import itertools
 import re
+import textwrap
 from collections.abc import Generator
 from dataclasses import dataclass
 
@@ -188,31 +189,67 @@ class AOC2023Day5(AOC):
     '''
     Day 5 of Advent of Code 2023
     '''
-    day = 5
-
-    def __init__(self, example: bool = False) -> None:
+    example_data: str = textwrap.dedent(
         '''
-        Read in scratch cards
+        seeds: 79 14 55 13
+
+        seed-to-soil map:
+        50 98 2
+        52 50 48
+
+        soil-to-fertilizer map:
+        0 15 37
+        37 52 2
+        39 0 15
+
+        fertilizer-to-water map:
+        49 53 8
+        0 11 42
+        42 0 7
+        57 7 4
+
+        water-to-light map:
+        88 18 7
+        18 25 70
+
+        light-to-temperature map:
+        45 77 23
+        81 45 19
+        68 64 13
+
+        temperature-to-humidity map:
+        0 69 1
+        1 0 69
+
+        humidity-to-location map:
+        60 56 37
+        56 93 4
         '''
-        super().__init__(example=example)
+    )
 
-        contents = self.input.read_text()
+    validate_part1: int = 35
+    validate_part2: int = 46
 
-        self.seed_ids = tuple(
+    def post_init(self) -> None:
+        '''
+        Read in map data
+        '''
+        self.seed_ids: tuple[int, ...] = tuple(
             int(item)
             for item in re.search(
                 r'seeds: (\d.+)$',
-                contents.partition('\n')[0]
+                self.input.partition('\n')[0]
             ).group(1).split()
         )
 
-        self.maps = []
+        self.maps: list[Map] = []
+        map_def: str
         for map_def in re.finditer(
             r'[a-z-]+ map:\n([\d \n]+)',
-            contents,
+            self.input,
             flags=re.MULTILINE,
         ):
-            ranges = map_def.group(1)
+            ranges: str = map_def.group(1)
             self.maps.append(
                 Map(
                     tuple(
@@ -226,7 +263,8 @@ class AOC2023Day5(AOC):
         '''
         Return the location for a given seed
         '''
-        ptr = seed
+        ptr: int = seed
+        _map: Map
         for _map in self.maps:
             ptr = _map.follow(ptr)
         return ptr
@@ -242,7 +280,7 @@ class AOC2023Day5(AOC):
         Return the lowest seed location number, assuming that seed_ids are
         interpreted as pairs of Range specifiers
         '''
-        seed_ranges = [
+        seed_ranges: list[Range] = [
             Range(begin, length)
             for begin, length in zip(self.seed_ids[::2], self.seed_ids[1::2])
         ]
@@ -252,8 +290,9 @@ class AOC2023Day5(AOC):
         # sequentially). Since all of the resulting ranges now contain seed
         # locations, we know that the range with the lowest starting point is
         # the lowest location number.
+        _map: Map
         for _map in self.maps:
-            seed_ranges = list(
+            seed_ranges: list[Range] = list(
                 itertools.chain.from_iterable(
                     _map.follow_range(_range) for _range in seed_ranges
                 )
@@ -263,10 +302,5 @@ class AOC2023Day5(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day5(example=True)
-    aoc.validate(aoc.part1(), 35)
-    aoc.validate(aoc.part2(), 46)
-    # Run against actual data
-    aoc = AOC2023Day5(example=False)
+    aoc = AOC2023Day5()
     aoc.run()

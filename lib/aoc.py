@@ -430,6 +430,12 @@ class Grid:
         self.max_row = self.rows - 1
         self.max_col = self.cols - 1
 
+    def __contains__(self, coord: XY) -> bool:
+        '''
+        Return True if the coordinate is within the bounds of the grid
+        '''
+        return 0 <= coord[0] <= self.max_row and 0 <= coord[1] <= self.max_col
+
     def __getitem__(self, index: int | XY) -> list[Any]:
         '''
         If index is an integer, return that index's row.
@@ -451,12 +457,11 @@ class Grid:
         Generator which yields a tuple of each neigbboring coordinate and the
         value stored at that coordinate.
         '''
-        in_grid = lambda r, c: 0 <= r <= self.max_row and 0 <= c <= self.max_col
         row, col = coord
         for (row_delta, col_delta) in self.directions:
-            new_row, new_col = row + row_delta, col + col_delta
-            if in_grid(new_row, new_col):
-                yield (new_row, new_col), self.data[new_row][new_col]
+            neighbor: XY = row + row_delta, col + col_delta
+            if neighbor in self:
+                yield neighbor, self[neighbor]
 
     def column_iter(self) -> Generator[str, None, None]:
         '''
@@ -519,9 +524,12 @@ class AOC:
     '''
     Base class for Advent of Code submissions
     '''
-    # Must be overridden in a subclass
+    # These all must be overridden in a subclass
     year: int = 0
     day: int = 0
+    example_data: str = ''
+    example_data_part1: str = ''
+    example_data_part2: str = ''
 
     def __init__(self, example: bool = False) -> None:
         '''
@@ -548,14 +556,16 @@ class AOC:
         inputs, this has no impact on .splitlines(), but for single-line
         inputs, it prevents us from needing to rstrip() in the puzzle code.
         '''
-        prefix: str = 'example' if self.example else 'day'
-        return Path(__file__).parent.parent.joinpath(
-            'inputs',
-            str(self.year),
-            f'{prefix}{str(self.day).zfill(2)}.txt',
-        ).read_text().rstrip('\n')
+        if not self.example:
+            return Path(__file__).parent.parent.joinpath(
+                'inputs',
+                str(self.year),
+                f'day{str(self.day).zfill(2)}.txt',
+            ).read_text().rstrip('\n')
 
-    @functools.cached_property
+        return self.example_data.strip()
+
+    @property
     def input_part1(self) -> str:
         '''
         Disambiguation that accounts for cases where the example data for part
@@ -564,13 +574,9 @@ class AOC:
         if not self.example:
             return self.input
 
-        return Path(__file__).parent.parent.joinpath(
-            'inputs',
-            str(self.year),
-            f'example{str(self.day).zfill(2)}part1.txt',
-        ).read_text().rstrip('\n')
+        return self.example_data_part1.strip()
 
-    @functools.cached_property
+    @property
     def input_part2(self) -> str:
         '''
         Disambiguation that accounts for cases where the example data for part
@@ -579,37 +585,7 @@ class AOC:
         if not self.example:
             return self.input
 
-        return Path(__file__).parent.parent.joinpath(
-            'inputs',
-            str(self.year),
-            f'example{str(self.day).zfill(2)}part2.txt',
-        ).read_text().rstrip('\n')
-
-    def get_input(self, part: int) -> Path:
-        '''
-        Disambiguation function that accounts for cases where the example data
-        for part two is different from part one
-        '''
-        if not self.example:
-            return self.input
-
-        return Path(__file__).parent.joinpath(
-            'inputs',
-            f'example{str(self.day).zfill(2)}part{part}.txt',
-        )
-
-    @staticmethod
-    def validate(lvalue: Any, rvalue: Any) -> None:
-        '''
-        Perform an assertion error and print a meaningful error on failure
-        '''
-        try:
-            assert lvalue == rvalue
-        except AssertionError:
-            sys.stderr.write(
-                f'Validation failed! Expected {rvalue}, got {lvalue}\n'
-            )
-            sys.exit(1)
+        return self.example_data_part2.strip()
 
     @staticmethod
     def timed_exec(
@@ -628,7 +604,27 @@ class AOC:
         '''
         Run both parts and print the results
         '''
+        # Optionally validate input
+        if '-v' in sys.argv:
+            if any(hasattr(self, f'validate_part{n}') for n in (1, 2)):
+                example: AOC = self.__class__(example=True)
+                part: int
+                for part in (1, 2):
+                    try:
+                        expected: Any = getattr(self, f'validate_part{part}')
+                    except AttributeError:
+                        continue
+
+                    result: Any = getattr(example, f'part{part}')()
+                    if result != expected:
+                        sys.stderr.write(
+                            f'Validation failed for Part {part}! '
+                            f'Expected {expected}, got {result}\n'
+                        )
+                        sys.exit(1)
+
         header: str = f'Result for Day {self.day}'
+
         print(header)
         print('-' * len(header))
         for part in (1, 2):

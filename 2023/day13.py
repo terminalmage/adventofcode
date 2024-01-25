@@ -2,27 +2,49 @@
 '''
 https://adventofcode.com/2023/day/13
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
 # Typing shortcuts
-Pattern = tuple[str]
+Pattern = tuple[str, ...]
 
 
 class AOC2023Day13(AOC):
     '''
     Day 13 of Advent of Code 2023
     '''
-    day = 13
+    example_data: str = textwrap.dedent(
+        '''
+        #.##..##.
+        ..#.##.#.
+        ##......#
+        ##......#
+        ..#.##.#.
+        ..##..##.
+        #.#.##.#.
 
-    def __init__(self, example: bool = False) -> None:
+        #...##..#
+        #....#..#
+        ..##..###
+        #####.##.
+        #####.##.
+        ..##..###
+        #....#..#
+        '''
+    )
+
+    validate_part1: int = 405
+    validate_part2: int = 400
+
+    def post_init(self) -> None:
         '''
         Initialize the object
         '''
-        super().__init__(example=example)
-        self.patterns = tuple(
+        self.patterns: tuple[Pattern] = tuple(
             tuple(pattern.splitlines())
-            for pattern in self.input.read_text().strip().split('\n\n')
+            for pattern in self.input.split('\n\n')
         )
 
     @staticmethod
@@ -47,6 +69,7 @@ class AOC2023Day13(AOC):
         for this reflection is size of the line slices that were being
         compared.
         '''
+        index: int
         for index in range(1, len(pattern)):
             if sum(
                 sum(col1 != col2 for col1, col2 in zip(*zipped))
@@ -66,8 +89,8 @@ class AOC2023Day13(AOC):
         '''
         Given a Pattern, return a new Pattern rotated 90 degrees clockwise
         '''
-        num_rows = len(pattern)
-        num_cols = len(pattern[0])
+        num_rows: len = len(pattern)
+        num_cols: len = len(pattern[0])
         return tuple(
             ''.join(
                 pattern[col_idx][row_idx]
@@ -81,7 +104,7 @@ class AOC2023Day13(AOC):
         first. If that doesn't work, rotate the pattern clockwise and repeat
         the attempt.
         '''
-        val = self.find_reflection(pattern, smudges)
+        val: int = self.find_reflection(pattern, smudges)
         if val:
             # Horizontal reflections have a 100x multiplier
             return 100 * val
@@ -101,10 +124,5 @@ class AOC2023Day13(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2023Day13(example=True)
-    aoc.validate(aoc.part1(), 405)
-    aoc.validate(aoc.part2(), 400)
-    # Run against actual data
-    aoc = AOC2023Day13(example=False)
+    aoc = AOC2023Day13()
     aoc.run()
