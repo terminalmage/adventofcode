@@ -4,6 +4,7 @@ https://adventofcode.com/2017/day/8
 '''
 import operator
 import re
+import textwrap
 from collections import defaultdict
 from collections.abc import Callable
 
@@ -19,14 +20,23 @@ class AOC2017Day8(AOC):
     '''
     Day 8 of Advent of Code 2017
     '''
-    day = 8
+    example_data: str = textwrap.dedent(
+        '''
+        b inc 5 if a > 1
+        a inc 1 if b < 5
+        c dec -10 if a >= 1
+        c inc -20 if c == 10
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 1
+    validate_part2: int = 10
+
+    def post_init(self) -> None:
         '''
-        Initialize the computer and load the program from the puzzle input
+        Load the program from the puzzle input
         '''
-        super().__init__(example=example)
-        program: Program = tuple(self.input.read_text().splitlines())
+        program: Program = tuple(self.input.splitlines())
         registers: Registers = defaultdict(int)
 
         # Type hints
@@ -85,10 +95,5 @@ class AOC2017Day8(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day8(example=True)
-    aoc.validate(aoc.part1(), 1)
-    aoc.validate(aoc.part2(), 10)
-    # Run against actual data
-    aoc = AOC2017Day8(example=False)
+    aoc = AOC2017Day8()
     aoc.run()

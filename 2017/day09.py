@@ -3,6 +3,7 @@
 https://adventofcode.com/2017/day/9
 '''
 import queue
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -12,14 +13,25 @@ class AOC2017Day9(AOC):
     '''
     Day 9 of Advent of Code 2017
     '''
-    day = 9
+    example_data: str = textwrap.dedent(
+        '''
+        {}
+        {{{}}}
+        {{},{}}
+        {{{},{},{{}}}}
+        {<a>,<a>,<a>,<a>}
+        {{<ab>},{<ab>},{<ab>},{<ab>}}
+        {{<!!>},{<!!>},{<!!>},{<!!>}}
+        {{<a!>},{<a!>},{<a!>},{<ab>}}
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 50
+
+    def post_init(self) -> None:
         '''
         Load the puzzle input and process the stream
         '''
-        super().__init__(example=example)
-
         # Total score of all groups in all streams (NOTE: the example input has
         # multiple lines of streams, but the puzzle input is one long line)
         self.score: int = 0
@@ -27,7 +39,7 @@ class AOC2017Day9(AOC):
         self.garbage: int = 0
 
         stream: str
-        for stream in self.input.read_text().rstrip().splitlines():
+        for stream in self.input.splitlines():
 
             # Current position within the stream
             index: int = 0
@@ -94,10 +106,5 @@ class AOC2017Day9(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day9(example=True)
-    aoc.validate(aoc.part1(), 50)
-    #aoc.validate(aoc.part2(), 10)
-    # Run against actual data
-    aoc = AOC2017Day9(example=False)
+    aoc = AOC2017Day9()
     aoc.run()

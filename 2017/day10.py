@@ -5,6 +5,7 @@ https://adventofcode.com/2017/day/10
 import functools
 import math
 import operator
+import textwrap
 from collections import deque
 from collections.abc import Sequence, Generator
 
@@ -101,25 +102,19 @@ class AOC2017Day10(AOC):
     '''
     Day 10 of Advent of Code 2017
     '''
-    day = 10
+    example_data: str = textwrap.dedent(
+        '''
+        3,4,1,5
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 12
+
+    def post_init(self) -> None:
         '''
-        Load the puzzle input and process the stream
+        Set the correct size to use for the puzzle
         '''
-        super().__init__(example=example)
         self.size = 5 if self.example else 256
-
-    def knot_hash(
-        self,
-        data: ByteStream,
-        rounds: int = 64,
-        suffix: tuple[int, ...] = (17, 31, 73, 47, 23),
-        size: int = 256,
-    ) -> list[int]:
-        '''
-        Perform the Knot Hash algorithm
-        '''
 
     def part1(self) -> int:
         '''
@@ -130,7 +125,7 @@ class AOC2017Day10(AOC):
         return math.prod(
             sparse_hash(
                 data=(
-                    int(x) for x in self.input.read_text().split(',')
+                    int(x) for x in self.input.split(',')
                 ),
                 rounds=1,
                 suffix=(),
@@ -142,13 +137,9 @@ class AOC2017Day10(AOC):
         '''
         Use the more-complex instructions from Part 2 to compute the hash
         '''
-        return knot_hash(self.input.read_text().strip())
+        return knot_hash(self.input)
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day10(example=True)
-    aoc.validate(aoc.part1(), 12)
-    # Run against actual data
-    aoc = AOC2017Day10(example=False)
+    aoc = AOC2017Day10()
     aoc.run()

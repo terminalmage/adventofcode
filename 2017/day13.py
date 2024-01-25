@@ -5,6 +5,7 @@ https://adventofcode.com/2017/day/13
 import functools
 import math
 import re
+import textwrap
 from collections import defaultdict
 
 # Local imports
@@ -41,16 +42,25 @@ class AOC2017Day13(AOC):
     '''
     Day 13 of Advent of Code 2017
     '''
-    day = 13
+    example_data: str = textwrap.dedent(
+        '''
+        0: 3
+        1: 2
+        4: 4
+        6: 4
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 24
+    validate_part2: int = 10
+
+    def post_init(self) -> None:
         '''
         Load the puzzle input
         '''
-        super().__init__(example=example)
         self.layers: dict[int, int] = dict(
             (int(i) for i in re.findall(r'\d+', line))
-            for line in self.input.read_text().splitlines()
+            for line in self.input.splitlines()
         )
 
     def part1(self) -> int:
@@ -131,10 +141,5 @@ class AOC2017Day13(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day13(example=True)
-    aoc.validate(aoc.part1(), 24)
-    aoc.validate(aoc.part2(), 10)
-    # Run against actual data
-    aoc = AOC2017Day13(example=False)
+    aoc = AOC2017Day13()
     aoc.run()

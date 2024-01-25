@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2017/day/5
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
@@ -10,15 +12,25 @@ class AOC2017Day5(AOC):
     '''
     Day 5 of Advent of Code 2017
     '''
-    day = 5
+    example_data: str = textwrap.dedent(
+        '''
+        0
+        3
+        0
+        1
+        -3
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 5
+    validate_part2: int = 10
+
+    def post_init(self) -> None:
         '''
         Load the offsets from the input file
         '''
-        super().__init__(example=example)
         self.offsets: tuple[int, ...] = tuple(
-            int(line) for line in self.input.read_text().splitlines()
+            int(line) for line in self.input.splitlines()
         )
 
     def part1(self) -> int:
@@ -59,10 +71,5 @@ class AOC2017Day5(AOC):
             steps += 1
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day5(example=True)
-    aoc.validate(aoc.part1(), 5)
-    aoc.validate(aoc.part2(), 10)
-    # Run against actual data
-    aoc = AOC2017Day5(example=False)
+    aoc = AOC2017Day5()
     aoc.run()

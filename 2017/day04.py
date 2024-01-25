@@ -3,7 +3,7 @@
 https://adventofcode.com/2017/day/4
 '''
 import collections
-from collections.abc import Generator
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -13,15 +13,26 @@ class AOC2017Day4(AOC):
     '''
     Day 4 of Advent of Code 2017
     '''
-    day = 4
+    example_data_part1: str = textwrap.dedent(
+        '''
+        aa bb cc dd ee
+        aa bb cc dd aa
+        aa bb cc dd aaa
+        '''
+    )
 
-    def passphrases(self, part: int) -> Generator[str, None, None]:
+    example_data_part2: str = textwrap.dedent(
         '''
-        Generator that produces one passphrase at a time from the input
+        abcde fghij
+        abcde xyz ecdab
+        a ab abc abd abf abj
+        iiii oiii ooii oooi oooo
+        oiii ioii iioi iiio
         '''
-        with self.get_input(part=part).open() as fh:
-            for line in fh:
-                yield line.rstrip('\n')
+    )
+
+    validate_part1: int = 2
+    validate_part2: int = 3
 
     def part1(self) -> int:
         '''
@@ -29,7 +40,7 @@ class AOC2017Day4(AOC):
         '''
         return sum(
             collections.Counter(phrase.split()).most_common(1)[0][1] == 1
-            for phrase in self.passphrases(part=1)
+            for phrase in self.input_part1.splitlines()
         )
 
     def part2(self) -> int:
@@ -40,15 +51,10 @@ class AOC2017Day4(AOC):
             collections.Counter(
                 ''.join(sorted(word)) for word in phrase.split()
             ).most_common(1)[0][1] == 1
-            for phrase in self.passphrases(part=2)
+            for phrase in self.input_part2.splitlines()
         )
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day4(example=True)
-    aoc.validate(aoc.part1(), 2)
-    aoc.validate(aoc.part2(), 3)
-    # Run against actual data
-    aoc = AOC2017Day4(example=False)
+    aoc = AOC2017Day4()
     aoc.run()

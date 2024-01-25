@@ -3,6 +3,7 @@
 https://adventofcode.com/2017/day/2
 '''
 import itertools
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -15,9 +16,26 @@ class AOC2017Day2(AOC):
     '''
     Day 2 of Advent of Code 2017
     '''
-    day = 2
+    example_data_part1: str = textwrap.dedent(
+        '''
+        5 1 9 5
+        7 5 3
+        2 4 6 8
+        '''
+    )
 
-    def load_numbers(self, part: int) -> Numbers:
+    example_data_part2: str = textwrap.dedent(
+        '''
+        5 9 2 8
+        9 4 7 3
+        3 8 6 5
+        '''
+    )
+
+    validate_part1: int = 18
+    validate_part2: int = 9
+
+    def load_numbers(self, data: str) -> Numbers:
         '''
         Load the numbers from the input for the specified part, sorting each
         line as they are loaded.
@@ -25,7 +43,7 @@ class AOC2017Day2(AOC):
         return tuple(
             tuple(
                 sorted(int(item) for item in line.split())
-                for line in self.get_input(part=part).read_text().splitlines()
+                for line in data.splitlines()
             )
         )
 
@@ -33,7 +51,7 @@ class AOC2017Day2(AOC):
         '''
         Return the sum of the difference between each line's max and min value
         '''
-        numbers: Numbers = self.load_numbers(part=1)
+        numbers: Numbers = self.load_numbers(self.input_part1)
         return sum(group[-1] - group[0] for group in numbers)
 
     def part2(self) -> int:
@@ -71,15 +89,10 @@ class AOC2017Day2(AOC):
                     return quotient
             raise ValueError(f'There is nothing special about {seq}')
 
-        numbers: Numbers = self.load_numbers(part=2)
+        numbers: Numbers = self.load_numbers(self.input_part2)
         return sum(special_pair(group) for group in numbers)
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day2(example=True)
-    aoc.validate(aoc.part1(), 18)
-    aoc.validate(aoc.part2(), 9)
-    # Run against actual data
-    aoc = AOC2017Day2(example=False)
+    aoc = AOC2017Day2()
     aoc.run()

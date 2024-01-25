@@ -3,6 +3,7 @@
 https://adventofcode.com/2017/day/1
 '''
 import re
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -12,7 +13,19 @@ class AOC2017Day1(AOC):
     '''
     Day 1 of Advent of Code 2017
     '''
-    day = 1
+    example_data_part1: str = textwrap.dedent(
+        '''
+        91212129
+        '''
+    )
+
+    example_data_part2: str = textwrap.dedent(
+        '''
+        12131415
+        '''
+    )
+    validate_part1: int = 9
+    validate_part2: int = 4
 
     def part1(self) -> int:
         '''
@@ -20,7 +33,7 @@ class AOC2017Day1(AOC):
         '''
         # To ensure that the final char of the string is compared to the
         # beginning of the string, add the first char in the string to the end.
-        captcha = self.get_input(part=1).read_text().strip()
+        captcha = self.input_part1
         captcha += captcha[0]
         return sum(int(dup) for dup in re.findall(r'(\d)(?=\1)', captcha))
 
@@ -31,7 +44,7 @@ class AOC2017Day1(AOC):
         # To ensure that, no matter where in the captcha we are, we can use a
         # lookahead to reach halfway around the captcha text, append the first
         # half of the captcha to the end.
-        captcha = self.get_input(part=2).read_text().strip()
+        captcha = self.input_part2
         half: int = len(captcha) // 2
         captcha += captcha[:half]
 
@@ -60,10 +73,5 @@ class AOC2017Day1(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day1(example=True)
-    aoc.validate(aoc.part1(), 9)
-    aoc.validate(aoc.part2(), 4)
-    # Run against actual data
-    aoc = AOC2017Day1(example=False)
+    aoc = AOC2017Day1()
     aoc.run()

@@ -3,6 +3,7 @@
 https://adventofcode.com/2017/day/12
 '''
 import re
+import textwrap
 from collections import defaultdict, deque
 
 # Local imports
@@ -17,15 +18,27 @@ class AOC2017Day12(AOC):
     '''
     Day 12 of Advent of Code 2017
     '''
-    day = 12
+    example_data: str = textwrap.dedent(
+        '''
+        0 <-> 2
+        1 <-> 1
+        2 <-> 0, 3, 4
+        3 <-> 2, 4
+        4 <-> 2, 3, 6
+        5 <-> 6
+        6 <-> 4, 5
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 6
+    validate_part2: int = 2
+
+    def post_init(self) -> None:
         '''
         Load the puzzle input
         '''
-        super().__init__(example=example)
         self.programs: defaultdict[str, set] = defaultdict(set)
-        for line in self.input.read_text().splitlines():
+        for line in self.input.splitlines():
             ids: list[str] = [int(i) for i in re.findall(r'\d+', line)]
             program_id: str = ids[0]
             connected_id: str
@@ -77,10 +90,5 @@ class AOC2017Day12(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day12(example=True)
-    aoc.validate(aoc.part1(), 6)
-    aoc.validate(aoc.part2(), 2)
-    # Run against actual data
-    aoc = AOC2017Day12(example=False)
+    aoc = AOC2017Day12()
     aoc.run()

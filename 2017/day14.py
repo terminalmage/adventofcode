@@ -2,6 +2,7 @@
 '''
 https://adventofcode.com/2017/day/14
 '''
+import textwrap
 from collections.abc import Generator
 
 # Local imports
@@ -70,16 +71,21 @@ class AOC2017Day14(AOC):
     '''
     Day 14 of Advent of Code 2017
     '''
-    day = 14
+    example_data: str = textwrap.dedent(
+        '''
+        flqrgnkx
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 8108
+    validate_part2: int = 1242
+
+    def post_init(self) -> None:
         '''
         Load the puzzle input
         '''
-        super().__init__(example=example)
-        self.key_string: str = self.input.read_text().strip()
         self.disk: Disk = Disk(
-            bin(int(knot_hash(f'{self.key_string}-{i}'), 16))[2:].zfill(128)
+            bin(int(knot_hash(f'{self.input}-{i}'), 16))[2:].zfill(128)
             for i in range(128)
         )
 
@@ -97,10 +103,5 @@ class AOC2017Day14(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day14(example=True)
-    aoc.validate(aoc.part1(), 8108)
-    aoc.validate(aoc.part2(), 1242)
-    # Run against actual data
-    aoc = AOC2017Day14(example=False)
+    aoc = AOC2017Day14()
     aoc.run()

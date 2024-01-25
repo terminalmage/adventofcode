@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2017/day/6
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
@@ -10,17 +12,20 @@ class AOC2017Day6(AOC):
     '''
     Day 6 of Advent of Code 2017
     '''
-    day = 6
+    example_data: str = textwrap.dedent(
+        '''
+        0 2 7 0
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 5
+    validate_part2: int = 4
+
+    def post_init(self) -> None:
         '''
-        Set the target value depending on whether or not we are running with
-        the example data.
+        Load the input data and simulate redistribution of the memory
         '''
-        super().__init__(example=example)
-        banks: list[int] = [
-            int(bank) for bank in self.input.read_text().split()
-        ]
+        banks: list[int] = [int(bank) for bank in self.input.split()]
         self.cycles: int
         self.cycle_size: int
         self.cycles, self.cycle_size = self.redistribute(banks)
@@ -66,10 +71,5 @@ class AOC2017Day6(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day6(example=True)
-    aoc.validate(aoc.part1(), 5)
-    aoc.validate(aoc.part2(), 4)
-    # Run against actual data
-    aoc = AOC2017Day6(example=False)
+    aoc = AOC2017Day6()
     aoc.run()

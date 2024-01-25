@@ -4,6 +4,7 @@ https://adventofcode.com/2017/day/7
 '''
 import collections
 import re
+import textwrap
 from dataclasses import dataclass, field
 from typing import Self
 
@@ -34,18 +35,35 @@ class AOC2017Day7(AOC):
     '''
     Day 7 of Advent of Code 2017
     '''
-    day = 7
+    example_data: str = textwrap.dedent(
+        '''
+        pbga (66)
+        xhth (57)
+        ebii (61)
+        havc (66)
+        ktlj (57)
+        fwft (72) -> ktlj, cntj, xhth
+        qoyq (66)
+        padx (45) -> pbga, havc, qoyq
+        tknk (41) -> ugml, padx, fwft
+        jptl (61)
+        ugml (68) -> gyxo, ebii, jptl
+        gyxo (61)
+        cntj (57)
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: str = 'tknk'
+    validate_part2: int = 60
+
+    def post_init(self) -> None:
         '''
-        Set the target value depending on whether or not we are running with
-        the example data.
+        Initialize Program instances with their weights
         '''
-        super().__init__(example=example)
-        lines: list[str] = self.input.read_text().splitlines()
-        # Initialize Program instances with their weights. We will make a
-        # second pass over the input to link parents/children, but first we
-        # need the Program instances to exist so they can be linked properly.
+        lines: list[str] = self.input.splitlines()
+        # We will make a second pass over the input to link parents/children,
+        # but first we need the Program instances to exist so they can be
+        # linked properly.
         self.programs: dict[str, Program] = {
             m.group(1): Program(name=m.group(1), weight=int(m.group(2)))
             for m in (
@@ -129,10 +147,5 @@ class AOC2017Day7(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day7(example=True)
-    aoc.validate(aoc.part1(), 'tknk')
-    aoc.validate(aoc.part2(), 60)
-    # Run against actual data
-    aoc = AOC2017Day7(example=False)
+    aoc = AOC2017Day7()
     aoc.run()

@@ -4,6 +4,7 @@ https://adventofcode.com/2017/day/3
 '''
 import itertools
 import math
+import textwrap
 
 # Local imports
 from aoc import AOC, XY, XYMixin, TupleMixin, directions, ordinal_directions
@@ -13,7 +14,13 @@ class AOC2017Day3(AOC, XYMixin, TupleMixin):
     '''
     Day 3 of Advent of Code 2017
     '''
-    day = 3
+    example_data: str = textwrap.dedent(
+        '''
+        1024
+        '''
+    )
+
+    validate_part1: int = 31
 
     walk_order: tuple[XY] = (
         directions.NORTH,
@@ -22,13 +29,12 @@ class AOC2017Day3(AOC, XYMixin, TupleMixin):
         directions.EAST,
     )
 
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Set the target value depending on whether or not we are running with
         the example data.
         '''
-        super().__init__(example=example)
-        self.target: int = 1024 if self.example else 289326
+        self.target: int = int(self.input)
 
     def part1(self) -> int:
         '''
@@ -164,9 +170,5 @@ class AOC2017Day3(AOC, XYMixin, TupleMixin):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day3(example=True)
-    aoc.validate(aoc.part1(), 31)
-    # Run against actual data
-    aoc = AOC2017Day3(example=False)
+    aoc = AOC2017Day3()
     aoc.run()

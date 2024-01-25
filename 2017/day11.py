@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2017/day/11
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
@@ -10,14 +12,18 @@ class AOC2017Day11(AOC):
     '''
     Day 11 of Advent of Code 2017
     '''
-    day = 11
+    example_data: str = textwrap.dedent(
+        '''
+        se,sw,se,sw,sw
+        '''
+    )
 
-    def __init__(self, example: bool = False) -> None:
+    validate_part1: int = 3
+
+    def post_init(self) -> None:
         '''
         Load the puzzle input and process the steps
         '''
-        super().__init__(example=example)
-
         self.max_dist: int = 0
 
         q: int = 0
@@ -26,7 +32,7 @@ class AOC2017Day11(AOC):
 
         # See https://www.redblobgames.com/grids/hexagons/#coordinates-cube
         step: str
-        for step in self.input.read_text().strip().split(','):
+        for step in self.input.split(','):
             match step:
                 case 'n':
                     s += 1
@@ -74,9 +80,5 @@ class AOC2017Day11(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2017Day11(example=True)
-    aoc.validate(aoc.part1(), 3)
-    # Run against actual data
-    aoc = AOC2017Day11(example=False)
+    aoc = AOC2017Day11()
     aoc.run()
