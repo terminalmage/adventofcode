@@ -5,36 +5,33 @@ https://adventofcode.com/2015/day/3
 import itertools
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, XY
 
 
 class AOC2015Day3(AOC):
     '''
     Day 3 of Advent of Code 2015
     '''
-    day = 3
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the directions, translating them to coordinate deltas
         '''
-        super().__init__(example=example)
-        deltas = {
+        deltas: dict[str, XY] = {
             '^': (0, 1),
             'v': (0, -1),
             '<': (-1, 0),
             '>': (1, 0),
         }
-        self.directions = tuple(
-            deltas[direction] for direction in self.input.read_text().rstrip()
+        self.directions: tuple[XY, ...] = tuple(
+            deltas[direction] for direction in self.input
         )
 
     def part1(self) -> int:
         '''
         Return the number of houses Santa will visit
         '''
-        last = (0, 0)
-        houses = {last}
+        last: XY = (0, 0)
+        houses: set[XY] = {last}
 
         for delta in self.directions:
             last = tuple(sum(x) for x in zip(last, delta))
@@ -46,11 +43,12 @@ class AOC2015Day3(AOC):
         '''
         Return the number of houses visited by Santa and Robo-Santa
         '''
-        santa = robo_santa = (0, 0)
-        houses = {santa}
+        santa: XY = (0, 0)
+        robo_santa: XY = (0, 0)
+        houses: set[XY] = {santa}
 
         for index in itertools.count(0, 2):
-            deltas = self.directions[index:index + 2]
+            deltas: list[XY] = self.directions[index:index + 2]
             if not deltas:
                 break
             santa = tuple(sum(x) for x in zip(santa, deltas[0]))

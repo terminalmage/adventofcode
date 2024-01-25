@@ -12,25 +12,21 @@ class AOC2015Day2(AOC):
     '''
     Day 2 of Advent of Code 2015
     '''
-    day = 2
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the packages, sorting the side lengths to easily get the two
         shortest sides
         '''
-        super().__init__(example=example)
-        with self.input.open() as fh:
-            self.packages = tuple(
-                item for item in (
-                    tuple(
-                        sorted(
-                            int(side) for side in line.rstrip().split('x')
-                        )
+        self.packages: tuple[tuple[int, ...], ...] = tuple(
+            item for item in (
+                tuple(
+                    sorted(
+                        int(side) for side in line.rstrip().split('x')
                     )
-                    for line in fh
                 )
+                for line in self.input.splitlines()
             )
+        )
 
     def part1(self) -> int:
         '''

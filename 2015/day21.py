@@ -45,8 +45,6 @@ class AOC2015Day21(AOC):
     '''
     Day 21 of Advent of Code 2015
     '''
-    day = 21
-
     hit_points = 100
 
     # Cost, damage rating, and armor rating for each item
@@ -80,15 +78,14 @@ class AOC2015Day21(AOC):
         (0, 0, 0),
     )
 
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Load the input data
+        Load the boss' data from the input
         '''
-        super().__init__(example=example)
-        self.boss = Combatant(
+        self.boss: Combatant = Combatant(
             *(
                 int(line.split()[-1])
-                for line in self.input.read_text().splitlines()
+                for line in self.input.splitlines()
             )
         )
 

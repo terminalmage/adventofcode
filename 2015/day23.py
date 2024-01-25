@@ -81,7 +81,7 @@ class Computer:
         Run a series of commands until a jump condition jumps outside the
         bounds of the program.
         '''
-        pos = 0
+        pos: int = 0
         while 0 <= pos < len(program):
             pos += self.exec(program[pos])
 
@@ -90,21 +90,12 @@ class AOC2015Day23(AOC):
     '''
     Day 23 of Advent of Code 2015
     '''
-    day = 23
-
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Load the input data
-        '''
-        super().__init__(example=example)
-        self.program = self.input.read_text().splitlines()
-
     def part1(self) -> int:
         '''
         Return the value of register b after running the program
         '''
         c = Computer()
-        c.run_program(self.program)
+        c.run_program(self.input.splitlines())
         return c.b
 
     def part2(self) -> int:
@@ -113,7 +104,7 @@ class AOC2015Day23(AOC):
         of register a initialized to 1.
         '''
         c = Computer(a=1)
-        c.run_program(self.program)
+        c.run_program(self.input.splitlines())
         return c.b
 
 

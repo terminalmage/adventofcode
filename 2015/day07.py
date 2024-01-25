@@ -119,17 +119,13 @@ class AOC2015Day7(AOC):
     '''
     Day 7 of Advent of Code 2015
     '''
-    day = 7
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Load the instructions
+        Setup the Circuit
         '''
-        super().__init__(example=example)
-        self.circuit = Circuit()
-        with self.input.open() as fh:
-            for line in fh:
-                self.circuit.add(line.rstrip())
+        self.circuit: Circuit = Circuit()
+        for line in self.input.splitlines():
+            self.circuit.add(line)
 
     def part1(self) -> int:
         '''

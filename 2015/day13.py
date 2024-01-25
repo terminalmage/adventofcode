@@ -9,13 +9,14 @@ from collections import defaultdict
 # Local imports
 from aoc import AOC
 
+# Type hints
+Guests = defaultdict[str, dict]
+
 
 class AOC2015Day13(AOC):
     '''
     Day 13 of Advent of Code 2015
     '''
-    day = 13
-
     def load_guests(self) -> defaultdict[str, dict]:
         '''
         Load the guests from the config file
@@ -23,13 +24,12 @@ class AOC2015Day13(AOC):
         guests = defaultdict(dict)
         happiness_re = re.compile(r'(\w+) would (gain|lose) (\d+).+ next to (\w+)')
 
-        with self.input.open() as fh:
-            for line in fh:
-                name1, gain_lose, amount, name2 = happiness_re.match(line).groups()
-                amount = int(amount)
-                if gain_lose == 'lose':
-                    amount *= -1
-                guests[name1][name2] = amount
+        for line in self.input.splitlines():
+            name1, gain_lose, amount, name2 = happiness_re.match(line).groups()
+            amount = int(amount)
+            if gain_lose == 'lose':
+                amount *= -1
+            guests[name1][name2] = amount
 
         return guests
 
@@ -37,14 +37,14 @@ class AOC2015Day13(AOC):
         '''
         Given the seating arrangement, calculate the happiness
         '''
-        num_guests = len(order)
+        num_guests: int = len(order)
         return sum(
             guests[order[index]][order[(index + 1) % num_guests]] +
             guests[order[(index + 1) % num_guests]][order[index]]
             for index in range(num_guests)
         )
 
-    def brute_force(self, guests: defaultdict[str, dict]) -> int:
+    def brute_force(self, guests: Guests) -> int:
         '''
         Try each permutation with the specified strategy
         '''
@@ -52,8 +52,8 @@ class AOC2015Day13(AOC):
         # Get the first person (the "head"), then calculate happiness levels
         # with the head in the first position and all permutations of the
         # remaining guests.
-        names = list(guests)
-        head = names[0]
+        names: list[str] = list(guests)
+        head: str = names[0]
         return max(
             self.calculate_happiness(guests, head, *others)
             for others in itertools.permutations(names[1:])
@@ -69,7 +69,7 @@ class AOC2015Day13(AOC):
         '''
         Return optimal happiness with myself added to seating arrangement
         '''
-        guests = self.load_guests()
+        guests: Guests = self.load_guests()
         for name in list(guests):
             guests['Erik'][name] = guests[name]['Erik'] = 0
         return self.brute_force(guests)

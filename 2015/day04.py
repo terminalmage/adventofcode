@@ -14,15 +14,6 @@ class AOC2015Day4(AOC):
     '''
     Day 4 of Advent of Code 2015
     '''
-    day = 4
-
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Load the secret key
-        '''
-        super().__init__(example=example)
-        self.secret_key = self.input.read_text().rstrip()
-
     def coin_machine_go_brrr(  # pylint: disable=inconsistent-return-statements
         self,
         pattern: str,
@@ -33,7 +24,7 @@ class AOC2015Day4(AOC):
         for value in itertools.count(1):
             if re.match(
                 pattern,
-                hashlib.md5(f'{self.secret_key}{value}'.encode()).hexdigest(),
+                hashlib.md5(f'{self.input}{value}'.encode()).hexdigest(),
             ):
                 return value
 

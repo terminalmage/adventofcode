@@ -2,7 +2,7 @@
 '''
 https://adventofcode.com/2015/day/17
 '''
-import collections
+from collections import defaultdict
 from collections.abc import Iterator
 
 # Local imports
@@ -13,17 +13,14 @@ class AOC2015Day17(AOC):
     '''
     Day 17 of Advent of Code 2015
     '''
-    day = 17
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the instructions
         '''
-        super().__init__(example=example)
-
-        self.target = 25 if self.example else 150
-        with self.input.open() as fh:
-            self.containers = dict(enumerate(int(line) for line in fh))
+        self.target: int = 25 if self.example else 150
+        self.containers: dict[int, int] = dict(
+            enumerate(int(line) for line in self.input.splitlines())
+        )
 
     def enumerate(self, target: int | None = None) -> Iterator[tuple[int]]:
         '''
@@ -68,8 +65,9 @@ class AOC2015Day17(AOC):
         This function also has an optional argument "target", which will only
         return combinations whose sum is equal to the target.
         '''
+        bitmask: int
         for bitmask in range(1, 2**len(self.containers)):
-            subset = tuple(
+            subset: tuple[int, ...] = tuple(
                 volume for index, volume in self.containers.items()
                 if bitmask & 2**index
             )
@@ -87,7 +85,7 @@ class AOC2015Day17(AOC):
         Calculate the number of unique combinations with the minimum number of
         containers that add up to the target
         '''
-        combo_map = collections.defaultdict(int)
+        combo_map: defaultdict[int, int] = defaultdict(int)
         for subset in self.enumerate(target=self.target):
             combo_map[len(subset)] += 1
 

@@ -170,14 +170,6 @@ class AOC2015Day11(AOC):
     '''
     Day 11 of Advent of Code 2015
     '''
-    day = 11
-
-    def __init__(self) -> None:  # pylint: disable=arguments-differ,super-init-not-called
-        '''
-        Load the initial password
-        '''
-        self.input = 'hxbxwxba'
-
     def part1(self) -> str:
         '''
         Return next valid password, starting from the puzzle input

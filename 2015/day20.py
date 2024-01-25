@@ -13,8 +13,11 @@ class AOC2015Day20(AOC):
     '''
     Day 20 of Advent of Code 2015
     '''
-    day = 20
-    goal = 36000000
+    def post_init(self) -> None:
+        '''
+        Convert the value in the input data to an int
+        '''
+        self.goal: int = int(self.input)
 
     @staticmethod
     def factors(
@@ -40,6 +43,7 @@ class AOC2015Day20(AOC):
         number of presents that a given house will receive, return the loweste
         house number that will receive the desired number of presents.
         '''
+        house: int
         for house in range(100000, self.goal):
             if condition(house):
                 return house
@@ -61,13 +65,16 @@ class AOC2015Day20(AOC):
         of presents.
         '''
         return self.find_house(
-            lambda house: (11 * sum(house // factor for factor in self.factors(house, limit=50))) >= self.goal
+            lambda house: (
+                11 * sum(
+                    house // factor
+                    for factor in self.factors(house, limit=50)
+                )
+            ) >= self.goal
         )
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2015Day20(example=True)
     # Run against actual data
     aoc = AOC2015Day20(example=False)
     aoc.run()

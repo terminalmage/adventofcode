@@ -12,22 +12,19 @@ class AOC2015Day5(AOC):
     '''
     Day 5 of Advent of Code 2015
     '''
-    day = 5
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the strings
         '''
-        super().__init__(example=example)
-        self.strings = self.input.read_text().splitlines()
+        self.strings: list[str] = self.input.splitlines()
 
     def part1(self) -> int:
         '''
         Return the number of strings which are nice under Part 1's rules
         '''
-        vowels_re = re.compile(r'[aeiou]')
-        duplicate_re = re.compile(r'([a-z])\1')
-        verboten_re = re.compile('ab|cd|pq|xy')
+        vowels_re: re.Pattern = re.compile(r'[aeiou]')
+        duplicate_re: re.Pattern = re.compile(r'([a-z])\1')
+        verboten_re: re.Pattern = re.compile('ab|cd|pq|xy')
         return sum(
             1 for item in self.strings
             if len(vowels_re.findall(item)) > 2
@@ -39,15 +36,15 @@ class AOC2015Day5(AOC):
         '''
         Return the number of strings which are nice under Part 2's rules
         '''
-        strings = (
+        strings: tuple[str, ...] = (
             'qjhvhtzxzqqjkmpb',
             'xxyxx',
             'uurcxstgmygtbstg',
             'ieodomkazucvgmuy',
         ) if self.example else self.strings
 
-        repeat_re = re.compile(r'([a-z]{2}).*\1')
-        sandwich_re = re.compile(r'([a-z])[a-z]\1')
+        repeat_re: re.Pattern = re.compile(r'([a-z]{2}).*\1')
+        sandwich_re: re.Pattern = re.compile(r'([a-z])[a-z]\1')
         return sum(
             1 for item in strings
             if bool(repeat_re.search(item)) and bool(sandwich_re.search(item))

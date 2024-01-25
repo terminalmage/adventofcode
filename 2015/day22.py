@@ -4,6 +4,7 @@ https://adventofcode.com/2015/day/22
 '''
 import copy
 import itertools
+import math
 
 # Local imports
 from aoc import AOC
@@ -12,13 +13,10 @@ from aoc import AOC
 Spell = list[int]
 
 
-
 class AOC2015Day22(AOC):
     '''
     Day 22 of Advent of Code 2015
     '''
-    day = 22
-
     hit_points = 50
     mana = 500
 
@@ -31,14 +29,15 @@ class AOC2015Day22(AOC):
         [229, 0, 0, 0, 101, 5],
     )
 
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Load the input data
+        Load the boss' configuration from the input
         '''
-        super().__init__(example=example)
+        self.boss_hit_points: int
+        self.boss_damage: int
         self.boss_hit_points, self.boss_damage = (
             int(line.split()[-1])
-            for line in self.input.read_text().splitlines()
+            for line in self.input.splitlines()
         )
 
     def simulate(
@@ -56,11 +55,11 @@ class AOC2015Day22(AOC):
         Recursively simulate all possible paths, from a given battle state.
         Aggregate the total mana spent for all winning conditions
         '''
-        hit_points = hit_points or self.hit_points
-        boss_hit_points = boss_hit_points or self.boss_hit_points
-        current_mana = current_mana or self.mana
-        effects = effects or []
-        wins = wins or {1e9}
+        hit_points: int = hit_points or self.hit_points
+        boss_hit_points: int = boss_hit_points or self.boss_hit_points
+        current_mana: int = current_mana or self.mana
+        effects: list[Spell] = effects or []
+        wins: set[int] = wins or {math.inf}
 
         # Ignore spells which have active effects; they cannot be run again
         # while the effect is active. When comparing the desired spell to the
@@ -102,7 +101,7 @@ class AOC2015Day22(AOC):
 
         # Reset shield (if shield spell is active, it will be reset when spells
         # are applied directly below)
-        shield = 0
+        shield: int = 0
 
         if hard_mode:
             hit_points -= 1

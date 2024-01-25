@@ -10,21 +10,15 @@ class AOC2015Day8(AOC):
     '''
     Day 8 of Advent of Code 2015
     '''
-    day = 8
-
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Load the instructions
-        '''
-        super().__init__(example=example)
-        self.raw_strings = tuple(self.input.read_text().splitlines())
-
     def part1(self) -> int:
         '''
         Return the difference between the length of the encoded string and the
         length of the printable string
         '''
-        return sum(len(x) - len(eval(x, {}, {})) for x in self.raw_strings)  # pylint: disable=eval-used
+        return sum(
+            len(x) - len(eval(x, {}, {}))  # pylint: disable=eval-used
+            for x in self.input.splitlines()
+        )
 
     def part2(self) -> int:
         '''
@@ -56,7 +50,10 @@ class AOC2015Day8(AOC):
         Thus, the difference in size can be represented as the number of
         backslashes and double-quotes, plus 2.
         '''
-        return sum(x.count('"') + x.count('\\') + 2 for x in self.raw_strings)
+        return sum(
+            x.count('"') + x.count('\\') + 2
+            for x in self.input.splitlines()
+        )
 
 
 if __name__ == '__main__':

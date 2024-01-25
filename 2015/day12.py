@@ -14,14 +14,11 @@ class AOC2015Day12(AOC):
     '''
     Day 12 of Advent of Code 2015
     '''
-    day = 12
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the JSON document into a data structure
         '''
-        super().__init__(example=example)
-        self.data = json.loads(self.input.read_text().strip())
+        self.data: Any = json.loads(self.input)
 
     def part1(self) -> int:
         '''

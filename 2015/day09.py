@@ -14,21 +14,19 @@ class AOC2015Day9(AOC):
     '''
     Day 9 of Advent of Code 2015
     '''
-    day = 9
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Load the instructions
+        Load the distances
         '''
-        super().__init__(example=example)
-
-        distance_re = re.compile(r'(\w+) to (\w+) = (\d+)')
+        distance_re: re.Pattern = re.compile(r'(\w+) to (\w+) = (\d+)')
         self.distances = defaultdict(dict)
 
-        with self.input.open() as fh:
-            for line in fh:
-                origin, dest, dist = distance_re.match(line).groups()
-                self.distances[origin][dest] = self.distances[dest][origin] = int(dist)
+        for line in self.input.splitlines():
+            origin: str
+            dest: str
+            dist: str
+            origin, dest, dist = distance_re.match(line).groups()
+            self.distances[origin][dest] = self.distances[dest][origin] = int(dist)
 
     def dfs(self, strategy: Callable) -> int:
         '''
@@ -91,7 +89,6 @@ if __name__ == '__main__':
     # Run against test data
     aoc = AOC2015Day9(example=True)
     aoc.validate(aoc.part1(), 605)
-    #aoc.validate(aoc.part2(), None)
     # Run against actual data
     aoc = AOC2015Day9(example=False)
     aoc.run()

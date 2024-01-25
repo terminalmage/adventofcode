@@ -60,28 +60,24 @@ class AOC2015Day14(AOC):
     '''
     Day 14 of Advent of Code 2015
     '''
-    day = 14
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the instructions
         '''
-        super().__init__(example=example)
-        self.duration = 1000 if self.example else 2503
-        reindeer_re = re.compile(
+        self.duration: int = 1000 if self.example else 2503
+        reindeer_re: re.Pattern = re.compile(
             r'^(\w+) can fly (\d+) km/s for (\d+) seconds.+ for (\d+) seconds'
         )
 
-        with self.input.open() as fh:
-            self.reindeer = tuple(
-                Reindeer(
-                    reindeer.group(1),
-                    *(int(group) for group in reindeer.groups()[1:])
-                )
-                for reindeer in (
-                    reindeer_re.match(line) for line in fh
-                )
+        self.reindeer = tuple(
+            Reindeer(
+                reindeer.group(1),
+                *(int(group) for group in reindeer.groups()[1:])
             )
+            for reindeer in (
+                reindeer_re.match(line) for line in self.input.splitlines()
+            )
+        )
 
     def part1(self) -> int:
         '''
@@ -109,7 +105,7 @@ class AOC2015Day14(AOC):
             for reindeer in self.reindeer:
                 next(scoreboard[reindeer]['flightplan'])
             # Get the max distance
-            leading_distance = max(item.distance for item in self.reindeer)
+            leading_distance: int = max(item.distance for item in self.reindeer)
             # Increment all reindeer with the winning distance
             for reindeer, meta in scoreboard.items():
                 if reindeer.distance == leading_distance:

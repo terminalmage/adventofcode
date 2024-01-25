@@ -12,23 +12,15 @@ class AOC2015Day10(AOC):
     '''
     Day 10 of Advent of Code 2015
     '''
-    day = 10
-
-    def __init__(self, example: bool = False) -> None:
-        '''
-        Load the instructions
-        '''
-        super().__init__(example=example)
-        self.sequence = self.input.read_text().strip()
-
     def look_and_say(self, rounds: int) -> str:
         '''
         Perform a depth-first search with the specified strategy
         '''
-        seq = self.sequence
+        seq: str = self.input
 
         for _ in range(rounds):
             parts = []
+            group: str
             for group in re.findall(r'([0-9])(\1*)', seq):
                 parts.append(f'{len(group[1]) + 1}{group[0]}')
             seq = ''.join(parts)

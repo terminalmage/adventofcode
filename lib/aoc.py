@@ -2,6 +2,8 @@
 Base class for Advent of Code submissions
 '''
 import collections
+import functools
+import re
 import sys
 import time
 from collections.abc import Callable, Generator, Sequence
@@ -475,6 +477,7 @@ class AOC:
     Base class for Advent of Code submissions
     '''
     # Must be overridden in a subclass
+    year: int = 0
     day: int = 0
 
     def __init__(self, example: bool = False) -> None:
@@ -482,11 +485,62 @@ class AOC:
         Create Path object for the input file
         '''
         self.example: bool = example
+        try:
+            self.year, self.day = (
+                int(n) for n in re.match(
+                    r'AOC(\d{4})Day(\d{1,2})',
+                    self.__class__.__name__,
+                ).groups()
+            )
+        except AttributeError:
+            pass
+
+        if hasattr(self, 'post_init'):
+            self.post_init()
+
+    @functools.cached_property
+    def input(self) -> str:
+        '''
+        Load the puzzle input, removing trailing newline from file. For multi-line
+        inputs, this has no impact on .splitlines(), but for single-line
+        inputs, it prevents us from needing to rstrip() in the puzzle code.
+        '''
         prefix: str = 'example' if self.example else 'day'
-        self.input: Path = Path(__file__).parent.joinpath(
+        return Path(__file__).parent.parent.joinpath(
             'inputs',
+            str(self.year),
             f'{prefix}{str(self.day).zfill(2)}.txt',
-        )
+        ).read_text().rstrip('\n')
+
+    @functools.cached_property
+    def input_part1(self) -> str:
+        '''
+        Disambiguation that accounts for cases where the example data for part
+        two is different from part one.
+        '''
+        if not self.example:
+            return self.input
+
+        return Path(__file__).parent.joinpath(
+            'inputs',
+            str(self.year),
+            f'example{str(self.day).zfill(2)}part1.txt',
+        ).read_text().rstrip('\n')
+
+    @functools.cached_property
+    def input_part2(self) -> str:
+        '''
+        Disambiguation that accounts for cases where the example data for part
+        two is different from part one.
+        '''
+        if not self.example:
+            return self.input
+
+        return Path(__file__).parent.joinpath(
+            'inputs',
+            str(self.year),
+            f'example{str(self.day).zfill(2)}part2.txt',
+        ).read_text().rstrip('\n')
 
     def get_input(self, part: int) -> Path:
         '''

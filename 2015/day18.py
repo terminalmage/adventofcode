@@ -5,7 +5,7 @@ https://adventofcode.com/2015/day/18
 import itertools
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, XY
 
 # Typing shortcuts
 Coordinate = tuple[int, int]
@@ -15,26 +15,26 @@ class AOC2015Day18(AOC):
     '''
     Day 18 of Advent of Code 2015
     '''
-    day = 18
-
     def animate(self, rounds: int, stuck_corners: bool = False) -> int:
         '''
         Animate the grid for the specified number of rounds, and returns the
         number of lights which are lit after the specified number of rounds.
         '''
         # Load the initial state of the grid
-        grid = set()
-        with self.input.open() as fh:
-            for row, line in enumerate(fh):
-                for col, char in enumerate(line.rstrip()):
-                    if char == '#':
-                        grid.add((col, row))
+        grid: set[XY] = set()
+        row: int
+        col: int
+        line: str
+        char: str
+        for row, line in enumerate(self.input.splitlines()):
+            for col, char in enumerate(line.rstrip()):
+                if char == '#':
+                    grid.add((col, row))
 
-        # The grid is a square, get the size of one side
-        with self.input.open() as fh:
-            size = len(next(fh).rstrip())
+        # The grid is a square, get the size of the first row
+        size: int = len(self.input.splitlines()[0])
 
-        corners = frozenset(itertools.product((0, size-1), repeat=2))
+        corners: frozenset[XY] = frozenset(itertools.product((0, size-1), repeat=2))
         if stuck_corners:
             # Make sure the corners are turned on
             grid |= corners
@@ -45,9 +45,10 @@ class AOC2015Day18(AOC):
             sequences are returned, the ones which are lit, and the ones which
             are not lit.
             '''
-            lit = []
-            unlit = []
+            lit: list[XY] = []
+            unlit: list[XY] = []
 
+            delta: XY
             for delta in itertools.product((-1, 0, 1), repeat=2):
                 if delta == (0, 0):
                     continue  # Not an actual neighbor, skip
@@ -62,8 +63,8 @@ class AOC2015Day18(AOC):
             return lit, unlit
 
         for _ in range(rounds):
-            turn_off = set()
-            to_check = set()
+            turn_off: set[XY] = set()
+            to_check: set[XY] = set()
 
             for light in grid:
                 lit, unlit = neighbors(light)

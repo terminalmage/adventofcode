@@ -2,6 +2,7 @@
 [MASTER]
 
 disable=
+    attribute-defined-outside-init,
     duplicate-code,
     inconsistent-return-statements,
     invalid-name,

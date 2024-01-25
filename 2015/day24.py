@@ -13,15 +13,12 @@ class AOC2015Day24(AOC):
     '''
     Day 24 of Advent of Code 2015
     '''
-    day = 24
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Load the input data
+        Load the weight data
         '''
-        super().__init__(example=example)
-        self.weights = tuple(
-            int(item) for item in self.input.read_text().splitlines()
+        self.weights: tuple[int, ...] = tuple(
+            int(item) for item in self.input.splitlines()
         )
         self.total_weight = sum(self.weights)
 
@@ -29,7 +26,8 @@ class AOC2015Day24(AOC):
         '''
         Solve for the specified number of grouups
         '''
-        target = self.total_weight // num_groups
+        target: int = self.total_weight // num_groups
+        size: int
         for size in range(1, len(self.weights) + 1):
             try:
                 return min(

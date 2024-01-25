@@ -25,30 +25,26 @@ class Ingredient:
 
 class AOC2015Day15(AOC):
     '''
-    Day 14 of Advent of Code 2015
+    Day 15 of Advent of Code 2015
     '''
-    day = 15
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
-        Load the instructions
+        Load the ingredients
         '''
-        super().__init__(example=example)
-        ingredient_re = re.compile(
+        ingredient_re: re.Pattern = re.compile(
             r'^(\w+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), '
             r'texture (-?\d+), calories (-?\d+)'
         )
 
-        with self.input.open() as fh:
-            self.ingredients = tuple(
-                Ingredient(
-                    ingredient.group(1),
-                    *(int(group) for group in ingredient.groups()[1:])
-                )
-                for ingredient in (
-                    ingredient_re.match(line) for line in fh
-                )
+        self.ingredients = tuple(
+            Ingredient(
+                ingredient.group(1),
+                *(int(group) for group in ingredient.groups()[1:])
             )
+            for ingredient in (
+                ingredient_re.match(line) for line in self.input.splitlines()
+            )
+        )
 
     @staticmethod
     def calculate(
@@ -73,7 +69,7 @@ class AOC2015Day15(AOC):
         ):
             return 0
 
-        sums = []
+        sums: list[int] = []
         for attr in ('capacity', 'durability', 'flavor', 'texture'):
             subtotal = sum(getattr(item, attr) for item in ingredients)
             if subtotal <= 0:

@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2015/day/25
 '''
+import re
+
 # Local imports
 from aoc import AOC
 
@@ -10,14 +12,18 @@ class AOC2015Day25(AOC):
     '''
     Day 25 of Advent of Code 2015
     '''
-    day = 25
-    row = 3010
-    col = 3019
-
     # Values for modular exponentiation
     first = 20151125
     base = 252533
     mod = 33554393
+
+    def post_init(self) -> None:
+        '''
+        Load the input data
+        '''
+        self.row: int
+        self.col: int
+        self.row, self.col = (int(n) for n in re.findall(r'\d+', self.input))
 
     def part1(self) -> int:
         '''
@@ -93,8 +99,8 @@ class AOC2015Day25(AOC):
 
             https://docs.python.org/3/library/functions.html#pow
         '''
-        side = self.row + self.col
-        exp = (((side - 1)**2 + side) // 2) - (self.row - 1)
+        side: int = self.row + self.col
+        exp: int = (((side - 1)**2 + side) // 2) - (self.row - 1)
         return (pow(self.base, exp - 1, self.mod) * self.first) % self.mod
 
 

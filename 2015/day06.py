@@ -1,44 +1,34 @@
 #!/usr/bin/env python
 '''
+https://adventofcode.com/2015/day/6
 '''
 import re
-from typing import Callable
+from typing import Callable, Literal
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, XY
 
 
 class AOC2015Day6(AOC):
     '''
     Day 6 of Advent of Code 2015
     '''
-    day = 6
-
-    def __init__(self, example: bool = False) -> None:
+    def post_init(self) -> None:
         '''
         Load the instructions
         '''
-        super().__init__(example=example)
-
-        instr_re = re.compile(
+        instr_re: re.Pattern = re.compile(
             r'^(turn (?:on|off)|toggle) (\d+),(\d+) through (\d+),(\d+)'
         )
 
-        with self.input.open() as fh:
-            self.instructions = tuple(
-                [instr.group(1)] +
-                [int(x) for x in instr.groups()[1:]]
-                for instr in (
-                    instr_re.match(line) for line in fh
-                )
+        self.instructions: tuple[int, str, ...] = tuple(
+            [instr.group(1)] +
+            [int(x) for x in instr.groups()[1:]]
+            for instr in (
+                instr_re.match(line) for line in self.input.splitlines()
             )
-        self.lights = {}
-
-    def reset(self):
-        '''
-        Reset all lights to their initial state
-        '''
-        self.lights.clear()
+        )
+        self.lights: dict[XY, Literal[0, 1]] = {}
 
     def set_lights(
         self,
