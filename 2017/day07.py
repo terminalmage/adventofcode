@@ -2,11 +2,11 @@
 '''
 https://adventofcode.com/2017/day/7
 '''
+from __future__ import annotations
 import collections
 import re
 import textwrap
 from dataclasses import dataclass, field
-from typing import Self
 
 # Local imports
 from aoc import AOC
@@ -19,8 +19,8 @@ class Program:
     '''
     name: str
     weight: int
-    parent: Self | None = None
-    children: list[Self] = field(default_factory=list)
+    parent: Program | None = None
+    children: list[Program] = field(default_factory=list)
 
     @property
     def total_weight(self) -> int:

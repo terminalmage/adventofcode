@@ -8,7 +8,6 @@ import os
 import re
 import textwrap
 from collections.abc import Iterator
-from typing import Self
 
 # Local imports
 from aoc import AOC
@@ -55,7 +54,7 @@ class PathBase:
         Return the absolute path of this file/directory
         '''
         components = [self.name]
-        ptr: Self = self
+        ptr: PathBase = self
         # Walk back up until you reach the root, adding to the list
         while (ptr := ptr.parent).name != os.path.sep:
             components.append(ptr.name)

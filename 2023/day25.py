@@ -2,6 +2,7 @@
 '''
 https://adventofcode.com/2023/day/25
 '''
+from __future__ import annotations
 import copy
 import itertools
 import math
@@ -10,7 +11,6 @@ import sys
 import textwrap
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Self
 
 # Local imports
 from aoc import AOC
@@ -47,7 +47,7 @@ class Edge:
         '''
         return hash(frozenset({self.u, self.v}))
 
-    def __eq__(self, other: Self) -> bool:
+    def __eq__(self, other: Edge) -> bool:
         '''
         Define equality as the same two u/v values, irrespective of which is
         assigned to which.

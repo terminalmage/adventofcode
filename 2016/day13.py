@@ -2,10 +2,10 @@
 '''
 https://adventofcode.com/2016/day/13
 '''
+from __future__ import annotations
 import collections
 import textwrap
 from collections.abc import Generator
-from typing import Self
 
 # Local imports
 from aoc import AOC, Coordinate, directions
@@ -18,7 +18,7 @@ class Tile(Coordinate):
     def neighbors(  # pylint: disable=arguments-differ,invalid-overridden-method
         self,
         favorite_number: int,
-    ) -> Generator[Self, None, None]:
+    ) -> Generator[Tile, None, None]:
         '''
         Return the neighboring tiles which are open spaces. Negative values are
         invalid, so ignore any coordinate which would contain a negative value.
