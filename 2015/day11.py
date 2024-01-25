@@ -6,7 +6,6 @@ from __future__ import annotations
 import copy
 import itertools
 import string
-import textwrap
 from collections.abc import Sequence
 
 # Local imports

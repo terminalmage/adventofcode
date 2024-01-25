@@ -15,7 +15,10 @@ class Tile(Coordinate):
     '''
     Subclass of Coordinate with modified logic for valid neighbors
     '''
-    def neighbors(self, favorite_number: int) -> Generator[Self, None, None]:
+    def neighbors(  # pylint: disable=arguments-differ,invalid-overridden-method
+        self,
+        favorite_number: int,
+    ) -> Generator[Self, None, None]:
         '''
         Return the neighboring tiles which are open spaces. Negative values are
         invalid, so ignore any coordinate which would contain a negative value.

@@ -2,8 +2,6 @@
 '''
 https://adventofcode.com/2015/day/16
 '''
-import textwrap
-
 # Local imports
 from aoc import AOC
 
