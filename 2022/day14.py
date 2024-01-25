@@ -5,6 +5,7 @@ https://adventofcode.com/2022/day/14
 import os
 import sys
 import time
+import textwrap
 
 # Local imports
 from aoc import AOC, XY
@@ -23,6 +24,16 @@ class AOC2022Day14(AOC):
     '''
     Day 14 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        498,4 -> 498,6 -> 496,6
+        503,4 -> 502,4 -> 502,9 -> 494,9
+        '''
+    )
+
+    validate_part1: int = 24
+    validate_part2: int = 93
+
     def post_init(self) -> None:
         '''
         Load the cleaning assignment pairs into tuples of sets of ints
@@ -186,10 +197,5 @@ class AOC2022Day14(AOC):
         return self.the_sand_must_flow(part=2, draw=draw)
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day14(example=True)
-    aoc.validate(aoc.part1(), 24)
-    aoc.validate(aoc.part2(), 93)
-    # Run against actual data
-    aoc = AOC2022Day14(example=False)
+    aoc = AOC2022Day14()
     aoc.run()

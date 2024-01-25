@@ -4,6 +4,7 @@ https://adventofcode.com/2022/day/21
 '''
 import re
 import sys
+import textwrap
 
 # Local imports
 from aoc import AOC, oper_map
@@ -17,6 +18,29 @@ class AOC2022Day21(AOC):
     '''
     Day 21 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        root: pppw + sjmn
+        dbpl: 5
+        cczh: sllz + lgvd
+        zczc: 2
+        ptdq: humn - dvpt
+        dvpt: 3
+        lfqf: 4
+        humn: 5
+        ljgn: 2
+        sjmn: drzm * dbpl
+        sllz: 4
+        pppw: cczh / lfqf
+        lgvd: ljgn * ptdq
+        drzm: hmdt - zczc
+        hmdt: 32
+        '''
+    )
+
+    validate_part1: int = 152
+    validate_part2: int = 301
+
     def post_init(self) -> None:
         '''
         Load the monkeys into a data structure. If the monkey has an integer
@@ -134,10 +158,5 @@ class AOC2022Day21(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day21(example=True)
-    aoc.validate(aoc.part1(), 152)
-    aoc.validate(aoc.part2(), 301)
-    # Run against actual data
-    aoc = AOC2022Day21(example=False)
+    aoc = AOC2022Day21()
     aoc.run()

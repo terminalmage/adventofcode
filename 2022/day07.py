@@ -6,6 +6,7 @@ from __future__ import annotations
 import errno
 import os
 import re
+import textwrap
 from collections.abc import Iterator
 from typing import Self
 
@@ -213,6 +214,37 @@ class AOC2022Day7(AOC):
     '''
     Day 7 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        $ cd /
+        $ ls
+        dir a
+        14848514 b.txt
+        8504156 c.dat
+        dir d
+        $ cd a
+        $ ls
+        dir e
+        29116 f
+        2557 g
+        62596 h.lst
+        $ cd e
+        $ ls
+        584 i
+        $ cd ..
+        $ cd ..
+        $ cd d
+        $ ls
+        4060174 j
+        8033020 d.log
+        5626152 d.ext
+        7214296 k
+        '''
+    )
+
+    validate_part1: int = 95437
+    validate_part2: int = 24933642
+
     disk_size = 70_000_000
 
     def post_init(self) -> None:
@@ -325,16 +357,11 @@ class AOC2022Day7(AOC):
             raise RuntimeError(f'Unused space ({unused}) should be > {target_unused}')
 
         return min(
-            size for size in (item.size for item in aoc.dirs(recurse=True))
+            size for size in (item.size for item in self.dirs(recurse=True))
             if size >= excess_size
         )
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day7(example=True)
-    aoc.validate(aoc.part1(), 95437)
-    aoc.validate(aoc.part2(), 24933642)
-    # Run against actual data
-    aoc = AOC2022Day7(example=False)
+    aoc = AOC2022Day7()
     aoc.run()

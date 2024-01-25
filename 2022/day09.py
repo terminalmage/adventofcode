@@ -3,6 +3,7 @@
 https://adventofcode.com/2022/day/9
 '''
 from __future__ import annotations
+import textwrap
 
 # Local imports
 from aoc import AOC, XY
@@ -87,6 +88,22 @@ class AOC2022Day9(AOC):
     '''
     Day 9 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        R 4
+        U 4
+        L 3
+        D 1
+        R 4
+        D 1
+        L 5
+        R 2
+        '''
+    )
+
+    validate_part1: int = 13
+    validate_part2: int = 1
+
     def post_init(self) -> None:
         '''
         Load the move list and translate it to coordinate deltas
@@ -144,10 +161,5 @@ class AOC2022Day9(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day9(example=True)
-    aoc.validate(aoc.part1(), 13)
-    aoc.validate(aoc.part2(), 1)
-    # Run against actual data
-    aoc = AOC2022Day9(example=False)
+    aoc = AOC2022Day9()
     aoc.run()

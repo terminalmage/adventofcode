@@ -2,6 +2,7 @@
 '''
 https://adventofcode.com/2022/day/20
 '''
+import textwrap
 from collections import deque
 from collections.abc import Sequence
 
@@ -67,6 +68,21 @@ class AOC2022Day20(AOC):
     '''
     Day 20 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        1
+        2
+        -3
+        3
+        -2
+        0
+        4
+        '''
+    )
+
+    validate_part1: int = 3
+    validate_part2: int = 1623178306
+
     def load_cipher(self, key=DEFAULT_KEY) -> Cipher:
         '''
         Load the input file into a Cipher object
@@ -91,10 +107,5 @@ class AOC2022Day20(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day20(example=True)
-    aoc.validate(aoc.part1(), 3)
-    aoc.validate(aoc.part2(), 1623178306)
-    # Run against actual data
-    aoc = AOC2022Day20(example=False)
+    aoc = AOC2022Day20()
     aoc.run()

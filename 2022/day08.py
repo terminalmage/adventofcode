@@ -3,6 +3,7 @@
 https://adventofcode.com/2022/day/8
 '''
 from __future__ import annotations
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -12,6 +13,19 @@ class AOC2022Day8(AOC):
     '''
     Day 8 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        30373
+        25512
+        65332
+        33549
+        35390
+        '''
+    )
+
+    validate_part1: int = 21
+    validate_part2: int = 8
+
     def post_init(self) -> None:
         '''
         Load the datastream
@@ -115,10 +129,10 @@ class AOC2022Day8(AOC):
         '''
         return sum(
             1 for (col, row) in (
-                (x, y) for x in range(aoc.last_col + 1)
-                for y in range(aoc.last_row + 1)
+                (x, y) for x in range(self.last_col + 1)
+                for y in range(self.last_row + 1)
             )
-            if aoc.visible(col, row)
+            if self.visible(col, row)
         )
 
     def part2(self) -> int:
@@ -126,17 +140,12 @@ class AOC2022Day8(AOC):
         Calculate the max Scenic Score™
         '''
         return max(
-            aoc.scenic_score(x, y)
-            for x in range(aoc.last_col + 1)
-            for y in range(aoc.last_row + 1)
+            self.scenic_score(x, y)
+            for x in range(self.last_col + 1)
+            for y in range(self.last_row + 1)
         )
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day8(example=True)
-    aoc.validate(aoc.part1(), 21)
-    aoc.validate(aoc.part2(), 8)
-    # Run against actual data
-    aoc = AOC2022Day8(example=False)
+    aoc = AOC2022Day8()
     aoc.run()

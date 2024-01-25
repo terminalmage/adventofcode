@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2022/day/2
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
@@ -121,6 +123,17 @@ class AOC2022Day2(AOC):
     '''
     Day 2 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        A Y
+        B X
+        C Z
+        '''
+    )
+
+    validate_part1: int = 15
+    validate_part2: int = 12
+
     def part1(self) -> int:
         '''
         Calculate the total score, assuming that the guide is describing which
@@ -167,10 +180,5 @@ class AOC2022Day2(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day2(example=True)
-    aoc.validate(aoc.part1(), 15)
-    aoc.validate(aoc.part2(), 12)
-    # Run against actual data
-    aoc = AOC2022Day2(example=False)
+    aoc = AOC2022Day2()
     aoc.run()

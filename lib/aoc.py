@@ -563,7 +563,7 @@ class AOC:
                 f'day{str(self.day).zfill(2)}.txt',
             ).read_text().rstrip('\n')
 
-        return self.example_data.strip()
+        return self.example_data.strip('\n')
 
     @property
     def input_part1(self) -> str:
@@ -574,7 +574,7 @@ class AOC:
         if not self.example:
             return self.input
 
-        return self.example_data_part1.strip()
+        return self.example_data_part1.strip('\n')
 
     @property
     def input_part2(self) -> str:
@@ -585,7 +585,7 @@ class AOC:
         if not self.example:
             return self.input
 
-        return self.example_data_part2.strip()
+        return self.example_data_part2.strip('\n')
 
     @staticmethod
     def timed_exec(

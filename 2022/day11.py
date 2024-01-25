@@ -5,6 +5,7 @@ https://adventofcode.com/2022/day/11
 from __future__ import annotations
 import math
 import re
+import textwrap
 from collections.abc import Callable, Iterator
 
 # Local imports
@@ -114,6 +115,41 @@ class AOC2022Day11(AOC):
     '''
     Day 11 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        Monkey 0:
+          Starting items: 79, 98
+          Operation: new = old * 19
+          Test: divisible by 23
+            If true: throw to monkey 2
+            If false: throw to monkey 3
+
+        Monkey 1:
+          Starting items: 54, 65, 75, 74
+          Operation: new = old + 6
+          Test: divisible by 19
+            If true: throw to monkey 2
+            If false: throw to monkey 0
+
+        Monkey 2:
+          Starting items: 79, 60, 97
+          Operation: new = old * old
+          Test: divisible by 13
+            If true: throw to monkey 1
+            If false: throw to monkey 3
+
+        Monkey 3:
+          Starting items: 74
+          Operation: new = old + 3
+          Test: divisible by 17
+            If true: throw to monkey 0
+            If false: throw to monkey 1
+        '''
+    )
+
+    validate_part1: int = 10605
+    validate_part2: int = 2713310158
+
     def load_monkeys(self) -> Iterator[Monkey]:
         '''
         Load the input and return a sequence of Monkey objects
@@ -173,10 +209,5 @@ class AOC2022Day11(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day11(example=True)
-    aoc.validate(aoc.part1(), 10605)
-    aoc.validate(aoc.part2(), 2713310158)
-    # Run against actual data
-    aoc = AOC2022Day11(example=False)
+    aoc = AOC2022Day11()
     aoc.run()

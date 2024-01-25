@@ -4,6 +4,7 @@ https://adventofcode.com/2022/day/23
 '''
 import itertools
 import sys
+import textwrap
 from collections import defaultdict, deque
 from collections.abc import Callable
 
@@ -25,6 +26,26 @@ class AOC2022Day23(AOC):
     '''
     Day 23 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        ..............
+        ..............
+        .......#......
+        .....###.#....
+        ...#...#.#....
+        ....#...##....
+        ...#.###......
+        ...##.#.##....
+        ....#..#......
+        ..............
+        ..............
+        ..............
+        '''
+    )
+
+    validate_part1: int = 110
+    validate_part2: int = 20
+
     def post_init(self) -> None:
         '''
         Load the initial elf arrangement into a set
@@ -192,10 +213,5 @@ class AOC2022Day23(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day23(example=True)
-    aoc.validate(aoc.part1(), 110)
-    aoc.validate(aoc.part2(), 20)
-    # Run against actual data
-    aoc = AOC2022Day23(example=False)
+    aoc = AOC2022Day23()
     aoc.run()

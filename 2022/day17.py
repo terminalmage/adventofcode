@@ -4,6 +4,7 @@ https://adventofcode.com/2022/day/17
 '''
 import itertools
 import sys
+import textwrap
 from collections.abc import Sequence
 from typing import Callable
 
@@ -18,6 +19,15 @@ class AOC2022Day17(AOC):
     '''
     Day 17 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        >>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>
+        '''
+    )
+
+    validate_part1: int = 3068
+    validate_part2: int = 1_514_285_714_288
+
     width = 7
 
     def post_init(self) -> None:
@@ -262,10 +272,5 @@ class AOC2022Day17(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day17(example=True)
-    aoc.validate(aoc.part1(), 3068)
-    aoc.validate(aoc.part2(), 1_514_285_714_288)
-    # Run against actual data
-    aoc = AOC2022Day17(example=False)
+    aoc = AOC2022Day17()
     aoc.run()

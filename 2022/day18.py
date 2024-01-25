@@ -3,6 +3,7 @@
 https://adventofcode.com/2022/day/18
 '''
 import functools
+import textwrap
 from collections import deque
 from collections.abc import Iterator
 
@@ -14,6 +15,27 @@ class AOC2022Day18(AOC):
     '''
     Day 18 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        2,2,2
+        1,2,2
+        3,2,2
+        2,1,2
+        2,3,2
+        2,2,1
+        2,2,3
+        2,2,4
+        2,2,6
+        1,2,5
+        3,2,5
+        2,1,5
+        2,3,5
+        '''
+    )
+
+    validate_part1: int = 64
+    validate_part2: int = 58
+
     def post_init(self) -> None:
         '''
         Load the move list and translate it to coordinate deltas
@@ -112,10 +134,5 @@ class AOC2022Day18(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day18(example=True)
-    aoc.validate(aoc.part1(), 64)
-    aoc.validate(aoc.part2(), 58)
-    # Run against actual data
-    aoc = AOC2022Day18(example=False)
+    aoc = AOC2022Day18()
     aoc.run()

@@ -6,14 +6,15 @@ from __future__ import annotations
 import itertools
 import json
 import math
+import textwrap
 from collections.abc import Iterator, Sequence
 
 # Local imports
 from aoc import AOC
 
-LT = -1
-EQ = 0
-GT = 1
+LT: int = -1
+EQ: int = 0
+GT: int = 1
 
 
 class Packet:
@@ -110,6 +111,37 @@ class AOC2022Day13(AOC):
     '''
     Day 13 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        [1,1,3,1,1]
+        [1,1,5,1,1]
+
+        [[1],[2,3,4]]
+        [[1],4]
+
+        [9]
+        [[8,7,6]]
+
+        [[4,4],4,4]
+        [[4,4],4,4,4]
+
+        [7,7,7,7]
+        [7,7,7]
+
+        []
+        [3]
+
+        [[[]]]
+        [[]]
+
+        [1,[2,[3,[4,[5,6,7]]]],8,9]
+        [1,[2,[3,[4,[5,6,0]]]],8,9]
+        '''
+    )
+
+    validate_part1: int = 13
+    validate_part2: int = 140
+
     def post_init(self) -> None:
         '''
         Initialize the list of packets
@@ -162,10 +194,5 @@ class AOC2022Day13(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day13(example=True)
-    aoc.validate(aoc.part1(), 13)
-    aoc.validate(aoc.part2(), 140)
-    # Run against actual data
-    aoc = AOC2022Day13(example=False)
+    aoc = AOC2022Day13()
     aoc.run()

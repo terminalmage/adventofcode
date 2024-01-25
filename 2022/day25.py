@@ -5,6 +5,7 @@ https://adventofcode.com/2022/day/25
 from __future__ import annotations
 import functools
 import re
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -109,6 +110,26 @@ class AOC2022Day25(AOC):
     '''
     Day 25 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        1=-0-2
+        12111
+        2=0=
+        21
+        2=01
+        111
+        20012
+        112
+        1=-1=
+        1-12
+        12
+        1=
+        122
+        '''
+    )
+
+    validate_part1: str = '2=-1=0'
+
     def post_init(self) -> None:
         '''
         Load the numbers from the input file
@@ -126,9 +147,5 @@ class AOC2022Day25(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day25(example=True)
-    aoc.validate(aoc.part1(), '2=-1=0')
-    # Run against actual data
-    aoc = AOC2022Day25(example=False)
+    aoc = AOC2022Day25()
     aoc.run()

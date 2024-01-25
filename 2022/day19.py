@@ -5,6 +5,7 @@ https://adventofcode.com/2022/day/19
 import functools
 import math
 import re
+import textwrap
 from collections.abc import Iterator
 
 # Local imports
@@ -269,6 +270,16 @@ class AOC2022Day19(AOC):
     '''
     Day 19 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.
+        Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 8 clay. Each geode robot costs 3 ore and 12 obsidian.
+        '''
+    )
+
+    validate_part1: int = 33
+    validate_part2: int = 3472
+
     def load_blueprints(self) -> list[Blueprint]:
         '''
         Return a list of Blueprint objects as loaded from the input file
@@ -314,10 +325,5 @@ class AOC2022Day19(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day19(example=True)
-    aoc.validate(aoc.part1(), 33)
-    aoc.validate(aoc.part2(), 3472)
-    # Run against actual data
-    aoc = AOC2022Day19(example=False)
+    aoc = AOC2022Day19()
     aoc.run()

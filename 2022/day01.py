@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2022/day/1
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
@@ -10,6 +12,28 @@ class AOC2022Day1(AOC):
     '''
     Day 1 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        1000
+        2000
+        3000
+
+        4000
+
+        5000
+        6000
+
+        7000
+        8000
+        9000
+
+        10000
+        '''
+    )
+
+    validate_part1: int = 24000
+    validate_part2: int = 45000
+
     def post_init(self) -> None:
         '''
         Calculate calories
@@ -46,10 +70,5 @@ class AOC2022Day1(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day1(example=True)
-    aoc.validate(aoc.part1(), 24000)
-    aoc.validate(aoc.part2(), 45000)
-    # Run against actual data
-    aoc = AOC2022Day1(example=False)
+    aoc = AOC2022Day1()
     aoc.run()

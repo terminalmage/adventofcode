@@ -3,6 +3,7 @@
 https://adventofcode.com/2022/day/5
 '''
 import re
+import textwrap
 from dataclasses import dataclass
 
 # Local imports
@@ -77,8 +78,25 @@ class Stack:
 
 class AOC2022Day5(AOC):
     '''
-    Day 5 of Advent of Code 2022 (first task)
+    Day 5 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+            [D]
+        [N] [C]
+        [Z] [M] [P]
+         1   2   3
+
+        move 1 from 2 to 1
+        move 3 from 1 to 3
+        move 2 from 2 to 1
+        move 1 from 1 to 2
+        '''
+    )
+
+    validate_part1: str = 'CMZ'
+    validate_part2: str = 'MCD'
+
     def post_init(self) -> None:
         '''
         Load the initial stack state and process each move
@@ -93,7 +111,6 @@ class AOC2022Day5(AOC):
         self.stacks.clear()
         self.moves.clear()
 
-        # Read in the input
         lines: list[str] = self.input.splitlines(keepends=True)
 
         # Find the blank line dividing the stack definition and the moves list
@@ -171,10 +188,5 @@ class AOC2022Day5(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day5(example=True)
-    aoc.validate(aoc.part1(), 'CMZ')
-    aoc.validate(aoc.part2(), 'MCD')
-    # Run against actual data
-    aoc = AOC2022Day5(example=False)
+    aoc = AOC2022Day5()
     aoc.run()

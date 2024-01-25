@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2022/day/6
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
@@ -10,6 +12,15 @@ class AOC2022Day6(AOC):
     '''
     Day 6 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        mjqjpqmgbljsphdztnvjfqwrcgsmlb
+        '''
+    )
+
+    validate_part1: int = 7
+    validate_part2: int = 19
+
     def marker_index(self, length: int) -> int:
         '''
         Return the index of the marker
@@ -41,9 +52,5 @@ class AOC2022Day6(AOC):
 
 
 if __name__ == '__main__':
-    aoc = AOC2022Day6(example=True)
-    aoc.validate(aoc.part1(), 7)
-    aoc.validate(aoc.part2(), 19)
-    # Run against actual data
-    aoc = AOC2022Day6(example=False)
+    aoc = AOC2022Day6()
     aoc.run()

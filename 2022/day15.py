@@ -6,6 +6,7 @@ from __future__ import annotations
 import functools
 import itertools
 import re
+import textwrap
 from collections.abc import Iterator
 
 # Local imports
@@ -193,6 +194,28 @@ class AOC2022Day15(AOC):
     '''
     Day 15 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        Sensor at x=2, y=18: closest beacon is at x=-2, y=15
+        Sensor at x=9, y=16: closest beacon is at x=10, y=16
+        Sensor at x=13, y=2: closest beacon is at x=15, y=3
+        Sensor at x=12, y=14: closest beacon is at x=10, y=16
+        Sensor at x=10, y=20: closest beacon is at x=10, y=16
+        Sensor at x=14, y=17: closest beacon is at x=10, y=16
+        Sensor at x=8, y=7: closest beacon is at x=2, y=10
+        Sensor at x=2, y=0: closest beacon is at x=2, y=10
+        Sensor at x=0, y=11: closest beacon is at x=2, y=10
+        Sensor at x=20, y=14: closest beacon is at x=25, y=17
+        Sensor at x=17, y=20: closest beacon is at x=21, y=22
+        Sensor at x=16, y=7: closest beacon is at x=15, y=3
+        Sensor at x=14, y=3: closest beacon is at x=15, y=3
+        Sensor at x=20, y=1: closest beacon is at x=15, y=3
+        '''
+    )
+
+    validate_part1: int = 26
+    validate_part2: int = 56000011
+
     def post_init(self) -> None:
         '''
         Load the cleaning assignment pairs into tuples of sets of ints
@@ -253,10 +276,5 @@ class AOC2022Day15(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day15(example=True)
-    aoc.validate(aoc.part1(), 26)
-    aoc.validate(aoc.part2(), 56000011)
-    # Run against actual data
-    aoc = AOC2022Day15(example=False)
+    aoc = AOC2022Day15()
     aoc.run()

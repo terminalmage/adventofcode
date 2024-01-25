@@ -5,6 +5,7 @@ https://adventofcode.com/2022/day/3
 from __future__ import annotations
 import itertools
 import string
+import textwrap
 from collections.abc import Iterator, Sequence
 
 # Local imports
@@ -160,6 +161,20 @@ class AOC2022Day3(AOC):
     '''
     Day 3 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        vJrwpWtwJgWrhcsFMMfFFhFp
+        jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+        PmmdzqPrVvPwwTWBwg
+        wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+        ttgJtRGJQctTZtZT
+        CrZsJsPPZsGzwwsLwLmpwMDw
+        '''
+    )
+
+    validate_part1: int = 157
+    validate_part2: int = 70
+
     def post_init(self) -> None:
         '''
         Load the rucksack contents
@@ -218,10 +233,5 @@ class AOC2022Day3(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day3(example=True)
-    aoc.validate(aoc.part1(), 157)
-    aoc.validate(aoc.part2(), 70)
-    # Run against actual data
-    aoc = AOC2022Day3(example=False)
+    aoc = AOC2022Day3()
     aoc.run()

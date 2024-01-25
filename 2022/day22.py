@@ -5,6 +5,7 @@ https://adventofcode.com/2022/day/22
 import functools
 import math
 import re
+import textwrap
 from dataclasses import dataclass
 from collections.abc import Callable
 
@@ -28,6 +29,28 @@ class AOC2022Day22(AOC):
     '''
     Day 22 of Advent of Code 2022
     '''
+    example_data: str = textwrap.dedent(
+        '''
+                ...#
+                .#..
+                #...
+                ....
+        ...#.......#
+        ........#...
+        ..#....#....
+        ..........#.
+                ...#....
+                .....#..
+                .#......
+                ......#.
+
+        10R5L5R10L4R5L5
+        '''
+    )
+
+    validate_part1: int = 6032
+    validate_part2: int = 5031
+
     def post_init(self) -> None:
         '''
         Load the input and set everything up for the path traversal
@@ -400,10 +423,5 @@ class AOC2022Day22(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2022Day22(example=True)
-    aoc.validate(aoc.part1(), 6032)
-    aoc.validate(aoc.part2(), 5031)
-    # Run against actual data
-    aoc = AOC2022Day22(example=False)
+    aoc = AOC2022Day22()
     aoc.run()
