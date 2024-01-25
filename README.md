@@ -24,10 +24,6 @@ in Python 3.8 (the "[walrus operator](https://peps.python.org/pep-0572)"), 3.10
    ./day01.py
    ```
 
-   **NOTE:** For most puzzles, you will need to add a file in that year's
-   `inputs` subdirectory, named in the format `dayXX.txt`, containing the
-   puzzle input for that day.
-
    When done, exit from the shell (run `exit` or use Ctrl-d) and the container
    will be destroyed.
 
@@ -36,3 +32,14 @@ in Python 3.8 (the "[walrus operator](https://peps.python.org/pep-0572)"), 3.10
    to build a Python 3.11 (or newer) release. This will also require that you
    have installed the [build
    dependencies](https://github.com/pyenv/pyenv/wiki#suggested-build-environment).
+
+## INPUTS
+
+You must provide your own inputs. Per the
+[FAQ](https://old.reddit.com/r/adventofcode/wiki/faqs/copyright/inputs), inputs
+should not be publicly shared. In my repo, I solve this by storing my inputs in
+a [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) which is
+a separate, private repo. To run these scripts with your own inputs, you must
+copy them into your clone of this repo at the following path:
+`inputs/YYYY/dayDD.txt`, where `YYYY` is the 4-digit year, and `DD` is the
+two-digit date. So, for example, 2022 day 7 would be `inputs/2022/day07.txt`.
