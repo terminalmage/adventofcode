@@ -76,6 +76,15 @@ class AOC2016Day17(AOC):
     '''
     Day 17 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        kglvqrro
+        '''
+    )
+
+    validate_part1: str = 'DDUDRLRRUDRD'
+    validate_part2: int = 492
+
     def post_init(self) -> None:
         '''
         Load the puzzle data
@@ -153,10 +162,5 @@ class AOC2016Day17(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day17(example=True)
-    aoc.validate(aoc.part1(), 'DDUDRLRRUDRD')
-    aoc.validate(aoc.part2(), 492)
-    # Run against actual data
-    aoc = AOC2016Day17(example=False)
+    aoc = AOC2016Day17()
     aoc.run()

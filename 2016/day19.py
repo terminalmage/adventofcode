@@ -2,6 +2,7 @@
 '''
 https://adventofcode.com/2016/day/19
 '''
+import textwrap
 from collections import deque
 
 # Local imports
@@ -12,6 +13,15 @@ class AOC2016Day19(AOC):
     '''
     Day 19 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        5
+        '''
+    )
+
+    validate_part1: int = 3
+    validate_part2: int = 2
+
     def post_init(self) -> None:
         '''
         Set the number of elves to be used for the puzzle
@@ -133,10 +143,5 @@ class AOC2016Day19(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day19(example=True)
-    aoc.validate(aoc.part1(), 3)
-    aoc.validate(aoc.part2(), 2)
-    # Run against actual data
-    aoc = AOC2016Day19(example=False)
+    aoc = AOC2016Day19()
     aoc.run()

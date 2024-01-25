@@ -41,6 +41,8 @@ class AOC2016Day11(AOC):
     '''
     Day 11 of Advent of Code 2016
     '''
+    validate_part1: int = 11
+
     def post_init(self) -> None:
         '''
         Hard-code the initial state since the puzzle input is not in a
@@ -227,9 +229,5 @@ class AOC2016Day11(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day11(example=True)
-    aoc.validate(aoc.part1(), 11)
-    # Run against actual data
-    aoc = AOC2016Day11(example=False)
+    aoc = AOC2016Day11()
     aoc.run()

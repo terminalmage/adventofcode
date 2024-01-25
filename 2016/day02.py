@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2016/day/2
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC, XY, directions
 
@@ -13,6 +15,18 @@ class AOC2016Day2(AOC):
     '''
     Day 2 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        ULL
+        RRDDD
+        LURDL
+        UUUUD
+        '''
+    )
+
+    validate_part1: str = '1985'
+    validate_part2: str = '5DB3'
+
     deltas: dict[str, XY] = {
         'U': directions.NORTH,
         'D': directions.SOUTH,
@@ -95,10 +109,5 @@ class AOC2016Day2(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day2(example=True)
-    aoc.validate(aoc.part1(), '1985')
-    aoc.validate(aoc.part2(), '5DB3')
-    # Run against actual data
-    aoc = AOC2016Day2(example=False)
+    aoc = AOC2016Day2()
     aoc.run()

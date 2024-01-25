@@ -2,6 +2,7 @@
 '''
 https://adventofcode.com/2016/day/18
 '''
+import textwrap
 from typing import Literal
 
 # Local imports
@@ -18,6 +19,14 @@ class AOC2016Day18(AOC):
     '''
     Day 18 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        .^^.^.^^^^
+        '''
+    )
+
+    validate_part1: int = 38
+
     def post_init(self) -> None:
         '''
         Load the puzzle data
@@ -111,9 +120,5 @@ class AOC2016Day18(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day18(example=True)
-    aoc.validate(aoc.part1(), 38)
-    # Run against actual data
-    aoc = AOC2016Day18(example=False)
+    aoc = AOC2016Day18()
     aoc.run()

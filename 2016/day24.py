@@ -3,6 +3,7 @@
 https://adventofcode.com/2016/day/24
 '''
 import itertools
+import textwrap
 from collections import defaultdict, deque
 
 # Local imports
@@ -13,6 +14,18 @@ class AOC2016Day24(AOC):
     '''
     Day 24 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        ###########
+        #0.1.....2#
+        #.#######.#
+        #4.......3#
+        ###########
+        '''
+    )
+
+    validate_part1: int = 14
+
     def post_init(self) -> None:
         '''
         Initialize the Grid and calculate the distances between each point
@@ -105,9 +118,5 @@ class AOC2016Day24(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day24(example=True)
-    aoc.validate(aoc.part1(), 14)
-    # Run against actual data
-    aoc = AOC2016Day24(example=False)
+    aoc = AOC2016Day24()
     aoc.run()

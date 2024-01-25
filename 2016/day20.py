@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2016/day/20
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
@@ -10,6 +12,17 @@ class AOC2016Day20(AOC):
     '''
     Day 20 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        5-8
+        0-2
+        4-7
+        '''
+    )
+
+    validate_part1: int = 3
+    validate_part2: int = 2
+
     def post_init(self) -> None:
         '''
         Load puzzle input as a sorted sequence of IP ranges
@@ -79,10 +92,5 @@ class AOC2016Day20(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day20(example=True)
-    aoc.validate(aoc.part1(), 3)
-    aoc.validate(aoc.part2(), 2)
-    # Run against actual data
-    aoc = AOC2016Day20(example=False)
+    aoc = AOC2016Day20()
     aoc.run()

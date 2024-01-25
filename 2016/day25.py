@@ -93,6 +93,5 @@ class AOC2016Day25(AOC):
 
 
 if __name__ == '__main__':
-    # Run against actual data
-    aoc = AOC2016Day25(example=False)
+    aoc = AOC2016Day25()
     aoc.run()

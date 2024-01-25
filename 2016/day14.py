@@ -6,6 +6,7 @@ import functools
 import hashlib
 import itertools
 import re
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -53,6 +54,15 @@ class AOC2016Day14(AOC):
     '''
     Day 14 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        abc
+        '''
+    )
+
+    validate_part1: int = 22728
+    validate_part2: int = 22551
+
     def key_index(self, key_id: int, stretch: int = DEFAULT_STRETCH) -> int:
         '''
         Find the index of the key_id'th key
@@ -89,10 +99,5 @@ class AOC2016Day14(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day14(example=True)
-    aoc.validate(aoc.part1(), 22728)
-    aoc.validate(aoc.part2(), 22551)
-    # Run against actual data
-    aoc = AOC2016Day14(example=False)
+    aoc = AOC2016Day14()
     aoc.run()

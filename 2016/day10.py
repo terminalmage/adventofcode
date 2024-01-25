@@ -5,6 +5,7 @@ https://adventofcode.com/2016/day/10
 import heapq
 import math
 import re
+import textwrap
 from collections import defaultdict, deque
 from typing import Literal
 
@@ -16,6 +17,19 @@ class AOC2016Day10(AOC):
     '''
     Day 10 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        value 5 goes to bot 2
+        bot 2 gives low to bot 1 and high to bot 0
+        value 3 goes to bot 1
+        bot 1 gives low to output 1 and high to bot 0
+        bot 0 gives low to output 2 and high to output 0
+        value 2 goes to bot 2
+        '''
+    )
+
+    validate_part1: int = 2
+
     def sort_chips(self, goal: list[int] | None = None) -> int:
         '''
         Load the initial chip values and rules, and then process bots with two
@@ -117,9 +131,5 @@ class AOC2016Day10(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day10(example=True)
-    aoc.validate(aoc.part1(), 2)
-    # Run against actual data
-    aoc = AOC2016Day10(example=False)
+    aoc = AOC2016Day10()
     aoc.run()

@@ -3,6 +3,7 @@
 https://adventofcode.com/2016/day/7
 '''
 import re
+import textwrap
 from collections.abc import Generator
 
 # Local imports
@@ -13,6 +14,27 @@ class AOC2016Day7(AOC):
     '''
     Day 7 of Advent of Code 2016
     '''
+    example_data_part1: str = textwrap.dedent(
+        '''
+        abba[mnop]qrst
+        abcd[bddb]xyyx
+        aaaa[qwer]tyui
+        ioxxoj[asdfgh]zxcvbn
+        '''
+    )
+
+    example_data_part2: str = textwrap.dedent(
+        '''
+        aba[bab]xyz
+        xyx[xyx]xyx
+        aaa[kek]eke
+        zazbz[bzb]cdb
+        '''
+    )
+
+    validate_part1: int = 2
+    validate_part2: int = 3
+
     def ipv7(self, data: str) -> Generator[str, None, None]:
         '''
         Generator which yields one IPv7 address at a time from the input file
@@ -115,10 +137,5 @@ class AOC2016Day7(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day7(example=True)
-    aoc.validate(aoc.part1(), 2)
-    aoc.validate(aoc.part2(), 3)
-    # Run against actual data
-    aoc = AOC2016Day7(example=False)
+    aoc = AOC2016Day7()
     aoc.run()

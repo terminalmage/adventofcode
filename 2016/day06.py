@@ -3,6 +3,7 @@
 https://adventofcode.com/2016/day/6
 '''
 import collections
+import textwrap
 
 # Local imports
 from aoc import AOC, Grid
@@ -12,6 +13,30 @@ class AOC2016Day6(AOC):
     '''
     Day 6 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        eedadn
+        drvtee
+        eandsr
+        raavrd
+        atevrs
+        tsrnev
+        sdttsa
+        rasrtv
+        nssdts
+        ntnada
+        svetve
+        tesnvt
+        vntsnd
+        vrdear
+        dvrsen
+        enarar
+        '''
+    )
+
+    validate_part1: str = 'easter'
+    validate_part2: str = 'advent'
+
     def post_init(self) -> None:
         '''
         Load the Grid
@@ -38,10 +63,5 @@ class AOC2016Day6(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day6(example=True)
-    aoc.validate(aoc.part1(), 'easter')
-    aoc.validate(aoc.part2(), 'advent')
-    # Run against actual data
-    aoc = AOC2016Day6(example=False)
+    aoc = AOC2016Day6()
     aoc.run()

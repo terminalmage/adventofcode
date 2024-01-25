@@ -3,6 +3,7 @@
 https://adventofcode.com/2016/day/1
 '''
 import re
+import textwrap
 from collections import deque
 from collections.abc import Generator, Sequence
 
@@ -19,6 +20,21 @@ class AOC2016Day1(AOC, TupleMixin):
     '''
     Day 1 of Advent of Code 2016
     '''
+    example_data_part1: str = textwrap.dedent(
+        '''
+        R5, L5, R5, R3
+        '''
+    )
+
+    example_data_part2: str = textwrap.dedent(
+        '''
+        R8, R4, R4, R8
+        '''
+    )
+
+    validate_part1: int = 12
+    validate_part2: int = 4
+
     def load_directions(self, data: str) -> tuple[Step]:
         '''
         Load the instructions
@@ -79,10 +95,5 @@ class AOC2016Day1(AOC, TupleMixin):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day1(example=True)
-    aoc.validate(aoc.part1(), 12)
-    aoc.validate(aoc.part2(), 4)
-    # Run against actual data
-    aoc = AOC2016Day1(example=False)
+    aoc = AOC2016Day1()
     aoc.run()

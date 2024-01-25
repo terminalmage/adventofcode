@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2016/day/16
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 
@@ -10,6 +12,14 @@ class AOC2016Day16(AOC):
     '''
     Day 16 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        10000
+        '''
+    )
+
+    validate_part1: str = '01100'
+
     def checksum(self, data: str):
         '''
         Calculate and return checksum of data
@@ -53,9 +63,5 @@ class AOC2016Day16(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day16(example=True)
-    aoc.validate(aoc.part1(), '01100')
-    # Run against actual data
-    aoc = AOC2016Day16(example=False)
+    aoc = AOC2016Day16()
     aoc.run()

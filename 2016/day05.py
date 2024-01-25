@@ -3,6 +3,7 @@
 https://adventofcode.com/2016/day/5
 '''
 import hashlib
+import textwrap
 from collections import defaultdict
 from collections.abc import Generator
 
@@ -18,6 +19,15 @@ class AOC2016Day5(AOC):
     '''
     Day 5 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        abc
+        '''
+    )
+
+    validate_part1: str = '18f47a30'
+    validate_part2: str = '05ace8e3'
+
     def post_init(self) -> None:
         '''
         Load the door_id from the input and initialize the cache
@@ -93,10 +103,5 @@ class AOC2016Day5(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day5(example=True)
-    aoc.validate(aoc.part1(), '18f47a30')
-    aoc.validate(aoc.part2(), '05ace8e3')
-    # Run against actual data
-    aoc = AOC2016Day5(example=False)
+    aoc = AOC2016Day5()
     aoc.run()

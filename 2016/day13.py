@@ -3,6 +3,7 @@
 https://adventofcode.com/2016/day/13
 '''
 import collections
+import textwrap
 from collections.abc import Generator
 from typing import Self
 
@@ -14,11 +15,7 @@ class Tile(Coordinate):
     '''
     Subclass of Coordinate with modified logic for valid neighbors
     '''
-    # This will be updated after reading the input
-    favorite_number: int = 0
-
-    @property
-    def neighbors(self) -> Generator[Self, None, None]:
+    def neighbors(self, favorite_number: int) -> Generator[Self, None, None]:
         '''
         Return the neighboring tiles which are open spaces. Negative values are
         invalid, so ignore any coordinate which would contain a negative value.
@@ -29,7 +26,7 @@ class Tile(Coordinate):
             if x < 0 or y < 0:
                 continue
             # Use the specified formula to calculate this tile's integer value
-            result: int = x**2 + (3 * x) + (2 * x * y) + y + y**2 + self.favorite_number
+            result: int = x**2 + (3 * x) + (2 * x * y) + y + y**2 + favorite_number
             # If the number of bits that are 1 is even, this tile is an empty
             # space, yield it. Otherwise ignore it.
             if not bin(result).count('1') % 2:
@@ -40,11 +37,19 @@ class AOC2016Day13(AOC):
     '''
     Day 13 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        10
+        '''
+    )
+
+    validate_part1: int = 11
+
     def post_init(self) -> None:
         '''
         Set the favorite number as a class attribute
         '''
-        Tile.favorite_number = int(self.input)
+        self.favorite_number = int(self.input)
 
     def bfs(
         self,
@@ -90,7 +95,7 @@ class AOC2016Day13(AOC):
             visited.add(tile)
 
             steps += 1
-            for neighbor in tile.neighbors:
+            for neighbor in tile.neighbors(self.favorite_number):
                 dq.append((steps, neighbor))
 
         # Shouldn't get here, but raise an exception rather than returning None
@@ -110,9 +115,5 @@ class AOC2016Day13(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day13(example=True)
-    aoc.validate(aoc.part1(), 11)
-    # Run against actual data
-    aoc = AOC2016Day13(example=False)
+    aoc = AOC2016Day13()
     aoc.run()

@@ -2,6 +2,8 @@
 '''
 https://adventofcode.com/2016/day/23
 '''
+import textwrap
+
 # Local imports
 from aoc import AOC
 from day12 import Computer, Program, Instruction
@@ -72,6 +74,20 @@ class AOC2016Day23(AOC):
     '''
     Day 23 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        cpy 2 a
+        tgl a
+        tgl a
+        tgl a
+        cpy 1 a
+        dec a
+        dec a
+        '''
+    )
+
+    validate_part1: int = 3
+
     def post_init(self) -> None:
         '''
         Initialize the SafeCracker
@@ -95,9 +111,5 @@ class AOC2016Day23(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day23(example=True)
-    aoc.validate(aoc.part1(), 3)
-    # Run against actual data
-    aoc = AOC2016Day23(example=False)
+    aoc = AOC2016Day23()
     aoc.run()

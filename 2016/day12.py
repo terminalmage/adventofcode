@@ -4,6 +4,7 @@ https://adventofcode.com/2016/day/12
 '''
 import copy
 import re
+import textwrap
 from dataclasses import dataclass
 
 # Local imports
@@ -457,6 +458,19 @@ class AOC2016Day12(AOC):
     '''
     Day 12 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        cpy 41 a
+        inc a
+        inc a
+        dec a
+        jnz a 2
+        dec a
+        '''
+    )
+
+    validate_part1: int = 42
+
     def post_init(self) -> None:
         '''
         Initialize the computer and load the program from the puzzle input
@@ -479,9 +493,5 @@ class AOC2016Day12(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day12(example=True)
-    aoc.validate(aoc.part1(), 42)
-    # Run against actual data
-    aoc = AOC2016Day12(example=False)
+    aoc = AOC2016Day12()
     aoc.run()

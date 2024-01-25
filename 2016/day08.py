@@ -5,6 +5,7 @@ https://adventofcode.com/2016/day/8
 import functools
 import re
 import sys
+import textwrap
 from collections.abc import Generator
 
 # Local imports
@@ -18,6 +19,17 @@ class AOC2016Day8(AOC):
     '''
     Day 8 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        rect 3x2
+        rotate column x=1 by 1
+        rotate row y=0 by 4
+        rotate column x=1 by 1
+        '''
+    )
+
+    validate_part1: int = 6
+
     op_re: re.Pattern = re.compile(
         r'rect (\d+)x(\d+)|rotate (row|column) [xy]=(\d+) by (\d+)'
     )
@@ -105,11 +117,7 @@ class AOC2016Day8(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day8(example=True)
-    aoc.validate(aoc.part1(), 6)
-    # Run against actual data
-    aoc = AOC2016Day8(example=False)
+    aoc = AOC2016Day8()
     aoc.run()
     # The solution to Part 2 is the printed result, so do that in lieu of a
     # part2 func

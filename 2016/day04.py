@@ -6,6 +6,7 @@ import collections
 import itertools
 import re
 import string
+import textwrap
 from collections.abc import Generator
 
 # Local imports
@@ -19,6 +20,17 @@ class AOC2016Day4(AOC):
     '''
     Day 4 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        aaaaa-bbb-z-y-x-123[abxyz]
+        a-b-c-d-e-f-g-h-987[abcde]
+        not-a-real-room-404[oarel]
+        totally-real-room-200[decoy]
+        '''
+    )
+
+    validate_part1: int = 1514
+
     @property
     def room_data(self) -> Generator[RoomData, None, None]:
         '''
@@ -100,9 +112,5 @@ class AOC2016Day4(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day4(example=True)
-    aoc.validate(aoc.part1(), 1514)
-    # Run against actual data
-    aoc = AOC2016Day4(example=False)
+    aoc = AOC2016Day4()
     aoc.run()

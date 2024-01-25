@@ -4,6 +4,7 @@ https://adventofcode.com/2016/day/9
 '''
 import functools
 import re
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -62,6 +63,15 @@ class AOC2016Day9(AOC):
     '''
     Day 9 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        X(8x2)(3x3)ABCY
+        '''
+    )
+
+    validate_part1: int = 18
+    validate_part2: int = 20
+
     def part1(self) -> int:
         '''
         Return the length of the decompressed data stream
@@ -76,10 +86,5 @@ class AOC2016Day9(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day9(example=True)
-    aoc.validate(aoc.part1(), 18)
-    aoc.validate(aoc.part2(), 20)
-    # Run against actual data
-    aoc = AOC2016Day9(example=False)
+    aoc = AOC2016Day9()
     aoc.run()

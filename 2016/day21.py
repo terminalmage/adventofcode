@@ -2,6 +2,7 @@
 '''
 https://adventofcode.com/2016/day/21
 '''
+import textwrap
 from typing import Literal
 
 # Local imports
@@ -16,6 +17,21 @@ class AOC2016Day21(AOC):
     '''
     Day 21 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        swap position 4 with position 0
+        swap letter d with letter b
+        reverse positions 0 through 4
+        rotate left 1 step
+        move position 1 to position 4
+        move position 3 to position 0
+        rotate based on position of letter b
+        rotate based on position of letter d
+        '''
+    )
+
+    validate_part1: str = 'decab'
+
     @staticmethod
     def rotate(
         chars: Chars,
@@ -211,9 +227,5 @@ class AOC2016Day21(AOC):
         return ''.join(unscrambled)
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day21(example=True)
-    aoc.validate(aoc.part1(), 'decab')
-    # Run against actual data
-    aoc = AOC2016Day21(example=False)
+    aoc = AOC2016Day21()
     aoc.run()

@@ -4,6 +4,7 @@ https://adventofcode.com/2016/day/15
 '''
 import math
 import re
+import textwrap
 
 # Local imports
 from aoc import AOC
@@ -16,6 +17,15 @@ class AOC2016Day15(AOC):
     '''
     Day 15 of Advent of Code 2016
     '''
+    example_data: str = textwrap.dedent(
+        '''
+        Disc #1 has 5 positions; at time=0, it is at position 4.
+        Disc #2 has 2 positions; at time=0, it is at position 1.
+        '''
+    )
+
+    validate_part1: int = 5
+
     def post_init(self) -> None:
         '''
         Load the puzzle data
@@ -229,9 +239,5 @@ class AOC2016Day15(AOC):
 
 
 if __name__ == '__main__':
-    # Run against test data
-    aoc = AOC2016Day15(example=True)
-    aoc.validate(aoc.part1(), 5)
-    # Run against actual data
-    aoc = AOC2016Day15(example=False)
+    aoc = AOC2016Day15()
     aoc.run()
