@@ -8,7 +8,7 @@ from queue import SimpleQueue
 from typing import Literal
 
 # Local imports
-from aoc import AOC, Grid, TupleMixin, XYMixin, XY
+from aoc import AOC, Grid, XY
 
 # Type hints
 StartState = dict[Literal['start', 'direction'], XY]
@@ -17,7 +17,7 @@ DEFAULT_START: XY = (0, 0)
 DEFAULT_DIRECTION: XY = Grid.directions.EAST
 
 
-class Contraption(Grid, TupleMixin, XYMixin):
+class Contraption(Grid):
     '''
     Represents the Contraption from this puzzle
     '''

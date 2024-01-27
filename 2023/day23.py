@@ -7,7 +7,7 @@ from collections import deque
 from collections.abc import Generator
 
 # Local imports
-from aoc import AOC, XY, Grid, TupleMixin
+from aoc import AOC, Grid, XY
 
 # Typing shortcuts
 Branch = tuple[XY, int]
@@ -21,7 +21,7 @@ class DeadEnd(Exception):
     '''
 
 
-class HikingPath(Grid, TupleMixin):
+class HikingPath(Grid):
     '''
     Modified Grid object with puzzle-specific movement rules
     '''

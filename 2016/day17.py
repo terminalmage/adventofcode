@@ -15,6 +15,7 @@ from aoc import AOC, Grid, XY
 Passcode = str
 VaultPath = str
 Direction = Literal[b'U', b'D', b'L', b'R']
+Move = tuple[XY, Direction]
 
 
 class VaultGrid(Grid):
@@ -40,36 +41,38 @@ class VaultGrid(Grid):
         )
         self.start: XY = self.find('S')
         self.end: XY = self.find('V')
+        self.move_sequence: tuple[Move, Move, Move, Move] = (
+            (self.directions.NORTH, b'U'),
+            (self.directions.SOUTH, b'D'),
+            (self.directions.WEST, b'L'),
+            (self.directions.EAST, b'R'),
+        )
 
     def neighbors(  # pylint: disable=arguments-differ
         self,
         coord: XY,
         passcode: bytes,
-    ) -> Generator[tuple[XY, Direction], None, None]:
+    ) -> Generator[Move, None, None]:
         '''
         Generator which yields a tuple of each neigbboring coordinate and the
         value stored at that coordinate.
         '''
-        in_grid = lambda r, c: 0 <= r <= self.max_row and 0 <= c <= self.max_col
-        row, col = coord
-        dir_abbrev: str = 'UDLR'
-        # The reason a greater-than comparison works here is because the ASCII
-        # code for 9 is 57 and the codes for lowercase letters begin at 98.
-        # This is quicker than a string/list/set/etc. membership check.
-        unlocked: frozenset[str] = frozenset({
-            abbrev for abbrev, char in zip(
-                dir_abbrev,
-                hashlib.md5(passcode).hexdigest(),
-            )
-            if char > 'a'
-        })
-        # self.directions is in the order NSWE, or UDLR for the purposes of
-        # this puzzle.
-        for (row_delta, col_delta), direction in zip(self.directions, dir_abbrev):
-            if direction in unlocked:
-                new_row, new_col = row + row_delta, col + col_delta
-                if in_grid(new_row, new_col):
-                    yield (new_row, new_col), direction.encode()
+        move: Move
+        char: str
+        for move, char in zip(
+            self.move_sequence,
+            hashlib.md5(passcode).hexdigest(),
+        ):
+            # The reason a greater-than comparison works here is because the ASCII
+            # code for 9 is 57 and the codes for lowercase letters begin at 98.
+            # This is quicker than a string/list/set/etc. membership check.
+            if char > 'a':
+                delta: XY
+                direction: bytes
+                delta, direction = move
+                new_coord: XY = self.tuple_add(coord, delta)
+                if new_coord in self:
+                    yield new_coord, direction
 
 
 class AOC2016Day17(AOC):

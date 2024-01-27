@@ -24,12 +24,11 @@ class Disk(Grid):
         '''
         Return neighboring coordinates which are '1' (i.e. used)
         '''
-        in_grid = lambda r, c: 0 <= r <= self.max_row and 0 <= c <= self.max_col
-        row, col = coord
-        for (row_delta, col_delta) in self.directions:
-            new_row, new_col = row + row_delta, col + col_delta
-            if in_grid(new_row, new_col) and self.data[new_row][new_col] == '1':
-                yield (new_row, new_col)
+        delta: XY
+        for delta in self.directions:
+            neighbor: XY = self.tuple_add(coord, delta)
+            if neighbor in self and self[neighbor] == '1':
+                yield neighbor
 
     @property
     def regions(self) -> list[set[XY], ...]:
