@@ -20,17 +20,17 @@ XYZ = tuple[float, float, float]
 # for interacting with AoC inputs read in line-by-line.
 directions = namedtuple(
     'Directions',
-    ('NORTH', 'SOUTH', 'WEST', 'EAST')
+    ('NORTH', 'EAST', 'SOUTH', 'WEST')
 )(
-    (-1, 0), (1, 0), (0, -1), (0, 1)
+    (-1, 0), (0, 1), (1, 0), (0, -1)
 )
 # This namedtuple is a mirror of above, with the tuple indexes being the
 # opposite direction of their counterparts.
 opposite_directions = namedtuple(
     'Directions',
-    ('SOUTH', 'NORTH', 'EAST', 'WEST')
+    ('SOUTH', 'WEST', 'NORTH', 'EAST')
 )(
-    (1, 0), (-1, 0), (0, 1), (0, -1)
+    (1, 0), (0, -1), (-1, 0), (0, 1)
 )
 
 ordinal_directions = namedtuple(
@@ -384,7 +384,7 @@ class XYMixin:
         )
 
 
-class Grid:
+class Grid(TupleMixin, XYMixin):
     '''
     Manage a grid as a list of list of strings. Can be indexed like a 2D array.
 
@@ -426,7 +426,7 @@ class Grid:
             ]
             fh.close()
         self.rows = len(self.data)
-        self.cols = len(self.data[0])
+        self.cols = max(len(row) for row in self.data)
         self.max_row = self.rows - 1
         self.max_col = self.cols - 1
 
@@ -440,14 +440,30 @@ class Grid:
         '''
         If index is an integer, return that index's row.
 
-        If index is a Coordinate, return the single item at that row/column
-        coordinate's location.
+        If index is a tuple, return the value at that row/column.
         '''
-        try:
-            row, col = index
-            return self.data[row][col]
-        except (TypeError, ValueError):
+        if isinstance(index, int):
             return self.data[index]
+
+        if index not in self:
+            raise IndexError(f'Coordinate {index!r} is outside of grid')
+
+        try:
+            return self.data[index[0]][index[1]]
+        except IndexError:
+            # My vim configuration deletes trailing whitespace on buffer write.
+            # So, it is possible to have a valid coordinate that is within the
+            # bounds of the grid, but the column position is past the end of
+            # the row, because that line of the puzzle input ended in
+            # whitespace. Return a space to simulate an empty space at this
+            # position.
+            return ' '
+
+    def row(self, index: int) -> Any:
+        '''
+        Return the specified row
+        '''
+        return self.data[index]
 
     def neighbors(
         self,
@@ -457,9 +473,9 @@ class Grid:
         Generator which yields a tuple of each neigbboring coordinate and the
         value stored at that coordinate.
         '''
-        row, col = coord
-        for (row_delta, col_delta) in self.directions:
-            neighbor: XY = row + row_delta, col + col_delta
+        delta: XY
+        for delta in self.directions:
+            neighbor: XY = self.tuple_add(coord, delta)
             if neighbor in self:
                 yield neighbor, self[neighbor]
 
@@ -479,8 +495,8 @@ class Grid:
         None if there is no match.
         '''
         for row_index, row in enumerate(self.data):
-            for col_index in range(self.cols):
-                if row[col_index] == value:
+            for col_index, col in enumerate(row):
+                if col == value:
                     return row_index, col_index
 
     def print(self) -> None:
