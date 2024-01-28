@@ -1,6 +1,7 @@
 '''
 Base class for Advent of Code submissions
 '''
+from __future__ import annotations
 import functools
 import operator
 import re
@@ -122,6 +123,22 @@ class Coordinate3D:
         Return the contents of this dataclass as tuple
         '''
         return self.x, self.y, self.z
+
+    def distance_from(self, other: Coordinate3D) -> int:
+        '''
+        Return the Manhattan distance between this coordinate and another
+        '''
+        return abs(self.x - other.x) + abs(self.y - other.y) + abs(self.z - other.z)
+
+    def __add__(self, other: Coordinate3D) -> Coordinate3D:
+        '''
+        Add the X, Y, and Z params of both objects, returning a new object
+        '''
+        return Coordinate3D(
+            self.x + other.x,
+            self.y + other.y,
+            self.z + other.z,
+        )
 
 
 @dataclass(frozen=True)
