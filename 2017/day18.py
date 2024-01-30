@@ -91,7 +91,7 @@ class TabletBase:
                     jump: int = int(self.resolve(offset))
 
             case _:
-                raise ValueError(f'Invalid command: {instruction!r}')
+                raise ValueError(f'Invalid instruction: {instruction!r}')
 
         # Return the index of the next instruction that should be executed
         self.index += jump
