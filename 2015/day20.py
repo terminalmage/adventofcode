@@ -2,14 +2,13 @@
 '''
 https://adventofcode.com/2015/day/20
 '''
-import math
-from collections.abc import Callable, Generator
+from collections.abc import Callable
 
 # Local imports
-from aoc import AOC
+from aoc import AOC, MathMixin
 
 
-class AOC2015Day20(AOC):
+class AOC2015Day20(AOC, MathMixin):
     '''
     Day 20 of Advent of Code 2015
     '''
@@ -18,24 +17,6 @@ class AOC2015Day20(AOC):
         Convert the value in the input data to an int
         '''
         self.goal: int = int(self.input)
-
-    @staticmethod
-    def factors(
-        number: int,
-        limit: int | None = None,
-    ) -> Generator[int, None, None]:
-        '''
-        Generator function to return the factors of a number
-        '''
-        for candidate in range(
-            1,
-            limit + 1 if limit else int(math.sqrt(number)),
-        ):
-            if number % candidate == 0:
-                yield candidate
-                complement = number // candidate
-                if not limit or complement <= limit:
-                    yield complement
 
     def find_house(self, condition: Callable[[int], int]) -> int:
         '''
