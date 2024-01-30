@@ -6,7 +6,7 @@ import functools
 import re
 import sys
 import textwrap
-from collections.abc import Generator
+from collections.abc import Iterator
 
 # Local imports
 from aoc import AOC, XY
@@ -47,7 +47,7 @@ class AOC2016Day8(AOC):
             self.cols = 50
 
     @property
-    def operations(self) -> Generator[Operation, None, None]:
+    def operations(self) -> Iterator[Operation]:
         '''
         Get one operation at a time from the input file and pass it through the
         regex

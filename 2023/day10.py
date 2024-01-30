@@ -6,7 +6,7 @@ from __future__ import annotations
 import math
 import re
 import textwrap
-from collections.abc import Generator
+from collections.abc import Iterator
 from dataclasses import dataclass
 
 # Local imports
@@ -143,7 +143,7 @@ class PipeMap:
                 raise ValueError('Failed to detect shape of start point')
 
     @property
-    def loop_segments(self) -> Generator[PipeSegment, None, None]:
+    def loop_segments(self) -> Iterator[PipeSegment]:
         '''
         Generator which yields a sequence of PipeSegment objects, starting at
         the start point, and ending when the start has been reached again.
@@ -175,7 +175,7 @@ class PipeMap:
             direction: str = next_segment.exits[next_direction_index]
 
     @property
-    def inside_loop(self) -> Generator[tuple[int], None, None]:
+    def inside_loop(self) -> Iterator[XY]:
         '''
         Use regexes to implement even-odd method for detecting whether a point
         is inside a polygon.

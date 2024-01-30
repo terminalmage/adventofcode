@@ -4,7 +4,7 @@ https://adventofcode.com/2017/day/19
 '''
 import string
 import textwrap
-from collections.abc import Generator
+from collections.abc import Iterator
 
 # Local imports
 from aoc import AOC, Grid, XY
@@ -15,7 +15,7 @@ class PacketRoute(Grid):
     Grid subclass which includes functions for traversing a routing diagram
     from the puzzle input
     '''
-    def follow(self, all_steps: bool = False) -> Generator[str, None, None]:
+    def follow(self, all_steps: bool = False) -> Iterator[str]:
         '''
         Follow the route. If all_steps is True, yield each step. Otherwise,
         yield just the uppercase letters.

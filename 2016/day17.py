@@ -5,7 +5,7 @@ https://adventofcode.com/2016/day/17
 import collections
 import hashlib
 import textwrap
-from collections.abc import Generator
+from collections.abc import Iterator
 from typing import Literal
 
 # Local imports
@@ -52,7 +52,7 @@ class VaultGrid(Grid):
         self,
         coord: XY,
         passcode: bytes,
-    ) -> Generator[Move, None, None]:
+    ) -> Iterator[Move]:
         '''
         Generator which yields a tuple of each neigbboring coordinate and the
         value stored at that coordinate.

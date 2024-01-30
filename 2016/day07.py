@@ -4,7 +4,7 @@ https://adventofcode.com/2016/day/7
 '''
 import re
 import textwrap
-from collections.abc import Generator
+from collections.abc import Iterator
 
 # Local imports
 from aoc import AOC
@@ -35,7 +35,7 @@ class AOC2016Day7(AOC):
     validate_part1: int = 2
     validate_part2: int = 3
 
-    def ipv7(self, data: str) -> Generator[str, None, None]:
+    def ipv7(self, data: str) -> Iterator[str]:
         '''
         Generator which yields one IPv7 address at a time from the input file
         '''
@@ -71,7 +71,7 @@ class AOC2016Day7(AOC):
         return False
 
     @staticmethod
-    def aba_iter(section: str) -> Generator[str, None, None]:
+    def aba_iter(section: str) -> Iterator[str]:
         '''
         Generator which yields all ABA sequences in the specified section
         '''

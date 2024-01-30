@@ -7,7 +7,7 @@ import itertools
 import re
 import textwrap
 from collections import defaultdict
-from collections.abc import Generator
+from collections.abc import Iterator
 from dataclasses import dataclass
 
 # Local imports
@@ -61,7 +61,7 @@ class AOC2017Day20(AOC):
         '''
         Load the input data
         '''
-        def parse_line(line: str) -> Generator[Coordinate3D, None, None]:
+        def parse_line(line: str) -> Iterator[Coordinate3D]:
             '''
             Gather the integer values and generate Coordinate3D objects for
             each set of 3 of them.

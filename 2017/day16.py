@@ -5,7 +5,7 @@ https://adventofcode.com/2017/day/16
 import re
 import string
 import textwrap
-from collections.abc import Callable, Generator
+from collections.abc import Callable, Iterator
 from typing import Literal
 
 # Local imports
@@ -38,7 +38,7 @@ class AOC2017Day16(AOC):
         self.size: int = 5 if self.example else 16
         self.moves: tuple[Move, ...] = tuple(self.parse_moves(self.input))
 
-    def parse_moves(self, moves: str) -> Generator[Move, None, None]:
+    def parse_moves(self, moves: str) -> Iterator[Move]:
         '''
         Read in move definitions and yield Moves
         '''

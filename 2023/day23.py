@@ -4,7 +4,7 @@ https://adventofcode.com/2023/day/23
 '''
 import textwrap
 from collections import deque
-from collections.abc import Generator
+from collections.abc import Iterator
 
 # Local imports
 from aoc import AOC, Grid, XY
@@ -37,7 +37,7 @@ class HikingPath(Grid):
         self,
         coord: XY,
         slopes_traversable: bool = False
-    ) -> Generator[XY, None, None]:
+    ) -> Iterator[XY]:
         '''
         Generator which yields a tuple of each neigbboring coordinate and the
         value stored at that coordinate.

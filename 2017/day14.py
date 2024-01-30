@@ -3,7 +3,7 @@
 https://adventofcode.com/2017/day/14
 '''
 import textwrap
-from collections.abc import Generator
+from collections.abc import Iterator
 
 # Local imports
 from aoc import AOC, Grid, XY
@@ -17,10 +17,7 @@ class Disk(Grid):
     '''
     Grid object with modified neigbhors function to support flood fill
     '''
-    def neighbors(
-        self,
-        coord: XY,
-    ) -> Generator[XY, None, None]:
+    def neighbors(self, coord: XY) -> Iterator[XY]:
         '''
         Return neighboring coordinates which are '1' (i.e. used)
         '''

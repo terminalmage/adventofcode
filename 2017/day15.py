@@ -4,13 +4,13 @@ https://adventofcode.com/2017/day/15
 '''
 import itertools
 import textwrap
-from collections.abc import Generator
+from collections.abc import Iterator
 
 # Local imports
 from aoc import AOC
 
 # Type hints
-NumberGen = Generator[int, None, None]
+NumberGen = Iterator[int]
 
 
 class AOC2017Day15(AOC):

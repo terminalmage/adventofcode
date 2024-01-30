@@ -3,7 +3,7 @@
 https://adventofcode.com/2016/day/3
 '''
 import itertools
-from collections.abc import Generator, Sequence
+from collections.abc import Iterator, Sequence
 
 # Local imports
 from aoc import AOC
@@ -17,7 +17,7 @@ class AOC2016Day3(AOC):
     Day 3 of Advent of Code 2016
     '''
     @property
-    def horizontal_sides(self) -> Generator[Sides, None, None]:
+    def horizontal_sides(self) -> Iterator[Sides]:
         '''
         Generator to produce a sequence of items from the input file
         '''
@@ -25,7 +25,7 @@ class AOC2016Day3(AOC):
             yield tuple(int(x) for x in line.split())
 
     @property
-    def vertical_sides(self) -> Generator[Sides, None, None]:
+    def vertical_sides(self) -> Iterator[Sides]:
         '''
         Generator to produce a sequence of items from the input file
         '''

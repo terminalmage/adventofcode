@@ -5,7 +5,7 @@ https://adventofcode.com/2016/day/5
 import hashlib
 import textwrap
 from collections import defaultdict
-from collections.abc import Generator
+from collections.abc import Iterator
 
 # Local imports
 from aoc import AOC
@@ -35,10 +35,7 @@ class AOC2016Day5(AOC):
         self.door_id = self.input.encode()
         self.cache: defaultdict[bytes, dict[int, MD5Record]] = defaultdict(dict)
 
-    def hash_seq(
-        self,
-        length: int = 0,
-    ) -> Generator[MD5, None, None]:
+    def hash_seq(self, length: int = 0) -> Iterator[MD5]:
         '''
         Generator which returns a sequence of "interesting" hashes.
 
@@ -86,7 +83,7 @@ class AOC2016Day5(AOC):
         '''
         length: int = 8
         cols: list[str | None] = length * [None]
-        hashes: Generator[MD5, None, None] = self.hash_seq()
+        hashes: Iterator[MD5] = self.hash_seq()
         while any(col is None for col in cols):
             pos: str
             char: str

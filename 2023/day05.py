@@ -5,7 +5,7 @@ https://adventofcode.com/2023/day/5
 import itertools
 import re
 import textwrap
-from collections.abc import Generator
+from collections.abc import Iterator
 from dataclasses import dataclass
 
 # Local imports
@@ -147,7 +147,7 @@ class Map:
         # as the source
         return source
 
-    def follow_range(self, range_obj: Range) -> Generator[Range, None, None]:
+    def follow_range(self, range_obj: Range) -> Iterator[Range]:
         '''
         Process the Map's rules against a range of numbers, instead of a single
         numerical value. The result will be a sequence of Range objects

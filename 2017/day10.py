@@ -7,7 +7,7 @@ import math
 import operator
 import textwrap
 from collections import deque
-from collections.abc import Sequence, Generator
+from collections.abc import Iterator, Sequence
 
 # Local imports
 from aoc import AOC
@@ -29,7 +29,7 @@ def sparse_hash(
     '''
     Calculate the space
     '''
-    def asciify(stream: ByteStream) -> Generator[int, None, None]:
+    def asciify(stream: ByteStream) -> Iterator[int]:
         '''
         Given a sequence of characters/ints, return the ascii value of the
         string, or the int.

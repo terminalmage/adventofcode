@@ -4,7 +4,7 @@ https://adventofcode.com/2015/day/21
 '''
 import itertools
 import math
-from collections.abc import Generator
+from collections.abc import Iterator
 from dataclasses import dataclass
 
 # Local imports
@@ -90,7 +90,7 @@ class AOC2015Day21(AOC):
         )
 
     @property
-    def combatants(self) -> Generator[tuple[Combatant, int], None, None]:
+    def combatants(self) -> Iterator[tuple[Combatant, int]]:
         '''
         Generator function to return all possible combatants, as well as the
         cost required to outfit each combatant

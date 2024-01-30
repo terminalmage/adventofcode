@@ -7,7 +7,7 @@ import itertools
 import re
 import sys
 import textwrap
-from collections.abc import Generator
+from collections.abc import Iterator
 from dataclasses import dataclass
 
 # Local imports
@@ -52,7 +52,7 @@ class StorageGrid(dict):
             percent=percent,
         )
 
-    def neighbors(self, x: int, y: int) -> Generator[StorageNode, None, None]:
+    def neighbors(self, x: int, y: int) -> Iterator[StorageNode]:
         '''
         Return the neighboring StorageNode instances
         '''

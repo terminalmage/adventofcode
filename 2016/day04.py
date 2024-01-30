@@ -7,7 +7,7 @@ import itertools
 import re
 import string
 import textwrap
-from collections.abc import Generator
+from collections.abc import Iterator
 
 # Local imports
 from aoc import AOC
@@ -32,7 +32,7 @@ class AOC2016Day4(AOC):
     validate_part1: int = 1514
 
     @property
-    def room_data(self) -> Generator[RoomData, None, None]:
+    def room_data(self) -> Iterator[RoomData]:
         '''
         Generator to produce a sequence of room data parsed from the input
         file. A regex is used to ensure
@@ -44,7 +44,7 @@ class AOC2016Day4(AOC):
                 yield (m[1], int(m[2]), m[3])
 
     @property
-    def real_rooms(self) -> Generator[RoomData, None, None]:
+    def real_rooms(self) -> Iterator[RoomData]:
         '''
         Generator which only yields "real" rooms (those for which the checksum
         is correct)

@@ -5,7 +5,7 @@ https://adventofcode.com/2016/day/1
 import re
 import textwrap
 from collections import deque
-from collections.abc import Generator, Sequence
+from collections.abc import Iterator, Sequence
 
 # Local imports
 from aoc import AOC, TupleMixin, XY, directions
@@ -51,7 +51,7 @@ class AOC2016Day1(AOC, TupleMixin):
         '''
         return sum(abs(x - y) for x, y in zip(end, start))
 
-    def walk(self, steps: Sequence[Step]) -> Generator[XY, None, None]:
+    def walk(self, steps: Sequence[Step]) -> Iterator[XY]:
         '''
         Follow the directions, and then return the shortest number of steps
         to get to the destination.
