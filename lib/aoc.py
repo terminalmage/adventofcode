@@ -3,12 +3,13 @@ Base class for Advent of Code submissions
 '''
 from __future__ import annotations
 import functools
+import math
 import operator
 import re
 import sys
 import time
 from collections import namedtuple
-from collections.abc import Callable, Generator, Sequence
+from collections.abc import Callable, Iterator, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Self
@@ -100,7 +101,7 @@ class Coordinate:
         return self.x, self.y
 
     @property
-    def neighbors(self) -> Generator[Self, None, None]:
+    def neighbors(self) -> Iterator[Self]:
         '''
         Return the neighboring Coordinates
         '''
@@ -400,6 +401,39 @@ class XYMixin:
             ) / 2
         )
 
+class MathMixin:
+    '''
+    Helpful general-purpose math functions
+    '''
+    @staticmethod
+    def factors(number: int, limit: int = 0) -> Iterator[int]:
+        '''
+        Generator function to return the factors of a number
+
+        If limit is nonzero, then the generator will only return factors which
+        are less than the specified value.
+        '''
+        for candidate in range(
+            1,
+            limit + 1 if limit else int(math.sqrt(number)),
+        ):
+            if number % candidate == 0:
+                yield candidate
+                complement = number // candidate
+                if not limit or complement <= limit:
+                    yield complement
+
+    @staticmethod
+    def prime(number: int) -> bool:
+        '''
+        Check if a number is prime by attempting to calculate its integetr
+        factors. If any factors are found, the number is non prime.
+        '''
+        for candidate in range(2, int(math.sqrt(number))):
+            if number % candidate == 0:
+                return False
+        return True
+
 
 class Grid(TupleMixin, XYMixin):
     '''
@@ -482,10 +516,7 @@ class Grid(TupleMixin, XYMixin):
         '''
         return self.data[index]
 
-    def neighbors(
-        self,
-        coord: XY,
-    ) -> Generator[tuple[XY, Any], None, None]:
+    def neighbors(self, coord: XY) -> Iterator[tuple[XY, Any]]:
         '''
         Generator which yields a tuple of each neigbboring coordinate and the
         value stored at that coordinate.
@@ -496,7 +527,7 @@ class Grid(TupleMixin, XYMixin):
             if neighbor in self:
                 yield neighbor, self[neighbor]
 
-    def column_iter(self) -> Generator[str, None, None]:
+    def column_iter(self) -> Iterator[str]:
         '''
         Generator which yields the contents of the grid one column at a time
         '''
@@ -539,10 +570,7 @@ class InfiniteGrid(Grid):
         row, col = index
         return self.data[row % self.rows][col % self.cols]
 
-    def neighbors(
-        self,
-        coord: XY,
-    ) -> Generator[tuple[XY, Any], None, None]:
+    def neighbors(self, coord: XY) -> Iterator[tuple[XY, Any]]:
         '''
         Generator which yields a tuple of each neigbboring coordinate and the
         value stored at that coordinate.
