@@ -12,7 +12,7 @@ from collections import namedtuple
 from collections.abc import Callable, Iterator, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Self
+from typing import Any
 
 # Type hints
 XY = tuple[float, float]
@@ -101,7 +101,7 @@ class Coordinate:
         return self.x, self.y
 
     @property
-    def neighbors(self) -> Iterator[Self]:
+    def neighbors(self) -> Iterator[Coordinate]:
         '''
         Return the neighboring Coordinates
         '''
@@ -150,7 +150,7 @@ class LineSegment:
     first: Coordinate
     second: Coordinate
 
-    def __and__(self, other: Self) -> Coordinate | None:
+    def __and__(self, other: LineSegment) -> Coordinate | None:
         '''
         Implements the & operator, returning the point at which the two lines
         intersect with one another, or None if there is no intersection.
@@ -184,7 +184,7 @@ class LineSegment:
 
         return Coordinate(detx, dety)
 
-    def intersection(self, other: Self) -> Coordinate3D | None:
+    def intersection(self, other: LineSegment) -> Coordinate3D | None:
         '''
         Same as the & operator
         '''
@@ -201,7 +201,7 @@ class LineSegment3D:
     first: Coordinate3D
     second: Coordinate3D
 
-    def __and__(self, other: Self) -> Coordinate3D | None:
+    def __and__(self, other: LineSegment3D) -> Coordinate3D | None:
         '''
         Implements the & operator, returning the point at which the two lines
         intersect with one another, or None if there is no intersection.
@@ -325,7 +325,7 @@ class LineSegment3D:
             self.first.z + (alpha * self.second.z),
         )
 
-    def intersection(self, other: Self) -> Coordinate3D | None:
+    def intersection(self, other: LineSegment3D) -> Coordinate3D | None:
         '''
         Same as the & operator
         '''
