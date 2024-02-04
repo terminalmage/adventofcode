@@ -12,6 +12,9 @@ class AOC2015Day20(AOC, MathMixin):
     '''
     Day 20 of Advent of Code 2015
     '''
+    # Set by post_init
+    goal = None
+
     def post_init(self) -> None:
         '''
         Convert the value in the input data to an int

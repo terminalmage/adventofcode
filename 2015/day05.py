@@ -26,6 +26,9 @@ class AOC2015Day5(AOC):
     validate_part1: int = 2
     validate_part2: int = 2
 
+    # Set by post_init
+    strings = None
+
     def post_init(self) -> None:
         '''
         Load the strings

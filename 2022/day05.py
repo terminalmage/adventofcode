@@ -97,6 +97,10 @@ class AOC2022Day5(AOC):
     validate_part1: str = 'CMZ'
     validate_part2: str = 'MCD'
 
+    # Set by post_init
+    stacks = None
+    moves = None
+
     def post_init(self) -> None:
         '''
         Load the initial stack state and process each move

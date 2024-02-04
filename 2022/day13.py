@@ -142,6 +142,9 @@ class AOC2022Day13(AOC):
     validate_part1: int = 13
     validate_part2: int = 140
 
+    # Set by post_init
+    packets = None
+
     def post_init(self) -> None:
         '''
         Initialize the list of packets

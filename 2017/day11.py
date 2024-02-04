@@ -20,6 +20,10 @@ class AOC2017Day11(AOC):
 
     validate_part1: int = 3
 
+    # Set by post_init
+    max_dist = None
+    dist = None
+
     def post_init(self) -> None:
         '''
         Load the puzzle input and process the steps

@@ -24,6 +24,9 @@ class AOC2015Day12(AOC):
     validate_part1: int = 20
     validate_part2: int = 8
 
+    # Set by post_init
+    data = None
+
     def post_init(self) -> None:
         '''
         Load the JSON document into a data structure

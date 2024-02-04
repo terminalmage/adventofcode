@@ -216,6 +216,9 @@ class AOC2023Day16(AOC):
     validate_part1: int = 46
     validate_part2: int = 51
 
+    # Set by post_init
+    contraption = None
+
     def post_init(self) -> None:
         '''
         Load the steps

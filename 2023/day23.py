@@ -226,6 +226,9 @@ class AOC2023Day23(AOC):
     validate_part1: int = 94
     validate_part2: int = 154
 
+    # Set by post_init
+    path = None
+
     def post_init(self) -> None:
         '''
         Load the input data

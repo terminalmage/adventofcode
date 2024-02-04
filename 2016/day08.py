@@ -34,6 +34,10 @@ class AOC2016Day8(AOC):
         r'rect (\d+)x(\d+)|rotate (row|column) [xy]=(\d+) by (\d+)'
     )
 
+    # Set by post_init
+    rows = None
+    cols = None
+
     def post_init(self) -> None:
         '''
         Set row and column count based on whether or not we are running against

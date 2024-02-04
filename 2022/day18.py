@@ -36,6 +36,15 @@ class AOC2022Day18(AOC):
     validate_part1: int = 64
     validate_part2: int = 58
 
+    # Set by post_init
+    droplet = None
+    min_x = None
+    max_x = None
+    min_y = None
+    max_y = None
+    min_z = None
+    max_z = None
+
     def post_init(self) -> None:
         '''
         Load the move list and translate it to coordinate deltas

@@ -230,6 +230,10 @@ class AOC2023Day5(AOC):
     validate_part1: int = 35
     validate_part2: int = 46
 
+    # Set by post_init
+    seed_ids = None
+    maps = None
+
     def post_init(self) -> None:
         '''
         Read in map data

@@ -29,6 +29,10 @@ class AOC2015Day22(AOC):
         [229, 0, 0, 0, 101, 5],
     )
 
+    # Set by post_init
+    boss_hit_points = None
+    boss_damage = None
+
     def post_init(self) -> None:
         '''
         Load the boss' configuration from the input

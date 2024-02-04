@@ -22,6 +22,9 @@ class AOC2016Day19(AOC):
     validate_part1: int = 3
     validate_part2: int = 2
 
+    # Set by post_init
+    elves = None
+
     def post_init(self) -> None:
         '''
         Set the number of elves to be used for the puzzle

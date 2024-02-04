@@ -36,6 +36,9 @@ class AOC2023Day11(AOC):
     validate_part1: int = 374
     validate_part2: int = 8410
 
+    # Set by post_init
+    universe = None
+
     def post_init(self) -> None:
         '''
         Make an apple pie from scratch

@@ -25,6 +25,9 @@ class AOC2017Day5(AOC):
     validate_part1: int = 5
     validate_part2: int = 10
 
+    # Set by post_init
+    offsets = None
+
     def post_init(self) -> None:
         '''
         Load the offsets from the input file

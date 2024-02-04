@@ -233,6 +233,10 @@ class AOC2023Day19(AOC):
     validate_part1: int = 19114
     validate_part2: int = 167409079868000
 
+    # Set by post_init
+    workflows = None
+    parts = None
+
     def post_init(self) -> None:
         '''
         Load the workflows from the puzzle input

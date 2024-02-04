@@ -71,6 +71,10 @@ class AOC2016Day25(AOC):
     '''
     Day 25 of Advent of Code 2016
     '''
+    # Set by post_init
+    generator = None
+    program = None
+
     def post_init(self) -> None:
         '''
         Initialize the SignalGenerator and load the program from the puzzle input

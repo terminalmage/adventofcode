@@ -71,6 +71,10 @@ class AOC2015Day14(AOC):
     validate_part1: int = 1120
     validate_part2: int = 689
 
+    # Set by post_init
+    duration = None
+    reindeer = None
+
     def post_init(self) -> None:
         '''
         Load the instructions

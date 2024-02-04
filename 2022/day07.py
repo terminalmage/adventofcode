@@ -246,6 +246,9 @@ class AOC2022Day7(AOC):
 
     disk_size = 70_000_000
 
+    # Set by post_init
+    rootdir = None
+
     def post_init(self) -> None:
         '''
         Load the datastream

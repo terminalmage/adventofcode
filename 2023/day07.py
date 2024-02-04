@@ -27,6 +27,9 @@ class AOC2023Day7(AOC):
     validate_part1: int = 6440
     validate_part2: int = 5905
 
+    # Set by post_init
+    hands = None
+
     def post_init(self) -> None:
         '''
         Load hands from input file

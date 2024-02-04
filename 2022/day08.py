@@ -26,6 +26,11 @@ class AOC2022Day8(AOC):
     validate_part1: int = 21
     validate_part2: int = 8
 
+    # Set by post_init
+    trees = None
+    last_row = None
+    last_col = None
+
     def post_init(self) -> None:
         '''
         Load the datastream

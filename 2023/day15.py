@@ -22,6 +22,9 @@ class AOC2023Day15(AOC):
     validate_part1: int = 1320
     validate_part2: int = 145
 
+    # Set by post_init
+    steps = None
+
     def post_init(self) -> None:
         '''
         Load the steps

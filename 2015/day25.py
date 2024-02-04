@@ -17,6 +17,10 @@ class AOC2015Day25(AOC):
     base = 252533
     mod = 33554393
 
+    # Set by post_init
+    row = None
+    col = None
+
     def post_init(self) -> None:
         '''
         Load the input data

@@ -51,6 +51,18 @@ class AOC2022Day22(AOC):
     validate_part1: int = 6032
     validate_part2: int = 5031
 
+    # Set by post_init
+    width = None
+    height = None
+    face_size = None
+    grid = None
+    move_deltas = None
+    faces = None
+    path = None
+    start = None
+    position = None
+    direction = None
+
     def post_init(self) -> None:
         '''
         Load the input and set everything up for the path traversal

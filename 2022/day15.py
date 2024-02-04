@@ -216,6 +216,9 @@ class AOC2022Day15(AOC):
     validate_part1: int = 26
     validate_part2: int = 56000011
 
+    # Set by post_init
+    sensors = None
+
     def post_init(self) -> None:
         '''
         Load the cleaning assignment pairs into tuples of sets of ints

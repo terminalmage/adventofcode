@@ -74,6 +74,12 @@ class AOC2022Day16(AOC):
     validate_part1: int = 1651
     validate_part2: int = 1707
 
+    # Set by post_init
+    valves = None
+    start = None
+    best = None
+    stops = None
+
     def post_init(self) -> None:
         '''
         Load the valve definitions

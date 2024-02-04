@@ -88,6 +88,9 @@ class AOC2016Day23(AOC):
 
     validate_part1: int = 3
 
+    # Set by post_init
+    safe_cracker = None
+
     def post_init(self) -> None:
         '''
         Initialize the SafeCracker

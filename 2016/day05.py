@@ -28,6 +28,10 @@ class AOC2016Day5(AOC):
     validate_part1: str = '18f47a30'
     validate_part2: str = '05ace8e3'
 
+    # Set by post_init
+    door_id = None
+    cache = None
+
     def post_init(self) -> None:
         '''
         Load the door_id from the input and initialize the cache

@@ -35,6 +35,9 @@ class AOC2023Day17(AOC, TupleMixin):
     validate_part1: int = 102
     validate_part2: int = 94
 
+    # Set by post_init
+    crucible = None
+
     def post_init(self) -> None:
         '''
         Load the input data into a Grid object

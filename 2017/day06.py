@@ -21,6 +21,10 @@ class AOC2017Day6(AOC):
     validate_part1: int = 5
     validate_part2: int = 4
 
+    # Set by post_init
+    cycles = None
+    cycle_size = None
+
     def post_init(self) -> None:
         '''
         Load the input data and simulate redistribution of the memory

@@ -56,6 +56,10 @@ class AOC2017Day7(AOC):
     validate_part1: str = 'tknk'
     validate_part2: int = 60
 
+    # Set by post_init
+    programs = None
+    bottom = None
+
     def post_init(self) -> None:
         '''
         Initialize Program instances with their weights

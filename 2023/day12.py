@@ -88,6 +88,9 @@ class AOC2023Day12(AOC):
     validate_part1: int = 21
     validate_part2: int = 525152
 
+    # Set by post_init
+    configurations = None
+
     def post_init(self) -> None:
         '''
         Load configurations from the input file

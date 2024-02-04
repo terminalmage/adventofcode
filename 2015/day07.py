@@ -135,6 +135,9 @@ class AOC2015Day7(AOC):
 
     validate_part1: int = 65412
 
+    # Set by post_init
+    circuit = None
+
     def post_init(self) -> None:
         '''
         Setup the Circuit

@@ -31,6 +31,10 @@ class AOC2017Day16(AOC):
 
     validate_part1: str = 'baedc'
 
+    # Set by post_init
+    size = None
+    moves = None
+
     def post_init(self) -> None:
         '''
         Set the program group size and load dance moves

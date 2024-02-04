@@ -27,6 +27,10 @@ class AOC2015Day17(AOC):
     validate_part1: int = 4
     validate_part2: int = 3
 
+    # Set by post_init
+    target = None
+    containers = None
+
     def post_init(self) -> None:
         '''
         Load the instructions

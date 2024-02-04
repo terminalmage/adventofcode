@@ -26,6 +26,10 @@ class AOC2017Day21(AOC):
 
     validate_part1: int = 12
 
+    # Set by post_init
+    start = None
+    rules = None
+
     def post_init(self) -> None:
         '''
         Load the input patterns. For each pattern, find all possible flipped

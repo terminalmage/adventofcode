@@ -75,6 +75,9 @@ class AOC2023Day4(AOC):
     validate_part1: int = 13
     validate_part2: int = 30
 
+    # Set by post_init
+    cards = None
+
     def post_init(self) -> None:
         '''
         Read in scratch cards

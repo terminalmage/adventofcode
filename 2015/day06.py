@@ -25,6 +25,10 @@ class AOC2015Day6(AOC):
     validate_part1: int = 74
     validate_part2: int = 93
 
+    # Set by post_init
+    instructions = None
+    lights = None
+
     def post_init(self) -> None:
         '''
         Load the instructions

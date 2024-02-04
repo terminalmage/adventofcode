@@ -23,6 +23,9 @@ class AOC2016Day20(AOC):
     validate_part1: int = 3
     validate_part2: int = 2
 
+    # Set by post_init
+    ip_ranges = None
+
     def post_init(self) -> None:
         '''
         Load puzzle input as a sorted sequence of IP ranges

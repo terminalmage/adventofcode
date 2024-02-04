@@ -25,6 +25,9 @@ class AOC2018Day1(AOC):
     validate_part1: int = 3
     validate_part2: int = 2
 
+    # Set by post_init
+    deltas = None
+
     def post_init(self) -> None:
         '''
         Load the frequency deltas into a tuple

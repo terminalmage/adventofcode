@@ -38,6 +38,9 @@ class AOC2015Day15(AOC):
     validate_part1: int = 62842880
     validate_part2: int = 57600000
 
+    # Set by post_init
+    ingredients = None
+
     def post_init(self) -> None:
         '''
         Load the ingredients

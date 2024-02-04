@@ -26,6 +26,10 @@ class AOC2016Day15(AOC):
 
     validate_part1: int = 5
 
+    # Set by post_init
+    modulos = None
+    positions = None
+
     def post_init(self) -> None:
         '''
         Load the puzzle data

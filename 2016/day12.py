@@ -471,6 +471,9 @@ class AOC2016Day12(AOC):
 
     validate_part1: int = 42
 
+    # Set by post_init
+    computer = None
+
     def post_init(self) -> None:
         '''
         Initialize the computer and load the program from the puzzle input

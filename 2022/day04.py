@@ -30,6 +30,9 @@ class AOC2022Day4(AOC):
     validate_part1: int = 2
     validate_part2: int = 4
 
+    # Set by post_init
+    assignment_pairs = None
+
     def post_init(self) -> None:
         '''
         Load the cleaning assignment pairs into tuples of sets of ints

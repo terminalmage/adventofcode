@@ -23,6 +23,9 @@ class AOC2015Day2(AOC):
     validate_part1: int = 101
     validate_part2: int = 48
 
+    # Set by post_init
+    packages = None
+
     def post_init(self) -> None:
         '''
         Load the packages, sorting the side lengths to easily get the two

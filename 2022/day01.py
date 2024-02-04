@@ -34,6 +34,9 @@ class AOC2022Day1(AOC):
     validate_part1: int = 24000
     validate_part2: int = 45000
 
+    # Set by post_init
+    elf_calories = None
+
     def post_init(self) -> None:
         '''
         Calculate calories

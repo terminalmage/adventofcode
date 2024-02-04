@@ -30,6 +30,12 @@ class AOC2022Day17(AOC):
 
     width = 7
 
+    # Set by post_init
+    __jet_pattern = None
+    __rock_sequence = None
+    chamber = None
+    top = None
+
     def post_init(self) -> None:
         '''
         Load the jet pattern and define the rock sequence. The reset_chamber()

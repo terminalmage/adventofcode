@@ -102,6 +102,10 @@ class AOC2023Day6(AOC):
     validate_part1: int = 288
     validate_part2: int = 71503
 
+    # Set by post_init
+    times = None
+    distances = None
+
     def post_init(self) -> None:
         '''
         Load race data

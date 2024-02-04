@@ -76,6 +76,9 @@ class AOC2017Day14(AOC):
     validate_part1: int = 8108
     validate_part2: int = 1242
 
+    # Set by post_init
+    disk = None
+
     def post_init(self) -> None:
         '''
         Load the puzzle input

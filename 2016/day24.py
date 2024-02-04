@@ -26,6 +26,11 @@ class AOC2016Day24(AOC):
 
     validate_part1: int = 14
 
+    # Set by post_init
+    map = None
+    num_pos = None
+    distances = None
+
     def post_init(self) -> None:
         '''
         Initialize the Grid and calculate the distances between each point

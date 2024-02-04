@@ -26,6 +26,9 @@ class AOC2023Day9(AOC):
     validate_part1: int = 114
     validate_part2: int = 2
 
+    # Set by post_init
+    sequences = None
+
     def post_init(self) -> None:
         '''
         Load sequences from input file

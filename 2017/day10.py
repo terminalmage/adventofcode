@@ -110,12 +110,6 @@ class AOC2017Day10(AOC):
 
     validate_part1: int = 12
 
-    def post_init(self) -> None:
-        '''
-        Set the correct size to use for the puzzle
-        '''
-        self.size = 5 if self.example else 256
-
     def part1(self) -> int:
         '''
         Perform the Knot Hash once, with an ascending sequence of integers as
@@ -129,7 +123,7 @@ class AOC2017Day10(AOC):
                 ),
                 rounds=1,
                 suffix=(),
-                loop_size=self.size,
+                loop_size=5 if self.example else 256,
             )[:2]
         )
 

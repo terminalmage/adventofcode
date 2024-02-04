@@ -24,6 +24,9 @@ class AOC2017Day17(AOC):
 
     validate_part1: int = 638
 
+    # Set by post_init
+    steps = None
+
     def post_init(self) -> None:
         '''
         Load the step length per round

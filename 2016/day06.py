@@ -37,6 +37,9 @@ class AOC2016Day6(AOC):
     validate_part1: str = 'easter'
     validate_part2: str = 'advent'
 
+    # Set by post_init
+    grid = None
+
     def post_init(self) -> None:
         '''
         Load the Grid

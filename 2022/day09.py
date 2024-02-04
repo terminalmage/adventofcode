@@ -104,6 +104,9 @@ class AOC2022Day9(AOC):
     validate_part1: int = 13
     validate_part2: int = 1
 
+    # Set by post_init
+    moves = None
+
     def post_init(self) -> None:
         '''
         Load the move list and translate it to coordinate deltas

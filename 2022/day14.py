@@ -34,6 +34,15 @@ class AOC2022Day14(AOC):
     validate_part1: int = 24
     validate_part2: int = 93
 
+    # Set by post_init
+    offset = None
+    width = None
+    bottom_row = None
+    floor = None
+    drop_point = None
+    rocks = None
+    grid = None
+
     def post_init(self) -> None:
         '''
         Load the cleaning assignment pairs into tuples of sets of ints

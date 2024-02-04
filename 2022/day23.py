@@ -46,6 +46,11 @@ class AOC2022Day23(AOC):
     validate_part1: int = 110
     validate_part2: int = 20
 
+    # Set by post_init
+    elves = None
+    isolated = None
+    moves = None
+
     def post_init(self) -> None:
         '''
         Load the initial elf arrangement into a set

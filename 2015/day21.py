@@ -78,6 +78,9 @@ class AOC2015Day21(AOC):
         (0, 0, 0),
     )
 
+    # Set by post_init
+    boss = None
+
     def post_init(self) -> None:
         '''
         Load the boss' data from the input

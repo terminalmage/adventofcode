@@ -41,6 +41,9 @@ class AOC2022Day21(AOC):
     validate_part1: int = 152
     validate_part2: int = 301
 
+    # Set by post_init
+    monkeys = None
+
     def post_init(self) -> None:
         '''
         Load the monkeys into a data structure. If the monkey has an integer

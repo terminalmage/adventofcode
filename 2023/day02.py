@@ -107,6 +107,9 @@ class AOC2023Day2(AOC):
 
     bag_contents: Cubes = Cubes('12 red, 13 green, 14 blue')
 
+    # Set by post_init
+    games = None
+
     def post_init(self) -> None:
         '''
         Initialize the object

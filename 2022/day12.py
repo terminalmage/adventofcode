@@ -29,6 +29,13 @@ class AOC2022Day12(AOC):
     validate_part1: int = 31
     validate_part2: int = 29
 
+    # Set by post_init
+    nodes = None
+    start = None
+    end = None
+    num_rows = None
+    num_cols = None
+
     def post_init(self) -> None:
         '''
         Load the move list and translate it to coordinate deltas

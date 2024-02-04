@@ -25,6 +25,9 @@ class AOC2015Day9(AOC):
 
     validate_part1: int = 605
 
+    # Set by post_init
+    distances = None
+
     def post_init(self) -> None:
         '''
         Load the distances

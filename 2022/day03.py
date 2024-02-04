@@ -175,6 +175,9 @@ class AOC2022Day3(AOC):
     validate_part1: int = 157
     validate_part2: int = 70
 
+    # Set by post_init
+    rucksacks = None
+
     def post_init(self) -> None:
         '''
         Load the rucksack contents

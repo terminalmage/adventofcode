@@ -41,6 +41,10 @@ class AOC2018Day4(AOC):
     validate_part1: int = 240
     validate_part2: int = 4455
 
+    # Set by post_init
+    guards = None
+    time_asleep = None
+
     def post_init(self) -> None:
         '''
         Load input data

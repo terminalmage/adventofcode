@@ -103,6 +103,9 @@ class AOC2017Day19(AOC):
     validate_part1: str = 'ABCDEF'
     validate_part2: int = 38
 
+    # Set by post_init
+    route = None
+
     def post_init(self) -> None:
         '''
         Load the input data

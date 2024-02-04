@@ -41,6 +41,10 @@ class AOC2015Day19(AOC):
 
     validate_part1: int = 7
 
+    # Set by post_init
+    molecule = None
+    replacements = None
+
     def post_init(self) -> None:
         '''
         Load the input data

@@ -13,6 +13,10 @@ class AOC2015Day24(AOC):
     '''
     Day 24 of Advent of Code 2015
     '''
+    # Set by post_init
+    weights = None
+    total_weight = None
+
     def post_init(self) -> None:
         '''
         Load the weight data

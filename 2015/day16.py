@@ -14,6 +14,10 @@ class AOC2015Day16(AOC):
     '''
     Day 16 of Advent of Code 2015
     '''
+    # Set by post_init
+    sues = None
+    mystery_sue = None
+
     def post_init(self) -> None:
         '''
         Load the instructions

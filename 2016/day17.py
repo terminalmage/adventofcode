@@ -88,6 +88,10 @@ class AOC2016Day17(AOC):
     validate_part1: str = 'DDUDRLRRUDRD'
     validate_part2: int = 492
 
+    # Set by post_init
+    grid = None
+    passcode = None
+
     def post_init(self) -> None:
         '''
         Load the puzzle data

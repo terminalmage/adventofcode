@@ -29,6 +29,9 @@ class AOC2017Day3(AOC, XYMixin, TupleMixin):
         directions.EAST,
     )
 
+    # Set by post_init
+    target = None
+
     def post_init(self) -> None:
         '''
         Set the target value depending on whether or not we are running with

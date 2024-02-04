@@ -87,6 +87,12 @@ class AOC2016Day22(AOC):
     validate_part1: int = 7
     validate_part2: int = 7
 
+    # Set by post_init
+    grid = None
+    empty = None
+    max_x = None
+    max_y = None
+
     def post_init(self) -> None:
         '''
         Initialize the StorageGrid

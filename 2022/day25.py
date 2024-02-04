@@ -130,6 +130,9 @@ class AOC2022Day25(AOC):
 
     validate_part1: str = '2=-1=0'
 
+    # Set by post_init
+    numbers = None
+
     def post_init(self) -> None:
         '''
         Load the numbers from the input file

@@ -242,6 +242,9 @@ class AOC2023Day22(AOC):
     validate_part1: int = 5
     validate_part2: int = 7
 
+    # Set by post_init
+    chasm = None
+
     def post_init(self) -> None:
         '''
         Load the input data

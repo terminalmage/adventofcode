@@ -30,6 +30,13 @@ class AOC2018Day6(AOC, XYMixin):
     validate_part1: int = 17
     validate_part2: int = 16
 
+    # Set by post_init
+    targets = None
+    rows = None
+    cols = None
+    _distances = None
+    closest_targets = None
+
     def post_init(self) -> None:
         '''
         Load the coordinates into a tuple of coordinate pairs

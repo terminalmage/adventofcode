@@ -28,6 +28,10 @@ class AOC2017Day9(AOC):
 
     validate_part1: int = 50
 
+    # Set by post_init
+    score = None
+    garbage = None
+
     def post_init(self) -> None:
         '''
         Load the puzzle input and process the stream

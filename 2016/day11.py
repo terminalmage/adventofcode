@@ -43,6 +43,9 @@ class AOC2016Day11(AOC):
     '''
     validate_part1: int = 11
 
+    # Set by post_init
+    initial_state = None
+
     def post_init(self) -> None:
         '''
         Hard-code the initial state since the puzzle input is not in a

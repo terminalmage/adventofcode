@@ -79,6 +79,10 @@ class AOC2023Day3(AOC):
     validate_part1: int = 4361
     validate_part2: int = 467835
 
+    # Set by post_init
+    numbers = None
+    symbols = None
+
     def post_init(self) -> None:
         '''
         Read in the engine document
