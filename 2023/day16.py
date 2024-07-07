@@ -8,13 +8,13 @@ from queue import SimpleQueue
 from typing import Literal
 
 # Local imports
-from aoc import AOC, Grid, XY
+from aoc import AOC, Grid, XY, directions
 
 # Type hints
 StartState = dict[Literal['start', 'direction'], XY]
 
 DEFAULT_START: XY = (0, 0)
-DEFAULT_DIRECTION: XY = Grid.directions.EAST
+DEFAULT_DIRECTION: XY = directions.EAST
 
 
 class Contraption(Grid):
@@ -23,16 +23,16 @@ class Contraption(Grid):
     '''
     reflections: dict[str, dict[XY, XY]] = {
         '\\': {
-            Grid.directions.NORTH: Grid.directions.WEST,
-            Grid.directions.SOUTH: Grid.directions.EAST,
-            Grid.directions.WEST: Grid.directions.NORTH,
-            Grid.directions.EAST: Grid.directions.SOUTH,
+            directions.NORTH: directions.WEST,
+            directions.SOUTH: directions.EAST,
+            directions.WEST: directions.NORTH,
+            directions.EAST: directions.SOUTH,
         },
         '/': {
-            Grid.directions.NORTH: Grid.directions.EAST,
-            Grid.directions.SOUTH: Grid.directions.WEST,
-            Grid.directions.WEST: Grid.directions.SOUTH,
-            Grid.directions.EAST: Grid.directions.NORTH,
+            directions.NORTH: directions.EAST,
+            directions.SOUTH: directions.WEST,
+            directions.WEST: directions.SOUTH,
+            directions.EAST: directions.NORTH,
         },
     }
 

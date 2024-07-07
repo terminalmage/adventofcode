@@ -193,8 +193,7 @@ class Directory(PathBase):
             if isinstance(item, Directory):
                 yield item
                 if recurse:
-                    for subdir in item.dirs(recurse=recurse):
-                        yield subdir
+                    yield from item.dirs(recurse=recurse)
 
     def files(self, recurse: bool = False) -> Iterator[File]:
         '''
@@ -205,8 +204,7 @@ class Directory(PathBase):
                 yield item
             else:
                 if recurse:
-                    for fileobj in item.files(recurse=recurse):
-                        yield fileobj
+                    yield from item.files(recurse=recurse)
 
 
 class AOC2022Day7(AOC):

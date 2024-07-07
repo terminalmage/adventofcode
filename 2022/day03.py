@@ -134,11 +134,8 @@ class Rucksack:
         '''
         Return a list of items that are in both compartments
         '''
-        item: RucksackItem
-        for item in self.compartment1:
-            yield item
-        for item in self.compartment2:
-            yield item
+        yield from self.compartment1
+        yield from self.compartment2
 
     @property
     def duplicates(self) -> Iterator[RucksackItem]:

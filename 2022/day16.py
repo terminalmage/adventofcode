@@ -189,8 +189,7 @@ class AOC2022Day16(AOC):
                         to_visit,
                         pressure + new_pressure,
                     )
-                    if new_pressure > highest_pressure:
-                        highest_pressure = new_pressure
+                    highest_pressure = max(new_pressure, highest_pressure)
 
             return highest_pressure
 

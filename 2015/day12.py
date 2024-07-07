@@ -44,12 +44,10 @@ class AOC2015Day12(AOC):
                 # JSON mapping keys are always strings so we only need to pay
                 # attention to the values
                 for value in data.values():
-                    for item in _all_numbers(value):
-                        yield item
+                    yield from _all_numbers(value)
             elif isinstance(data, (list, Iterator)):
                 for value in data:
-                    for item in _all_numbers(value):
-                        yield item
+                    yield from _all_numbers(value)
 
         return sum(_all_numbers(self.data))
 
@@ -66,12 +64,10 @@ class AOC2015Day12(AOC):
                 # attention to the values
                 if 'red' not in data.values():
                     for value in data.values():
-                        for item in _ignore_red(value):
-                            yield item
+                        yield from _ignore_red(value)
             elif isinstance(data, (list, Iterator)):
                 for value in data:
-                    for item in _ignore_red(value):
-                        yield item
+                    yield from _ignore_red(value)
 
         return sum(_ignore_red(self.data))
 

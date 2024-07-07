@@ -181,8 +181,7 @@ class Map:
             ranges = new_ranges
 
         # Yield all remaining non-overlapping segments
-        for item in ranges:
-            yield item
+        yield from ranges
 
 
 class AOC2023Day5(AOC):

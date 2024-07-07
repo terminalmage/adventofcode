@@ -39,9 +39,7 @@ class AOC2016Day7(AOC):
         '''
         Generator which yields one IPv7 address at a time from the input file
         '''
-        line: str
-        for line in data.splitlines():
-            yield line
+        yield from data.splitlines()
 
     @staticmethod
     def split_ipv7(addr: str) -> list[str]:
