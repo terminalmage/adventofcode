@@ -17,6 +17,7 @@ from typing import Any
 # Type hints
 XY = tuple[float, float]
 XYZ = tuple[float, float, float]
+Directions = tuple[XY, XY, XY, XY]
 
 # NOTE: These coordinate deltas are (row, col) instead of (col, row), designed
 # for interacting with AoC inputs read in line-by-line.
@@ -445,13 +446,11 @@ class Grid(TupleMixin, XYMixin):
 
         grid = Grid(path, lambda col: int(col))
     '''
-    directions: namedtuple = directions
-    opposite_directions: namedtuple = opposite_directions
-
     def __init__(
         self,
         data: Path | str | Sequence[str],
         row_cb: Callable[[str], Any] = lambda col: col,
+        neighbor_order: Directions = directions,
     ) -> None:
         '''
         Load the file from the Path object
@@ -480,6 +479,12 @@ class Grid(TupleMixin, XYMixin):
         self.cols = max(len(row) for row in self.data)
         self.max_row = self.rows - 1
         self.max_col = self.cols - 1
+
+        self.directions: Directions = neighbor_order
+        self.opposite_directions: Directions = tuple(
+            tuple(-1 * x for x in nesw)
+            for nesw in self.directions
+        )
 
     def __contains__(self, coord: XY) -> bool:
         '''
@@ -510,6 +515,15 @@ class Grid(TupleMixin, XYMixin):
             # position.
             return ' '
 
+    def __setitem__(self, coord: XY, val: str) -> None:
+        '''
+        Set a tile by coordinate
+        '''
+        if not isinstance(coord, tuple):
+            raise ValueError(f"Expected coordinate pair, not {coord!r}")
+
+        self.data[coord[0]][coord[1]] = val
+
     def row(self, index: int) -> Any:
         '''
         Return the specified row
@@ -526,6 +540,16 @@ class Grid(TupleMixin, XYMixin):
             neighbor: XY = self.tuple_add(coord, delta)
             if neighbor in self:
                 yield neighbor, self[neighbor]
+
+    def tile_iter(self) -> Iterator[tuple[XY, str]]:
+        '''
+        Similar to enumerate(), but instead of yielding a sequence of ints
+        paired with contents, the first element of each yielded tuple is the
+        coordinate.
+        '''
+        for row in range(self.rows):
+            for col in range(self.cols):
+                yield (row, col), self.data[row][col]
 
     def column_iter(self) -> Iterator[str]:
         '''
