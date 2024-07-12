@@ -8,14 +8,16 @@ import operator
 import re
 import sys
 import time
-from collections import namedtuple
+from collections import namedtuple, Counter
 from collections.abc import Callable, Iterator, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 # Type hints
-XY = tuple[float, float]
+Row = float
+Column = float
+XY = tuple[Row, Column]
 XYZ = tuple[float, float, float]
 Directions = tuple[XY, XY, XY, XY]
 
@@ -460,15 +462,14 @@ class Grid(TupleMixin, XYMixin):
             fh = data.open()
         except AttributeError:
             if isinstance(data, str):
-                # If input was a string, split it into a list of strings.
-                # Otherwise, we will assume that data is an iterable sequence
-                # of strings.
-                data = data.splitlines()
-
-            self.data = [
-                [row_cb(col) for col in line.rstrip()]
-                for line in data
-            ]
+                # If input was a string, split it into a list of strings
+                self.data = [
+                    [row_cb(col) for col in line.rstrip()]
+                    for line in data.splitlines()
+                ]
+            else:
+                # Assume grid data is a pre-assembled list of lists
+                self.data = data
         else:
             self.data = [
                 [row_cb(col) for col in line.rstrip()]
@@ -579,6 +580,15 @@ class Grid(TupleMixin, XYMixin):
             sys.stdout.write(f'{"".join(str(x) for x in row)}\n')
         sys.stdout.write('\n')
         sys.stdout.flush()
+
+    def counter(self, row_start: int = 0) -> Counter:
+        """
+        Returns a Counter object that summarizes the contents of the Grid
+        """
+        return Counter(
+            tile for (row, _), tile in self.tile_iter()
+            if row >= row_start
+        )
 
 
 class InfiniteGrid(Grid):
