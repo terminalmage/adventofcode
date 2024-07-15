@@ -2,6 +2,8 @@
 """
 https://adventofcode.com/2018/day/16
 """
+import copy
+import functools
 import inspect
 import re
 import textwrap
@@ -18,7 +20,7 @@ OpcodeNumber = int
 OpcodeName = str
 Input = int
 Output = int
-Instruction = tuple[OpcodeNumber, Input, Input, Output]
+Instruction = tuple[OpcodeNumber | OpcodeName, Input, Input, Output]
 Program = tuple[Instruction, ...]
 Register = int
 Registers = tuple[Register, Register, Register, Register] | list[Register]
@@ -37,8 +39,10 @@ class Trace:
 
 def opcode(func: Operation) -> Operation:
     """
-    Decorator to handle common logic in processing opcodes
+    No-op decorator that serves to distinguish methods which process
+    opcodes from those that do not.
     """
+    @functools.wraps(func)
     def wrapper(
         self,
         pre: Registers,
@@ -49,9 +53,7 @@ def opcode(func: Operation) -> Operation:
         """
         Handle pre and post-processing for Operations
         """
-        pre: list[int] = list(pre)
         func(self, pre, input1, input2, output)
-        return tuple(pre)
 
     return wrapper
 
@@ -62,13 +64,25 @@ class Emulator:
     """
     def __init__(self) -> None:
         """
-        Get the list of opcode methods
+        Get a mapping of operations
         """
+        # Ignores anything not wrapped (i.e. gets only decorated funcs), and
+        # only get funcs whose name does not start with an underscore.
         self.operations: dict[str, Operation] = {
             item[0]: item[1]
             for item in inspect.getmembers(self, inspect.ismethod)
-            if not item[0].startswith('_')
+            if not item[0].startswith('_') and hasattr(item[1], "__wrapped__")
         }
+
+    def run(self, program: Program) -> Registers:
+        """
+        Execute the specified program
+        """
+        registers: Registers = [0, 0, 0, 0]
+        instruction: Instruction
+        for instruction in program:
+            getattr(self, instruction[0])(registers, *instruction[1:])
+        return tuple(registers)
 
     @opcode
     def addr(
@@ -188,7 +202,7 @@ class Emulator:
         Copies contents of register specified by "input1" param into the
         register specified by the "output" param. "input2" is ignored.
         """
-        pre[output] = input1
+        pre[output] = pre[input1]
 
     @opcode
     def seti(
@@ -204,7 +218,7 @@ class Emulator:
         Copies value of the "input1" param into the register specified by the
         "output" param. "input2" is ignored.
         """
-        pre[output] = pre[input1]
+        pre[output] = input1
 
     @opcode
     def gtir(
@@ -349,8 +363,8 @@ class AOC2018Day16(AOC):
             self.traces.append(
                 Trace(
                     instruction=tuple(int(n) for n in trace[4:8]),
-                    pre=tuple(int(n) for n in trace[:4]),
-                    post=tuple(int(n) for n in trace[8:]),
+                    pre=[int(n) for n in trace[:4]],
+                    post=[int(n) for n in trace[8:]],
                 )
             )
 
@@ -377,7 +391,9 @@ class AOC2018Day16(AOC):
         for trace in self.traces:
             matches: int = 0
             for operation in self.emu.operations.values():
-                if operation(trace.pre, *trace.instruction[1:]) == trace.post:
+                registers: Registers = copy.deepcopy(trace.pre)
+                operation(registers, *trace.instruction[1:])
+                if registers == trace.post:
                     matches += 1
                     if matches == 3:
                         ret += 1
@@ -400,12 +416,14 @@ class AOC2018Day16(AOC):
         operation_map: dict[OpcodeName, set[OpcodeNumber]] = defaultdict(set)
         for trace in self.traces:
             for name, operation in self.emu.operations.items():
-                if operation(trace.pre, *trace.instruction[1:]) == trace.post:
+                registers: Registers = copy.deepcopy(trace.pre)
+                operation(registers, *trace.instruction[1:])
+                if registers == trace.post:
                     operation_map[name].add(trace.instruction[0])
 
         # Maps opcode numbers to the function from the emulator. Once all
         # opcodes have been mapped, this dict will be used to run the program.
-        opcode_map: dict[OpcodeNumber, Operation] = {}
+        opcode_map: dict[OpcodeNumber, OpcodeName] = {}
 
         # By process of elimination, determine which operations correspond to
         # which opcodes.
@@ -421,10 +439,7 @@ class AOC2018Day16(AOC):
                 raise RuntimeError("No singles found!")
 
             # Update the opcode map with the items we found above
-            opcode_map.update({
-                key: self.emu.operations[val]
-                for key, val in singles.items()
-            })
+            opcode_map.update(singles)
 
             # Remove references to the opcodes discovered above
             known_codes: frozenset[OpcodeNumber] = frozenset(singles)
@@ -438,17 +453,12 @@ class AOC2018Day16(AOC):
                 if not operation_map[name]:
                     del operation_map[name]
 
-        # Initialize all registers to 0
-        registers: Registers = (0, 0, 0, 0)
+        # Now that we know all the instruction names, rewrite the program with
+        # opcode names instead of numbers.
+        program: Program = tuple((opcode_map[i[0]], *i[1:]) for i in self.program)
 
-        # Run the program using the mapping of opcodes to operations which we
-        # determined in the loop above
-        instruction: Instruction
-        for instruction in self.program:
-            registers = opcode_map[instruction[0]](registers, *instruction[1:])
-
-        # Return the contents of register 0
-        return registers[0]
+        # Return the contents of register 0 after running the program
+        return self.emu.run(program)[0]
 
 
 if __name__ == '__main__':
