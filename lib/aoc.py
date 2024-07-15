@@ -3,6 +3,7 @@ Base class for Advent of Code submissions
 '''
 from __future__ import annotations
 import functools
+import hashlib
 import math
 import operator
 import re
@@ -589,6 +590,14 @@ class Grid(TupleMixin, XYMixin):
             tile for (row, _), tile in self.tile_iter()
             if row >= row_start
         )
+
+    def sha256(self) -> str:
+        """
+        Produces a sha256 hash of the contents of the grid
+        """
+        return hashlib.sha256(
+            ''.join(t[1] for t in self.tile_iter()).encode()
+        ).hexdigest()
 
 
 class InfiniteGrid(Grid):
