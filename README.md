@@ -1,8 +1,3 @@
-_**NOTE: I have done a considerable amount of history munging to remove inputs
-from this repo, in order to align it with AoC's
-[copyright](https://old.reddit.com/r/adventofcode/wiki/faqs/copyright/inputs).
-If you have cloned this repo in the past, please delete and re-clone.**_
-
 # Advent of Code
 
 My scripts for [Advent of Code](https://adventofcode.com).
