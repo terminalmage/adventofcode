@@ -349,6 +349,13 @@ class TupleMixin:
         return tuple(map(lambda a, b: a + b, t1, t2))
 
     @staticmethod
+    def tuple_subtract(t1: tuple[int, ...], t2: tuple[int, ...]) -> tuple[int, ...]:
+        '''
+        Add each element of both tuples, returning a new tuple
+        '''
+        return tuple(map(lambda a, b: a - b, t1, t2))
+
+    @staticmethod
     def tuple_multiply_all(data: tuple[int, ...], factor: int) -> tuple[int, ...]:
         '''
         Multiply all items in the tuple by the given factor
