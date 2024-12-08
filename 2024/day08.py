@@ -21,7 +21,8 @@ class AntennaMap(Grid):
         data: Path | str | Sequence[str],
     ) -> None:
         '''
-        Load the file from the Path object
+        Load the file from the Path object, and then gather all the coordinates
+        belonging to each of the antenna frequencies.
         '''
         super().__init__(data)
         pos: XY
@@ -43,27 +44,49 @@ class AntennaMap(Grid):
             second: XY
             candidate: XY
             for (first, second) in itertools.combinations(positions, 2):
+                # Calculate the delta needed to move from the first antenna to
+                # the second antenna
                 delta: XY = self.tuple_subtract(first, second)
 
                 if resonant:
 
+                    # Per the puzzle, all antennas which are not the only
+                    # antenna of their kind are also themselves antinodes when
+                    # considering resonant harmonics. But if we got to this
+                    # point, we know that there were at least two antennas at
+                    # this frequency. If there weren't,
+                    # itertools.combinations() would not be able to produce a
+                    # tuple of length 2 and would yield nothing.
                     ret.update((first, second))
 
-                    ptr: XY = first
-                    while (candidate := self.tuple_add(ptr, delta)) in self:
-                        ret.add(candidate)
-                        ptr = candidate
-
+                    # Moving from the second antenna to the position of the
+                    # antinodes will involve starting at the point of the
+                    # second antenna, and continuing to move in increments of
+                    # the same delta. Since we used tuple subtraction to
+                    # generate the original delta, continue with subtraction
+                    # until we leave the bounds of the grid.
                     ptr: XY = second
                     while (candidate := self.tuple_subtract(ptr, delta)) in self:
                         ret.add(candidate)
                         ptr = candidate
 
+                    # Repeat the above in the opposite direction, starting from
+                    # the first antenna. To go the opposite direction, we need
+                    # to use tuple addition instead of subtraction.
+                    ptr: XY = first
+                    while (candidate := self.tuple_add(ptr, delta)) in self:
+                        ret.add(candidate)
+                        ptr = candidate
+
                 else:
 
+                    # Like above, we need to continue using tuple subtraction
+                    # to find the antinode, and reverse using tuple addition to
+                    # get the other. The key difference here is that we don't
+                    # repeat this until we leave the grid.
                     for candidate in (
-                        self.tuple_add(first, delta),
                         self.tuple_subtract(second, delta),
+                        self.tuple_add(first, delta),
                     ):
                         if candidate in self:
                             ret.add(candidate)
@@ -105,13 +128,14 @@ class AOC2024Day8(AOC):
 
     def part1(self) -> int:
         '''
-        Return the number of valid equations based on the criteria from Part 1
+        Return the number of antinodes
         '''
         return len(self.antenna_map.antinodes())
 
     def part2(self) -> int:
         '''
-        Return the number of valid equations based on the criteria from Part 2
+        Return the number of antinodes, taking into consideration the behavior
+        of resonant harmonics
         '''
         return len(self.antenna_map.antinodes(resonant=True))
 
