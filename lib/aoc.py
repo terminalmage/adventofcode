@@ -445,6 +445,88 @@ class MathMixin:
                 return False
         return True
 
+    @staticmethod
+    def cramer_2x2(  # pylint: disable=too-many-positional-arguments
+        a1: int,
+        b1: int,
+        c1: int,
+        a2: int,
+        b2: int,
+        c2: int,
+    ) -> tuple[float, float]:
+        '''
+        https://www.chilimath.com/lessons/advanced-algebra/cramers-rule-with-two-variables
+
+        This method can solve a system of equations in the following form:
+
+            a₁x + b₁y = c₁
+            a₂x + b₂y = c₂
+
+        The values above slot into 3 matrices:
+
+                ┌       ┐         ┌       ┐         ┌       ┐
+            D = | a₁ b₁ |    Dx = | c₁ b₁ |    Dy = | a₁ c₁ |
+                | a₂ b₂ |         | c₂ b₂ |         | a₂ c₂ |
+                └       ┘         └       ┘         └       ┘
+
+        To solve for x, divide the determinant of Dx by the determinant of D.
+        To solve for y, divide the determinant of Dy by the determinant of D.
+
+        For a matrix in the following format:
+
+            ┌     ┐
+            | a b |
+            | c d |
+            └     ┘
+
+        The determinant is equal to:
+
+            ad - bc
+
+        Thus, we can represent the determinants using the following:
+
+            D  = (a₁b₂ - b₁a₂)
+            Dx = (c₁b₂ - b₁c₂)
+            Dy = (a₁c₂ - c₁a₂)
+
+        Solving for x can be done by dividing Dx by D, and solving for y can be
+        done by dividing Dy by D.
+
+        Here is an example from https://adventofcode.com/2024/day/13
+
+        Button A: X+94, Y+34
+        Button B: X+22, Y+67
+        Prize: X=8400, Y=5400
+
+        This can be written as the following two equations:
+
+            94a + 22b = 8400
+            34a + 67b = 5400
+
+        Which form the following matrices
+
+                ┌       ┐         ┌         ┐         ┌         ┐
+            D = | 94 22 |    Dx = | 8400 22 |    Dy = | 94 8400 |
+                | 34 67 |         | 5400 67 |         | 34 5400 |
+                └       ┘         └         ┘         └         ┘
+
+        Calculating the determinants yields:
+
+            D  = (94*67) - (22*34) = 5550
+            Dx = (8400 * 67) - (22*5400) = 444000
+            Dy = (94 * 5400) - (8400*34) = 222000
+
+        Solving for x and y:
+
+            x = Dx / D = 444000 / 5550 = 80
+            y = Dy / D = 222000 / 5550 = 40
+        '''
+        D: int = (a1 * b2) - (b1 * a2)
+        Dx: int = (c1 * b2) - (b1 * c2)
+        Dy: int = (a1 * c2) - (c1 * a2)
+
+        return (Dx / D), (Dy / D)
+
 
 class Grid(TupleMixin, XYMixin):
     '''
