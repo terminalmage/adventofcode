@@ -9,7 +9,7 @@ import textwrap
 from collections import defaultdict
 
 # Local imports
-from aoc import AOC, XY
+from aoc import AOC
 
 # Type hints
 Robot = list[int]
