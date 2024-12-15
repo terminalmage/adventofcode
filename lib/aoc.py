@@ -2,6 +2,7 @@
 Base class for Advent of Code submissions
 '''
 from __future__ import annotations
+import copy
 import functools
 import hashlib
 import math
@@ -576,6 +577,7 @@ class Grid(TupleMixin, XYMixin):
             tuple(-1 * x for x in nesw)
             for nesw in self.directions
         )
+        self.initial_state = copy.deepcopy(self.data)
 
     def __contains__(self, coord: XY) -> bool:
         '''
@@ -614,6 +616,12 @@ class Grid(TupleMixin, XYMixin):
             raise ValueError(f"Expected coordinate pair, not {coord!r}")
 
         self.data[coord[0]][coord[1]] = val
+
+    def reset(self) -> None:
+        '''
+        Reset to the initial state
+        '''
+        self.data = copy.deepcopy(self.initial_state)
 
     def row(self, index: int) -> Any:
         '''
