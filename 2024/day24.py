@@ -135,7 +135,7 @@ class Gate:
             self.output.value = self.__op(self.input1.value, self.input2.value)
 
 
-class Computer:
+class Adder:
     '''
     Initialize a series of Wires and Gates, based on the puzzle input
     '''
@@ -298,8 +298,8 @@ class AOC2024Day24(AOC):
         '''
         Calculate the number represented by the zNN wires
         '''
-        computer: Computer = Computer(self.input)
-        return computer.run()
+        adder: Adder = Adder(self.input)
+        return adder.run()
 
     def part2(self) -> str:
         '''
@@ -421,24 +421,24 @@ class AOC2024Day24(AOC):
         _not_ feed into an OR gate, instead going directly into the XOR gate
         which produces z01.
         '''
-        computer: Computer = Computer(self.input)
+        adder: Adder = Adder(self.input)
 
         last_z: Gate
         *_, last_z = sorted(
             (
-                gate for gate in computer.gates
+                gate for gate in adder.gates
                 if gate.output.name.startswith('z')
             ),
             key=lambda gate: int(gate.output.name[1:])
         )
 
         gates_by_output: dict[str, Gate] = {
-            gate.output.name: gate for gate in computer.gates
+            gate.output.name: gate for gate in adder.gates
         }
 
         swapped: set[Gate] = set()
 
-        for gate in computer.gates:
+        for gate in adder.gates:
 
             match gate.operation:
                 case 'XOR':
@@ -458,7 +458,7 @@ class AOC2024Day24(AOC):
                             # AND gate which has the current gate as one of its
                             # inputs.
                             and_gate: Gate
-                            for and_gate in computer.and_gates:
+                            for and_gate in adder.and_gates:
                                 if gate.output in and_gate.inputs:
                                     # We've found a match, we can stop looking
                                     break
@@ -500,7 +500,7 @@ class AOC2024Day24(AOC):
                         # gate as one of its inputs.
                         if gate.output not in gates_by_output['z01'].inputs:
                             or_gate: Gate
-                            for or_gate in computer.or_gates:
+                            for or_gate in adder.or_gates:
                                 if gate.output in or_gate.inputs:
                                     # We've found a match, we can stop looking
                                     break
